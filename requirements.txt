@@ -1,0 +1,4 @@
+greenlet==1.1.1
+pydantic==1.8.2
+SQLAlchemy==1.4.23
+typing-extensions==3.10.0.0
