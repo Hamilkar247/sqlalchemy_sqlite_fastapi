@@ -32,6 +32,7 @@ class Uzytkownik(Base):
     id = Column(Integer, primary_key=True, index=True)
     imie_nazwisko = Column(String)
     email = Column(String)
+    hashed_password = Column(String)
     stanowisko = Column(String)
     opis = Column(String)
     uprawnienia = Column(String)
