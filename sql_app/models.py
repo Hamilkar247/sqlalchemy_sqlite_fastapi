@@ -50,8 +50,8 @@ class Sesja(Base):
     urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
     uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
 
-    urzadzenie = relationship("Urzadzenie", backpopulates="zbior_sesji")
-    uzytkownik = relationship("Uzytkownik", backpopulates="zbior_sesji")
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
+    uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
 
 
 class PaczkaDanych(Base):
@@ -63,7 +63,7 @@ class PaczkaDanych(Base):
     numer_seryjny = Column(String)
     sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
 
-    sesja = relationship("Sesja", backpopulates="zbior_paczek_danych")
+    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
 
 class WartoscPomiaruSensora(Base):
@@ -74,7 +74,7 @@ class WartoscPomiaruSensora(Base):
     litery_porzadkowe = Column(String)
     paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
 
-    paczka_danych = relationship("PaczkaDanych", backpopulates="zbior_wartosci_pomiarow_sensora")
+    paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensora")
 
 
 class Urzadzenie(Base):
@@ -98,5 +98,5 @@ class Sensor(Base):
     status_sensora = Column(String)
     urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
 
-    urzadzenie = relationship("Urzadzenie", backpopulates="zbior_sensorow")
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
 
