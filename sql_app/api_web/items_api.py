@@ -4,7 +4,7 @@ from fastapi import Depends, FastAPI, HTTPException, APIRouter
 
 from sqlalchemy.orm import Session
 
-from .. import schemas, crud
+from .. import schemas, crud_package
 from ..database import SessionLocal, engine
 
 router = APIRouter(
@@ -24,6 +24,6 @@ def get_db():
 
 @router.get("/", response_model=List[schemas.Item], tags=["items"])
 async def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_items(db, skip=skip, limit=limit)
+    items = crud_package.get_items(db, skip=skip, limit=limit)
     return items
 
