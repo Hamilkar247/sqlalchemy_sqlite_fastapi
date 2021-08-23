@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sql_app import models
-from sql_app import schemas
+from sql_app.schemas_package import schemas
 
 
 def get_user(db: Session, user_id: int):

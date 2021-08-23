@@ -38,33 +38,33 @@ class Uzytkownik(Base):
     uprawnienia = Column(String)
 
 
-#class Sesja(Base):
-#    __tablename__ = "zbior_sesji"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    nazwa_sesji = Column(String)
-#    start_sesji = Column(String)
-#    koniec_sesji = Column(String)
-#    czy_aktywna = Column(Boolean)
-#    dlugosc_trwania_w_s = Column(String)
-#    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
-#    uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
-#
-#    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
-#    uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
-#
-#
-#class PaczkaDanych(Base):
-#    __tablename__ = "zbior_paczek_danych"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    czas_paczki = Column(String) # do dodania pola z datą
-#    kod_statusu = Column(String)
-#    numer_seryjny = Column(String)
+class Sesja(Base):
+    __tablename__ = "zbior_sesji"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nazwa_sesji = Column(String)
+    start_sesji = Column(String)
+    koniec_sesji = Column(String)
+    czy_aktywna = Column(Boolean)
+    dlugosc_trwania_w_s = Column(String)
+    #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
+    #uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
+
+    #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
+    #uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
+
+
+class PaczkaDanych(Base):
+    __tablename__ = "zbior_paczek_danych"
+
+    id = Column(Integer, primary_key=True, index=True)
+    czas_paczki = Column(String) # do dodania pola z datą
+    kod_statusu = Column(String)
+    numer_seryjny = Column(String)
 #    sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
-#
+
 #    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
-#
+
 #
 #class WartoscPomiaruSensora(Base):
 #    __tablename__ = "zbior_wartosci_pomiarow_sensora"

@@ -37,71 +37,13 @@ class User(UserBase):
         orm_mode = True
 
 
-class UzytkownikBase(BaseModel):
-    #id: int
-    hashed_password: Optional[str] = None
-    uprawnienia: Optional[str] = None
-    imie_nazwisko: Optional[str] = None
-    email: Optional[str] = None
-    stanowisko: Optional[str] = None
-    opis: Optional[str] = None
 
 
-class UzytkownikCreate(UzytkownikBase):
-    pass
 
 
-class Uzytkownik(UzytkownikBase):
-    id: int
-    #zbior_sesji: List[Sesja] = []
-    #zbior_urzadzen: List[Urzadzenie] = []
+#
+#
 
-    class Config:
-        orm_mode = True
-
-
-#class SesjaBase(BaseModel):
-#    nazwa_sesji: str
-#    start_sesji: str
-#    koniec_sesji: str
-#    dlugosc_trwania_w_s: str
-#
-#
-#class SesjaCreate(SesjaBase):
-#    pass
-#
-#
-#class Sesja(SesjaBase):
-#    id: int
-#    czy_aktywna: bool
-#    start_sesji: str
-#    koniec_sesji: str
-#    dlugosc_trwania_w_s: str
-#    zbior_paczek_danych: List[PaczkaDanych] = []
-#    urzadzenia_id: int
-#    uzytkownika_id: int
-#
-#    class Config:
-#        orm_mode = True
-#
-#
-#class PaczkaDanychBase(BaseModel):
-#    kod_statusu: str
-#    numer_seryjny: str
-#    czas_paczki: str
-#
-#
-#class PaczkaDanychCreate(PaczkaDanychBase):
-#    pass
-#
-#
-#class PaczkaDanych(PaczkaDanychBase):
-#    id: int
-#    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensora] = []
-#    wartosci_pomiaru_sensorow_id: str
-#
-#    class Config:
-#        orm_mode = True
 #
 #
 #class WartoscPomiaruSensoraBase(BaseModel):

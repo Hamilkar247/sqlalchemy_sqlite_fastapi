@@ -1,11 +1,12 @@
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException, APIRouter
+from fastapi import Depends, APIRouter
 
 from sqlalchemy.orm import Session
 
-from .. import schemas, crud_package
-from ..database import SessionLocal, engine
+from .. import crud_package
+from ..schemas_package import schemas
+from ..database import SessionLocal
 
 router = APIRouter(
     prefix="/items",

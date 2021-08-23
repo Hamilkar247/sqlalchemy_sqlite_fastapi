@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, APIRouter
 
 from sqlalchemy.orm import Session
 
-from .. import schemas
+from ..schemas_package import schemas
 from ..crud_package import user_crud
 from ..database import SessionLocal
 
