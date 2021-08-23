@@ -29,14 +29,14 @@ async def create_paczka_danych(paczka_danych: paczka_danych_schemas.PaczkaDanych
 
 
 @router.get("/", response_model=List[paczka_danych_schemas.PaczkaDanych])
-async def read_zbior_paczek_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
+async def get_zbior_paczek_danych(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db, skip=skip, limit=limit)
+    return paczki_danych
+
+
+@router.get("/id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanych)
+async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_paczka_danych(db, paczka_danych_id=paczka_danych_id)
     if db_paczek_danych is None:
         raise HTTPException(status_code=404, detail="Paczka danych nie znaleziony")
     return db_paczek_danych
-
-
-@router.get("/", response_model=List[paczka_danych_schemas.PaczkaDanych])
-async def read_zbior_paczek_danych(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db, skip=skip, limit=limit)
-    return paczki_danych
