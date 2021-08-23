@@ -65,18 +65,18 @@ class PaczkaDanych(Base):
 
 #    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
-#
-#class WartoscPomiaruSensora(Base):
-#    __tablename__ = "zbior_wartosci_pomiarow_sensora"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    wartosc = Column(String)
-#    litery_porzadkowe = Column(String)
+
+class WartoscPomiaruSensora(Base):
+    __tablename__ = "zbior_wartosci_pomiarow_sensora"
+
+    id = Column(Integer, primary_key=True, index=True)
+    wartosc = Column(String)
+    litery_porzadkowe = Column(String)
 #    paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
-#
+
 #    paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensora")
-#
-#
+
+
 #class Urzadzenie(Base):
 #    __tablename__ = "zbior_urzadzen"
 #

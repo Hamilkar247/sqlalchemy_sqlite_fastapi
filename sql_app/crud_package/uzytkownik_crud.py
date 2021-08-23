@@ -4,7 +4,6 @@ from sql_app.schemas_package import uzytkownik_schemas
 
 
 def get_uzytkownik(db: Session, uzytkownik_id: int):
-    print(f"uzytkownik_crud: uzytkownik_id: {uzytkownik_id}")
     return db.query(models.Uzytkownik).filter(models.Uzytkownik.id == uzytkownik_id).first()
 
 
