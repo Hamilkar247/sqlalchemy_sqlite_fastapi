@@ -24,6 +24,28 @@ def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc
     return db_wartosc_pomiaru_sensora
 
 
+def create_wartosc_pomiaru_sensora_dla_paczki(db: Session,
+                wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas,
+                                              id_paczki: int ):
+    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+        wartosc=wartosc_pomiaru_sensora.wartosc,
+        litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe,
+        paczka_danych_id=id_paczki
+    )
+    db.add(db_wartosc_pomiaru_sensora)
+    db.commit()
+    db.refresh(db_wartosc_pomiaru_sensora)
+    return db_wartosc_pomiaru_sensora
+
+
+#def create_wartosc_pomiar_sensora_dla_paczki_id(db: Session, wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas):
+#    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+#        wartosc=wartosc_pomiaru_sensora.wartosc,
+#        litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe,
+#        paczka_danych_id=wartosc_pomiaru_sensora.paczka_danych_id
+#    )
+
+
 def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
     result_str = ""
     try:

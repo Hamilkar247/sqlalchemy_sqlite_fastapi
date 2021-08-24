@@ -36,6 +36,16 @@ async def create_wartosc_pomiaru_sensora(
         db=db, wartosc_pomiaru_sensora=wartosc_pomiaru_sensora)
 
 
+@router.post("/id_paczki={paczka_id}",
+             response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensora)
+async def create_wartosc_pomiaru_sensora_dla_paczki_id(paczka_id: int,
+        wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraCreate,
+                                         db: Session = Depends(get_db)):
+
+    return wartosc_pomiaru_sensora_crud.create_wartosc_pomiaru_sensora_dla_paczki(
+        db=db, wartosc_pomiaru_sensora=wartosc_pomiaru_sensora, id_paczki=paczka_id)
+
+
 @router.get("/",
             response_model=List[wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensora])
 async def get_zbior_wartosci_pomiaru_sensora(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -74,4 +84,4 @@ async def delete_all_wartosc_pomiaru_sensora(db: Session = Depends(get_db)):
     if result is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunieto wszystie rekordy"})
     else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie usunieto rekordów z tabeli wartości"})
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "nie usunieto rekordów z tabeli wartości"})

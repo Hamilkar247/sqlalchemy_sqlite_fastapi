@@ -61,20 +61,22 @@ class PaczkaDanych(Base):
     czas_paczki = Column(String) # do dodania pola z datą
     kod_statusu = Column(String)
     numer_seryjny = Column(String)
+    #back_populates - patrz nazwa atrybutow w WartoscPomiaruSensora
+    zbior_wartosci_pomiarow_sensorow = relationship("WartoscPomiaruSensora", back_populates="paczka_danych")
 #    sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
 
 #    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
 
 class WartoscPomiaruSensora(Base):
-    __tablename__ = "zbior_wartosci_pomiarow_sensora"
+    __tablename__ = "zbior_wartosci_pomiarow_sensorow"
 
     id = Column(Integer, primary_key=True, index=True)
     wartosc = Column(String)
     litery_porzadkowe = Column(String)
-#    paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
+    paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
 
-#    paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensora")
+    paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
 #class Urzadzenie(Base):

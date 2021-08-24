@@ -2,8 +2,8 @@ from typing import List
 
 from fastapi import Depends, APIRouter, HTTPException
 
-from sql_app.schemas_package import uzytkownik_schemas, paczka_danych_schemas
-from sql_app.crud_package import uzytkownik_crud, paczka_danych_crud
+from sql_app.schemas_package import paczka_danych_schemas
+from sql_app.crud_package import paczka_danych_crud
 from sql_app.database import SessionLocal
 from sqlalchemy.orm import Session
 
