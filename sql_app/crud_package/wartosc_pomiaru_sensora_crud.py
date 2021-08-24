@@ -1,0 +1,63 @@
+import logging
+
+from sql_app import models
+from sqlalchemy.orm import Session
+from sql_app.schemas_package import wartosc_pomiaru_sensora_schemas
+
+
+def get_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
+    return db.query(models.WartoscPomiaruSensora).filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
+
+
+def get_zbior_wartosci_pomiarowych_sensorow(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.WartoscPomiaruSensora).offset(skip).limit(limit).all()
+
+
+def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas):
+    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+        wartosc=wartosc_pomiaru_sensora.wartosc,
+        litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe
+    )
+    db.add(db_wartosc_pomiaru_sensora)
+    db.commit()
+    db.refresh(db_wartosc_pomiaru_sensora)
+    return db_wartosc_pomiaru_sensora
+
+
+def create_wartosc_pomiaru_sensora_dla_paczki(db: Session,
+                wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas,
+                                              id_paczki: int):
+    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+        wartosc=wartosc_pomiaru_sensora.wartosc,
+        litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe,
+        paczka_danych_id=id_paczki
+    )
+    db.add(db_wartosc_pomiaru_sensora)
+    db.commit()
+    db.refresh(db_wartosc_pomiaru_sensora)
+    return db_wartosc_pomiaru_sensora
+
+
+def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
+    result_str = ""
+    try:
+        obj_to_delete = db.query(models.WartoscPomiaruSensora).filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
+        if obj_to_delete is None:
+            return None
+        db.delete(obj_to_delete)
+        db.commit()
+        result_str = "usunieto rekord o podanym id"
+        return result_str
+    except Exception as e:
+        result_str="wystapil blad przy usuwaniu rekordu"+str(wartosc_pomiaru_sensora_id)
+        return result_str
+
+
+def delete_all_wartosci_pomiaru_sensora(db: Session):
+    wszystkie_rekordy = db.query(models.WartoscPomiaruSensora)
+    if wszystkie_rekordy is not None:
+        wszystkie_rekordy.delete()
+        db.commit()
+        return "usunieto"
+    else:
+        return None
