@@ -24,7 +24,7 @@ def get_db():
         db.close()
 
 
-@router.get("/", response_model=List[schemas.ItemSchema], tags=["items"])
+@router.get("/", response_model=List[schemas.ItemSchema])
 async def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = item_crud.get_items(db, skip=skip, limit=limit)
     return items
