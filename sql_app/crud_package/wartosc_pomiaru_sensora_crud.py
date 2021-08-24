@@ -41,3 +41,13 @@ def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int)
     except Exception as e:
         result_str="wystapil blad przy usuwaniu rekordu"+str(wartosc_pomiaru_sensora_id)
         return result_str
+
+
+def delete_all_wartosci_pomiaru_sensora(db: Session):
+    wszystkie_rekordy = db.query(models.WartoscPomiaruSensora)
+    if wszystkie_rekordy is not None:
+        wszystkie_rekordy.delete()
+        db.commit()
+        return "usunieto"
+    else:
+        return None

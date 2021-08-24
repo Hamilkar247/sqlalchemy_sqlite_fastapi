@@ -66,3 +66,12 @@ async def delete_id_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db:
     elif result_str is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie ma rekordu o id {wartosc_pomiaru_sensora_id}"})
     return HTTPException(status_code=404, detail="Nie udalo się usunąć rekordu wartosci pomiaru sensora")
+
+
+@router.delete("/delete/all_records", response_description="Usunieto wszystkie rekordy")
+async def delete_all_wartosc_pomiaru_sensora(db: Session = Depends(get_db)):
+    result = wartosc_pomiaru_sensora_crud.delete_all_wartosci_pomiaru_sensora(db)
+    if result is not None:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunieto wszystie rekordy"})
+    else:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie usunieto rekordów z tabeli wartości"})
