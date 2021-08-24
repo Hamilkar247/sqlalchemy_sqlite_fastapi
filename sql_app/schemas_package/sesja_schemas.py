@@ -2,6 +2,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from sql_app.schemas_package.paczka_danych_schemas import PaczkaDanychSchema
+
 
 class SesjaBaseSchema(BaseModel):
     czy_aktywna: Optional[bool] = None
@@ -17,7 +19,7 @@ class SesjaCreateSchema(SesjaBaseSchema):
 
 class SesjaSchema(SesjaBaseSchema):
     id: int
-    #zbior_paczek_danych: List[PaczkaDanych] = []
+    zbior_paczek_danych: List[PaczkaDanychSchema]
     #urzadzenia_id: int
     #uzytkownika_id: int
 

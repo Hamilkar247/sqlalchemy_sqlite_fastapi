@@ -47,6 +47,8 @@ class Sesja(Base):
     koniec_sesji = Column(String)
     czy_aktywna = Column(Boolean)
     dlugosc_trwania_w_s = Column(String)
+
+    zbior_paczek_danych = relationship("PaczkaDanych", back_populates="sesja")
     #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
     #uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
 
@@ -61,9 +63,10 @@ class PaczkaDanych(Base):
     czas_paczki = Column(String) # do dodania pola z datą
     kod_statusu = Column(String)
     numer_seryjny = Column(String)
+    sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
     #back_populates - patrz nazwa atrybutow w WartoscPomiaruSensora
     zbior_wartosci_pomiarow_sensorow = relationship("WartoscPomiaruSensora", back_populates="paczka_danych")
-#    sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
+    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
 #    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 

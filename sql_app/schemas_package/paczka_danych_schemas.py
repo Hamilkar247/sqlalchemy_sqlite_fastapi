@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -6,9 +6,9 @@ from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomia
 
 
 class PaczkaDanychBaseSchema(BaseModel):
-    kod_statusu: str
-    numer_seryjny: str
-    czas_paczki: str
+    kod_statusu: Optional[str] = None
+    numer_seryjny: Optional[str] = None
+    czas_paczki: Optional[str] = None
 
 
 class PaczkaDanychCreateSchema(PaczkaDanychBaseSchema):
@@ -19,6 +19,7 @@ class PaczkaDanychSchema(PaczkaDanychBaseSchema):
     id: int
     #wartosci_pomiaru_sensorow_id: str
     zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
+    sesja_id: Optional[str] = None
 
     class Config:
         orm_mode = True

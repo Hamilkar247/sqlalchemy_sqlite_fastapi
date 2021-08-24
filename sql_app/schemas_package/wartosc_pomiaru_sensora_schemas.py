@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class WartoscPomiaruSensoraBaseSchema(BaseModel):
     wartosc: Optional[str] = None
     litery_porzadkowe: Optional[str] = None
-    paczka_danych_id: Optional[int] = None
+
 
 
 class WartoscPomiaruSensoraCreateSchema(WartoscPomiaruSensoraBaseSchema):
@@ -14,6 +14,7 @@ class WartoscPomiaruSensoraCreateSchema(WartoscPomiaruSensoraBaseSchema):
 
 class WartoscPomiaruSensoraSchema(WartoscPomiaruSensoraBaseSchema):
     id: int
+    paczka_danych_id: Optional[int] = None
 
     class Config:
         orm_mode = True

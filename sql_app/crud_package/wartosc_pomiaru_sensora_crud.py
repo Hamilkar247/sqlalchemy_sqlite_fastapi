@@ -26,7 +26,7 @@ def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc
 
 def create_wartosc_pomiaru_sensora_dla_paczki(db: Session,
                 wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas,
-                                              id_paczki: int ):
+                                              id_paczki: int):
     db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
         wartosc=wartosc_pomiaru_sensora.wartosc,
         litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe,
