@@ -3,16 +3,16 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class ItemBase(BaseModel):
+class ItemBaseSchema(BaseModel):
     title: str
     description: Optional[str] = None
 
 
-class ItemCreate(ItemBase):
+class ItemCreateSchema(ItemBaseSchema):
     pass
 
 
-class Item(ItemBase):
+class ItemSchema(ItemBaseSchema):
     id: int
     owner_id: int
 
@@ -20,18 +20,18 @@ class Item(ItemBase):
         orm_mode = True
 
 
-class UserBase(BaseModel):
+class UserBaseSchema(BaseModel):
     email: str
 
 
-class UserCreate(UserBase):
+class UserCreateSchema(UserBaseSchema):
     password: str
 
 
-class User(UserBase):
+class UserSchema(UserBaseSchema):
     id: int
     is_active: bool
-    items: List[Item] = []
+    items: List[ItemSchema] = []
 
     class Config:
         orm_mode = True

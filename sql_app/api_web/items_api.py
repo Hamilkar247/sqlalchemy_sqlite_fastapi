@@ -24,14 +24,14 @@ def get_db():
         db.close()
 
 
-@router.get("/", response_model=List[schemas.Item], tags=["items"])
+@router.get("/", response_model=List[schemas.ItemSchema], tags=["items"])
 async def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = item_crud.get_items(db, skip=skip, limit=limit)
     return items
 
 
-@router.post("/{user_id}/items/", response_model=schemas.Item)
+@router.post("/{user_id}/items/", response_model=schemas.ItemSchema)
 async def create_item_for_user(
-    user_id: int, item: schemas.ItemCreate, db: Session = Depends(get_db)
+    user_id: int, item: schemas.ItemCreateSchema, db: Session = Depends(get_db)
 ):
     return item_crud.create_user_item(db=db, item=item, user_id=user_id)

@@ -11,7 +11,7 @@ def get_zbior_paczek_danych(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.PaczkaDanych).offset(skip).limit(limit).all()
 
 
-def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychCreate):
+def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchema):
     db_paczka_danych = models.PaczkaDanych(
         czas_paczki=paczka_danych.czas_paczki,
         kod_statusu=paczka_danych.kod_statusu,

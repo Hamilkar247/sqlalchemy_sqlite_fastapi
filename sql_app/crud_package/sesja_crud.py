@@ -11,7 +11,7 @@ def get_zbior_sesji(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Sesja).offset(skip).limit(limit).all()
 
 
-def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreate):#,
+def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
                  #urzadzenie_id: int, uzytkownik_id: int):
     db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
                             start_sesji=sesja.start_sesji,

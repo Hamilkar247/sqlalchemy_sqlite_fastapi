@@ -2,25 +2,23 @@ from typing import List
 
 from pydantic import BaseModel
 
-from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensora
+from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
 
 
-class PaczkaDanychBase(BaseModel):
+class PaczkaDanychBaseSchema(BaseModel):
     kod_statusu: str
     numer_seryjny: str
     czas_paczki: str
 
 
-class PaczkaDanychCreate(PaczkaDanychBase):
+class PaczkaDanychCreateSchema(PaczkaDanychBaseSchema):
     pass
 
 
-class PaczkaDanych(PaczkaDanychBase):
+class PaczkaDanychSchema(PaczkaDanychBaseSchema):
     id: int
     #wartosci_pomiaru_sensorow_id: str
-    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensora]
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
 
     class Config:
         orm_mode = True
-        #arbitrary_types_allowed = True
-        #arbitrary_types_allowed = True

@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UzytkownikBase(BaseModel):
+class UzytkownikBaseSchema(BaseModel):
     hashed_password: Optional[str] = None
     uprawnienia: Optional[str] = None
     imie_nazwisko: Optional[str] = None
@@ -13,11 +13,11 @@ class UzytkownikBase(BaseModel):
     #id: int
 
 
-class UzytkownikCreate(UzytkownikBase):
+class UzytkownikCreateSchema(UzytkownikBaseSchema):
     pass
 
 
-class Uzytkownik(UzytkownikBase):
+class Uzytkownik(UzytkownikBaseSchema):
     id: int
     #zbior_sesji: List[Sesja] = []
     #zbior_urzadzen: List[Urzadzenie] = []

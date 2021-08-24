@@ -24,7 +24,7 @@ def get_db():
 
 
 @router.post("/", response_model=uzytkownik_schemas.Uzytkownik)
-async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreate, db: Session = Depends(get_db)):
+async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema, db: Session = Depends(get_db)):
     #db_uzytkownik = uzytkownik_crud.get_uzytkownik(db)
     return uzytkownik_crud.create_uzytkownik(db=db, uzytkownik=uzytkownik)
     #, imie_nazwisko=uzytkownik.imie_nazwisko,

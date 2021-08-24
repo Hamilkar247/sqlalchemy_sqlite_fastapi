@@ -22,18 +22,18 @@ def get_db():
         db.close()
 
 
-@router.post("/", response_model=sesja_schemas.Sesja)
-async def create_sesja(sesja: sesja_schemas.Sesja, db: Session = Depends(get_db)):
+@router.post("/", response_model=sesja_schemas.SesjaSchema)
+async def create_sesja(sesja: sesja_schemas.SesjaSchema, db: Session = Depends(get_db)):
     return sesja_crud.create_sesja(db=db, sesja=sesja)
 
 
-@router.get("/", response_model=List[sesja_schemas.Sesja])
+@router.get("/", response_model=List[sesja_schemas.SesjaSchema])
 async def read_zbior_sesja(skip: int = 0, limit: int = 100, db: Session = Depends()):
     sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
     return sesje
 
 
-@router.get("/id={sesja_id}", response_model=sesja_schemas.Sesja)
+@router.get("/id={sesja_id}", response_model=sesja_schemas.SesjaSchema)
 async def read_sesja(sesja_id: int, db: Session = Depends(get_db)):
     db_sesja = sesja_crud.get_sesja(db, sesja_id=sesja_id)
     if db_sesja is None:

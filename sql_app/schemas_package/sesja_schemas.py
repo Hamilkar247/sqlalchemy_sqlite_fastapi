@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class SesjaBase(BaseModel):
+class SesjaBaseSchema(BaseModel):
     czy_aktywna: Optional[bool] = None
     nazwa_sesji: Optional[str] = None
     start_sesji: Optional[str] = None
@@ -11,11 +11,11 @@ class SesjaBase(BaseModel):
     dlugosc_trwania_w_s: Optional[str] = None
 
 
-class SesjaCreate(SesjaBase):
+class SesjaCreateSchema(SesjaBaseSchema):
     pass
 
 
-class Sesja(SesjaBase):
+class SesjaSchema(SesjaBaseSchema):
     id: int
     #zbior_paczek_danych: List[PaczkaDanych] = []
     #urzadzenia_id: int
