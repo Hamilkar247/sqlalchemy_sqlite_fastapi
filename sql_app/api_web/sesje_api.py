@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -5,6 +6,7 @@ from sqlalchemy.orm import Session
 from starlette import status
 from starlette.responses import JSONResponse
 
+from sql_app import models
 from sql_app.crud_package import sesja_crud
 from sql_app.database import SessionLocal
 from sql_app.schemas_package import sesja_schemas
@@ -26,21 +28,40 @@ def get_db():
 
 @router.post("/", response_model=sesja_schemas.SesjaSchema)
 async def create_sesja(sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
-    return sesja_crud.create_sesja(db=db, sesja=sesja)
-
-
-@router.get("/", response_model=List[sesja_schemas.SesjaSchema])
-async def read_zbior_sesja(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
-    return sesje
+    db_sesja = sesja_crud.create_sesja(db=db, sesja=sesja)
+    if db_sesja is None:
+        raise HTTPException(status_code=404, detail="Nie udało się dodać nowerj sesji")
+    return db_sesja
 
 
 @router.get("/id={sesja_id}", response_model=sesja_schemas.SesjaSchema)
-async def read_sesja(sesja_id: int, db: Session = Depends(get_db)):
+async def get_sesja(sesja_id: int, db: Session = Depends(get_db)):
     db_sesja = sesja_crud.get_sesja(db, sesja_id=sesja_id)
     if db_sesja is None:
         raise HTTPException(status_code=404, detail="Sesji nie znaleziono")
     return db_sesja
+
+
+@router.get("/", response_model=List[sesja_schemas.SesjaSchema])
+async def get_zbior_sesja(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
+    return sesje
+
+
+@router.get("/aktywne_sesje", response_model=List[sesja_schemas.SesjaSchema])
+async def zwroc_zbior_sesji_aktywne(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    sesje = sesja_crud.zwroc_aktywne_sesje(db, skip=skip, limit=limit)
+    return sesje
+
+
+@router.put("/id={sesja_id}", response_description="Zakończ działanie sesji")
+async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
+    #jesli znajdzie aktywna sesje pod tym id, zakonczy je, jeśli takiej nie bedzie
+    zakonczona_sesja = sesja_crud.zakoncz_sesje(db, sesja_id)
+    if zakonczona_sesja is None:
+        raise HTTPException(status_code=404, detail="Nie udało się zakończyć sesje")
+    else:
+        return zakoncz_sesje
 
 
 @router.delete("/delete/id={sesja_id}", response_description="Usunieto sesje o numerze id ...")

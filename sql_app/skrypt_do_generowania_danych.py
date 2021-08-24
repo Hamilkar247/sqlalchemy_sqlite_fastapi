@@ -52,11 +52,11 @@ def dane_od_arka():
     # wydrukuj typ(?)
     #print("Type:", type(data))
 
-    id_sesji=1
+    id_sesji=5
     #paczka
     kod_statusu = data['kod']
     numer_seryjny = data['sn']
-    czas_paczki = str(datetime.now())
+    czas_paczki = str(datetime.now().strftime("%d/%m/%y %H:%M:%S"))
     wart = data["wart"]
     print(kod_statusu)
     print(numer_seryjny)
