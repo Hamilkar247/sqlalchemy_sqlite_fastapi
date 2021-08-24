@@ -14,14 +14,13 @@ def generate_json_paczka():
 
     value = {
         "sn": sn,
-        "a": a,
-        "b": b,
-        "c": c,
-        "z": z,
+        "wart": {
+            "a": a,
+            "b": b,
+            "c": c,
+            "z": z,
+        },
         "kod": kod
     }
 
     return json.dumps(value)
-
-
-print(generate_json_paczka())
