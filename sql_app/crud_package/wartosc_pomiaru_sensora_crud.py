@@ -1,3 +1,5 @@
+import logging
+
 from sql_app import models
 from sqlalchemy.orm import Session
 from sql_app.schemas_package import wartosc_pomiaru_sensora_schemas
@@ -20,3 +22,22 @@ def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc
     db.commit()
     db.refresh(db_wartosc_pomiaru_sensora)
     return db_wartosc_pomiaru_sensora
+
+
+def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
+    result_str = ""
+    try:
+        logging.debug("ahoj delete")
+        obj_to_delete = db.query(models.WartoscPomiaruSensora).filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()#.filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).delete()
+        logging.debug(obj_to_delete)
+        print(obj_to_delete)
+        if obj_to_delete is None:
+            result_str = "brak rekordu"
+            return None
+        db.delete(obj_to_delete)
+        db.commit()
+        result_str = "usunieto rekord o podanym id"
+        return result_str
+    except Exception as e:
+        result_str="wystapil blad przy usuwaniu rekordu"+str(wartosc_pomiaru_sensora_id)
+        return result_str
