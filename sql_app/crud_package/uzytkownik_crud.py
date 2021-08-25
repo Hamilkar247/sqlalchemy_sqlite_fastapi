@@ -23,3 +23,28 @@ def create_uzytkownik(db: Session, uzytkownik: uzytkownik_schemas.UzytkownikCrea
     db.commit()
     db.refresh(db_uzytkownik)
     return db_uzytkownik
+
+
+def delete_uzytkownik(db: Session, uzytkownik_id: int):
+    result_str = ""
+    try:
+        obj_to_delete = db.query(models.Uzytkownik).filter(models.Uzytkownik.id == uzytkownik_id).first()
+        if obj_to_delete is None:
+            return None
+        db.delete(obj_to_delete)
+        db.commit()
+        result_str = "usunięto użytkowniku o podanym id"
+        return result_str
+    except Exception as e:
+        result_str = "wystąpił błąd przy usuwaniu uzytkownika"+str(uzytkownik_id)
+        return result_str
+
+
+def delete_all_uzytkownicy(db: Session):
+    wszystkie_rekordy = db.query(models.Uzytkownik)
+    if wszystkie_rekordy is not None:
+        wszystkie_rekordy.delete()
+        db.commit()
+        return "usunieto"
+    else:
+        return None

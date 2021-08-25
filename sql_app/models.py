@@ -37,6 +37,8 @@ class Uzytkownik(Base):
     opis = Column(String)
     uprawnienia = Column(String)
 
+    zbior_sesji = relationship("Sesja", back_populates="uzytkownik")
+
 
 class Sesja(Base):
     __tablename__ = "zbior_sesji"
@@ -47,13 +49,13 @@ class Sesja(Base):
     koniec_sesji = Column(String)
     czy_aktywna = Column(Boolean)
     dlugosc_trwania_w_s = Column(String)
+    uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow.id"))
 
     zbior_paczek_danych = relationship("PaczkaDanych", back_populates="sesja")
+    uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
     #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
-    #uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
 
     #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
-    #uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
 
 
 class PaczkaDanych(Base):

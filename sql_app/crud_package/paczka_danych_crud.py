@@ -38,7 +38,7 @@ def create_paczka_danych_dla_sesji(db: Session,
     return db_paczka_danych
 
 
-def delete_paczka_danych_crud(db: Session, paczka_danych_id: int):
+def delete_paczka_danych(db: Session, paczka_danych_id: int):
     result_str = ""
     try:
         obj_to_delete = db.query(models.PaczkaDanych).filter(models.PaczkaDanych.id == paczka_danych_id).first()

@@ -72,6 +72,20 @@ def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
     return db_sesja
 
 
+def create_sesja_dla_uzytkownika(uzytkownik_id: int, db: Session, sesja: sesja_schemas.SesjaCreateSchema):
+    # urzadzenie_id: int, uzytkownik_id: int):
+    db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
+                            start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
+                            koniec_sesji="trwa",
+                            czy_aktywna=True,
+                            dlugosc_trwania_w_s="trwa",
+                            uzytkownik_id=uzytkownik_id)  # , urzadzenie_id=urzadzenie_id, uzytkownik_id=uzytkownik_id)
+    db.add(db_sesja)
+    db.commit()
+    db.refresh(db_sesja)
+    return db_sesja
+
+
 def delete_sesja(db: Session, sesje_id: int):
     result_str = ""
     try:

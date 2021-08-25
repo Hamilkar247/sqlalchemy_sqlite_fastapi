@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
+
+from sql_app.schemas_package.sesja_schemas import SesjaSchema
 
 
 class UzytkownikBaseSchema(BaseModel):
@@ -17,9 +19,9 @@ class UzytkownikCreateSchema(UzytkownikBaseSchema):
     pass
 
 
-class Uzytkownik(UzytkownikBaseSchema):
+class UzytkownikSchema(UzytkownikBaseSchema):
     id: int
-    #zbior_sesji: List[Sesja] = []
+    zbior_sesji: List[SesjaSchema]
     #zbior_urzadzen: List[Urzadzenie] = []
 
     class Config:
