@@ -92,6 +92,8 @@ class WartoscPomiaruSensora(Base):
 #    numer_seryjny = Column(String)
 #
 #
+
+
 #class Sensor(Base):
 #    __tablename__ = "zbior_sensorow"
 #
@@ -107,3 +109,11 @@ class WartoscPomiaruSensora(Base):
 #
 #    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
 
+
+class DekoderStatusu(Base):
+    __tablename__ = "zbior_statusow"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kod = Column(String, unique=True)
+    liczba_dziesietna = Column(String, unique=True)
+    opis_kodu = Column(String)

@@ -54,9 +54,9 @@ def zakoncz_sesje(db: Session, sesja_id: int):
         return None
 
 
-def update_status_sesji_czy_aktywna(db: Session, sesja_id: int, nowa_wartosc_boolean: bool):
-    find_sesja = db.query(models.Sesja).filter(models.Sesja.id==sesja_id, models.Sesja.id==sesja_id).all()
-    find_sesja.update()
+#def update_status_sesji_czy_aktywna(db: Session, sesja_id: int, nowa_wartosc_boolean: bool):
+#    find_sesja = db.query(models.Sesja).filter(models.Sesja.id==sesja_id, models.Sesja.id==sesja_id).all()
+#    find_sesja.update()
 
 
 def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
