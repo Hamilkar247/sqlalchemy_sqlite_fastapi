@@ -3,6 +3,9 @@ from random import randrange
 import json
 
 
+# przyklad
+# {"sn": "AXZFS213", "wart": {"a": 3, "b": 4, "c": 3, "z": 3}, "kod": "0000000"}
+
 def generate_json_paczka():
     numery_seryjny = ["AXZFS213", "FWQ1000", "QW320D"]
     sn = numery_seryjny[randrange(0, 3)]
@@ -24,3 +27,5 @@ def generate_json_paczka():
     }
 
     return json.dumps(value)
+
+#print(generate_json_paczka())
