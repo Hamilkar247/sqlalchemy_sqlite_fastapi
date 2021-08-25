@@ -42,6 +42,25 @@ def send_curl_wartosc_pomiaru_sensora(id_paczki, litery_porzadkowe, wartosc):
     return output
 
 
+def get_aktywna_sesje():
+    bashCommand="""
+    curl -X 'GET' \
+    'http://127.0.0.1:8000/sesje/aktywne_sesje?skip=0&limit=1' \
+    -H 'accept: application/json'
+    """
+    #zwroc uwage powyzej ze dalem limit=1 przez co dostane w odpowiedzi tylko jedna aktywna sesje
+    stream = os.popen(bashCommand)
+    output = stream.read()
+    print("------------------")
+    print(output)
+    print(output[1:-1])
+    print("------------------")
+    print(output[1:-1])
+    data = json.loads(output[1:-1])
+    print(data['id'])
+    return int(data['id'])
+
+
 def dane_od_arka():
     json_arek_data = generator_paczek_danych_od_arka.generate_json_paczka()
     print(json_arek_data)
@@ -52,7 +71,8 @@ def dane_od_arka():
     # wydrukuj typ(?)
     #print("Type:", type(data))
 
-    id_sesji=5
+    id_sesji=get_aktywna_sesje()
+
     #paczka
     kod_statusu = data['kod']
     numer_seryjny = data['sn']
@@ -73,3 +93,4 @@ def dane_od_arka():
 
 
 dane_od_arka()
+
