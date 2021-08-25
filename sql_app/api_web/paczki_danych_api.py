@@ -50,7 +50,7 @@ async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)
     return db_paczek_danych
 
 
-@router.delete("/delete/id={paczka_danych_id}", response_description="Usunieto rekord o numerze id ...")
+@router.delete("/delete/id={paczka_danych_id}", response_description="Usuń rekord o numerze id ...")
 async def delete_id_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id
     result_str = paczka_danych_crud.delete_paczka_danych_crud(db, paczka_danych_id)
@@ -61,7 +61,7 @@ async def delete_id_paczke_danych(paczka_danych_id: int, db: Session = Depends(g
     return HTTPException(status_code=404, detail="Nie udało się usunąć paczki danych")
 
 
-@router.delete("/delete/all_records", response_description="Usunieto wszystkie rekordy")
+@router.delete("/delete/all_records", response_description="Usuń wszystkie paczki danych")
 async def delete_all_paczki_danych(db: Session = Depends(get_db)):
     result = paczka_danych_crud.delete_all_paczki(db)
     if result is not None:

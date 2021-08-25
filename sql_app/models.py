@@ -94,20 +94,28 @@ class WartoscPomiaruSensora(Base):
 #
 
 
-#class Sensor(Base):
-#    __tablename__ = "zbior_sensorow"
+class Sensor(Base):
+    __tablename__ = "zbior_sensorow"
+
+    id = Column(Integer, primary_key=True, index=True)
+    litery_porzadkowe = Column(String)
+    parametr = Column(String)
+    #kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
+    min = Column(String)
+    max = Column(String)
+    jednostka = Column(String)
+    status_sensora = Column(String)
+    #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
+
+    #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
+
+
+#class WspolczynnikKalibracji(Base):
+#    __tablename__ = "zbior_wspolczynnikow_kalibracji"
 #
 #    id = Column(Integer, primary_key=True, index=True)
-#    litery_porzadkowe = Column(String)
-#    parametr = Column(String)
-#    kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
-#    min = Column(String)
-#    max = Column(String)
-#    jednostka = Column(String)
-#    status_sensora = Column(String)
-#    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
-#
-#    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
+#    litery_porzadkowa = Column(String)
+#    wartosc = Column(String) # do konca nie wiem czy tu ma być float czy int czy cos innego - wiec tymczasowo string
 
 
 class DekoderStatusu(Base):
