@@ -12,7 +12,6 @@ def get_zbior_sensorow(db: Session, skip: int = 0, limit: int = 100):
 
 
 def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
-    litery_porzadkowe = sensor.litery_porzadkowe
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
                               min=sensor.min,
@@ -23,6 +22,21 @@ def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
     db.commit()
     db.refresh(db_sensor)
     return db_sensor
+
+
+def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas.SensorCreateSchema, id_urzadzenia: int):
+    db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
+                              parametr=sensor.parametr,
+                              min=sensor.min,
+                              max=sensor.max,
+                              jednostka=sensor.jednostka,
+                              status_sensora=sensor.status_sensora,
+                              urzadzenie_id=sensor.urzadzenie_id)
+    db.add(db_sensor)
+    db.commit()
+    db.refresh(db_sensor)
+    return db_sensor
+
 
 
 def delete_sensor(db: Session, sensor_id: int):

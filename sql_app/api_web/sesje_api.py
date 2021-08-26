@@ -77,11 +77,10 @@ async def delete_id_sesji(sesja_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id
     result_str = None
     result_str = sesja_crud.delete_sesja(db, sesja_id)
-    if result_str == "usunieto rekord o podanym id":
+    if result_str is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć sesji o id {sesja_id}"})
     elif result_str is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie ma sesji o id {sesja_id}"})
-    return HTTPException(status_code=404, detail="Nie udalo się usunąć rekordu sesji")
 
 
 @router.delete("/delete/all_records", response_description="Usunieto wszystkie rekordy")

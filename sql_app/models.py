@@ -80,16 +80,18 @@ class WartoscPomiaruSensora(Base):
     wartosc = Column(String)
     litery_porzadkowe = Column(String)
     paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
-
     paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
-#class Urzadzenie(Base):
-#    __tablename__ = "zbior_urzadzen"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    nazwa_urzadzenia = Column(String)
-#    numer_seryjny = Column(String)
+class Urzadzenie(Base):
+    __tablename__ = "zbior_urzadzen"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nazwa_urzadzenia = Column(String)
+    numer_seryjny = Column(String)
+    sensor_id = Column(Integer, ForeignKey("zbior_sensorow.id"))
+    zbior_sensorow = relationship("Sensor", back_populates="urzadzenie")
+    #zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
 
 
 class Sensor(Base):
@@ -103,9 +105,8 @@ class Sensor(Base):
     max = Column(String)
     jednostka = Column(String)
     status_sensora = Column(String)
-    #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
-
-    #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
+    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
 
 
 #class WspolczynnikKalibracji(Base):
