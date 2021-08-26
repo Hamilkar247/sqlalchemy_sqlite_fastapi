@@ -39,7 +39,7 @@ async def get_zbior_uzytkownikow(skip: int = 0, limit: int = 100, db: Session = 
 
 
 @router.get("/id={uzytkownik_id}", response_model=uzytkownik_schemas.UzytkownikSchema)
-async def read_uzytkownik(uzytkownik_id: int, db: Session = Depends(get_db)):
+async def get_uzytkownik(uzytkownik_id: int, db: Session = Depends(get_db)):
     db_uzytkownik = uzytkownik_crud.get_uzytkownik(db, uzytkownik_id=uzytkownik_id)
     if db_uzytkownik is None:
         raise HTTPException(status_code=404, detail="Użytkownik nie znaleziony")
@@ -54,13 +54,12 @@ async def delete_id_uzytkownika(uzytkownik_id: int, db: Session = Depends(get_db
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć użytkownika o id {uzytkownik_id}"})
     elif result_str is None:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie ma rekordu o id {uzytkownik_id}"})
-    return HTTPException(status_code=404, detail=f"Nie udało się usunąć użytkownika o id {uzytkownik_id}")
 
 
 @router.delete("/delete/all_records", response_description="Usunieto wszystkich uzytkowników")
 async def delete_all_uzytkownicy(db: Session = Depends(get_db)):
     result = uzytkownik_crud.delete_all_uzytkownicy(db)
     if result is not None:
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunieto wszystkie rekordy"})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunieto wszystkie sensory"})
     else:
-        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "nie usunieto rekordów z tabeli paczki danych "})
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "nie usunieto wszystkich sensorow"})

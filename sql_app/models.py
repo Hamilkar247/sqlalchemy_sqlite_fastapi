@@ -90,8 +90,6 @@ class WartoscPomiaruSensora(Base):
 #    id = Column(Integer, primary_key=True, index=True)
 #    nazwa_urzadzenia = Column(String)
 #    numer_seryjny = Column(String)
-#
-#
 
 
 class Sensor(Base):

@@ -8,8 +8,8 @@ class SensorBaseSchema(BaseModel):
     parametr: Optional[str] = None
     min: Optional[str] = None
     max: Optional[str] = None
-    jednostka = Optional[str]
-    status_sensora = Optional[str]
+    jednostka: Optional[str] = None
+    status_sensora: Optional[str] = None
 
 
 class SensorCreateSchema(SensorBaseSchema):

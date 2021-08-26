@@ -12,7 +12,6 @@ class UzytkownikBaseSchema(BaseModel):
     email: Optional[str] = None
     stanowisko: Optional[str] = None
     opis: Optional[str] = None
-    #id: int
 
 
 class UzytkownikCreateSchema(UzytkownikBaseSchema):

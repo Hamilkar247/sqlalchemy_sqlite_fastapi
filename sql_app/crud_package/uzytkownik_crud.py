@@ -36,7 +36,7 @@ def delete_uzytkownik(db: Session, uzytkownik_id: int):
         result_str = "usunięto użytkowniku o podanym id"
         return result_str
     except Exception as e:
-        result_str = "wystąpił błąd przy usuwaniu uzytkownika"+str(uzytkownik_id)
+        result_str = "wystąpił błąd przy usuwaniu uzytkownika "+str(uzytkownik_id)
         return result_str
 
 
@@ -45,6 +45,6 @@ def delete_all_uzytkownicy(db: Session):
     if wszystkie_rekordy is not None:
         wszystkie_rekordy.delete()
         db.commit()
-        return "usunieto"
+        return "usunieto wszystkich użytkowników"
     else:
         return None
