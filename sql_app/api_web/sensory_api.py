@@ -31,8 +31,8 @@ async def create_sensor(sensor: sensor_schemas.SensorCreateSchema, db: Session =
 
 
 @router.post("/id_urzadzenia={id_urzadzenia}", response_model=sensor_schemas.SensorSchema)
-async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchema, id_urzadzenia: int, db: Session = Depends(get_db)):
-    return sensor_crud.create_sensor_id_urzadzenia(db=db, sensor=sensor, id_urzadzenia=id_urzadzenia)
+async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchema, urzadzenie_id: int, db: Session = Depends(get_db)):
+    return sensor_crud.create_sensor_id_urzadzenia(db=db, sensor=sensor, id_urzadzenia=urzadzenie_id)
 
 
 @router.get("/", response_model=List[sensor_schemas.SensorSchema])

@@ -11,7 +11,7 @@ def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Urzadzenie).offset(skip).limit(limit).all()
 
 
-def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema):
+def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas):
     db_urzadzenie = models.Urzadzenie(
         nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
         numer_seryjny=urzadzenie.numer_seryjny

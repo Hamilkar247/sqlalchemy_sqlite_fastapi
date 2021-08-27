@@ -89,7 +89,6 @@ class Urzadzenie(Base):
     id = Column(Integer, primary_key=True, index=True)
     nazwa_urzadzenia = Column(String)
     numer_seryjny = Column(String)
-    sensor_id = Column(Integer, ForeignKey("zbior_sensorow.id"))
     zbior_sensorow = relationship("Sensor", back_populates="urzadzenie")
     #zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
 

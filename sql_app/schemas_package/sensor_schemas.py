@@ -18,7 +18,7 @@ class SensorCreateSchema(SensorBaseSchema):
 
 class SensorSchema(SensorBaseSchema):
     id: int
-    sensor_id: Optional[str] = None
+    urzadzenie_id: Optional[int] = None
     #zbior_wspolczynikow_kalibracyjnych: List[WspolczynikKalibracyjnySchema]
 
     class Config:

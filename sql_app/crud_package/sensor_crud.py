@@ -24,14 +24,14 @@ def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
     return db_sensor
 
 
-def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas.SensorCreateSchema, id_urzadzenia: int):
+def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas, id_urzadzenia: int):
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
                               min=sensor.min,
                               max=sensor.max,
                               jednostka=sensor.jednostka,
                               status_sensora=sensor.status_sensora,
-                              urzadzenie_id=sensor.urzadzenie_id)
+                              urzadzenie_id=id_urzadzenia)
     db.add(db_sensor)
     db.commit()
     db.refresh(db_sensor)
