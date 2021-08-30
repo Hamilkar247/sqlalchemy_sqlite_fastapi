@@ -28,6 +28,10 @@ def get_db():
 
 @router.post("/", response_model=dekoder_statusu_schemas.DekoderStatusuSchema)
 async def create_dekoder_statusu(dekoder_statusu: dekoder_statusu_schemas.DekoderStatusuCreateSchema, db: Session = Depends(get_db)):
+    db_dekoder_statusu = dekoder_statusu_crud.get_dekoder_statusu(db,
+                         kod=dekoder_statusu.kod, liczba_dziesietna=dekoder_statusu.liczba_dziesietna)
+    if db_dekoder_statusu:
+        raise HTTPException(status_code=400, detail="Pola kod statusu i liczba dziesietna są już użyte w tabeli !")
     return dekoder_statusu_crud.create_dekodera_statusu(db=db, dekoder_statusu=dekoder_statusu)
 
 

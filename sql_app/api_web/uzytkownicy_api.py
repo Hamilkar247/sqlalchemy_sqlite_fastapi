@@ -27,6 +27,9 @@ def get_db():
 
 @router.post("/", response_model=uzytkownik_schemas.UzytkownikSchema)
 async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema, db: Session = Depends(get_db)):
+    db_uzytkownicy = uzytkownik_crud.get_uzytkownik_by_email(db, email=uzytkownik.email)
+    if db_uzytkownicy:
+        raise HTTPException(status_code=400, detail="Na ten email jest już zarejestrowany uzytkownik")
     return uzytkownik_crud.create_uzytkownik(db=db, uzytkownik=uzytkownik)
 
 

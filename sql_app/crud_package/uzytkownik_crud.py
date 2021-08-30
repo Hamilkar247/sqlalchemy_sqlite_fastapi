@@ -11,6 +11,10 @@ def get_zbior_uzytkownikow(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Uzytkownik).offset(skip).limit(limit).all()
 
 
+def get_uzytkownik_by_email(db: Session, email: str):
+    return db.query(models.Uzytkownik).filter(models.Uzytkownik.email == email).first()
+
+
 def create_uzytkownik(db: Session, uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema):
     fake_hashed_password = uzytkownik.hashed_password + "notreallyhashed"
     db_uzytkownik = models.Uzytkownik(imie_nazwisko=uzytkownik.imie_nazwisko,

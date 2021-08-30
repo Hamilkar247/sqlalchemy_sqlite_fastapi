@@ -60,7 +60,6 @@ def zakoncz_sesje(db: Session, sesja_id: int):
 
 
 def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
-    # urzadzenie_id: int, uzytkownik_id: int):
     db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
                             start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
                             koniec_sesji="trwa",
@@ -73,13 +72,28 @@ def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
 
 
 def create_sesja_dla_uzytkownika(uzytkownik_id: int, db: Session, sesja: sesja_schemas.SesjaCreateSchema):
-    # urzadzenie_id: int, uzytkownik_id: int):
     db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
                             start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
                             koniec_sesji="trwa",
                             czy_aktywna=True,
                             dlugosc_trwania_w_s="trwa",
                             uzytkownik_id=uzytkownik_id)  # , urzadzenie_id=urzadzenie_id, uzytkownik_id=uzytkownik_id)
+    db.add(db_sesja)
+    db.commit()
+    db.refresh(db_sesja)
+    return db_sesja
+
+
+def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id, db: Session, sesja: sesja_schemas.SesjaCreateSchema):
+    db_sesja = models.Sesja(
+        nazwa_sesji=sesja.nazwa_sesji,
+        start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
+        koniec_sesji="trwa",
+        czy_aktywna=True,
+        dlugosc_trwania_w_s="trwa",
+        uzytkownik_id=uzytkownik_id,
+        urzadzenie_id=urzadzenie_id
+    )
     db.add(db_sesja)
     db.commit()
     db.refresh(db_sesja)
@@ -103,11 +117,11 @@ def delete_sesja(db: Session, sesje_id: int):
 
 
 def delete_all_sesje(db: Session):
-    wszystkie_rekordy = db.query(models.Sesja)
-    if wszystkie_rekordy is not None:
-        wszystkie_rekordy.delete()
+    db_wszystkie_rekordy = db.query(models.Sesja)
+    if db_wszystkie_rekordy is not None:
+        db_wszystkie_rekordy.delete()
         db.commit()
-        db.refresh()
+        #db.refresh(db_wszystkie_rekordy)
         return "usunieto"
     else:
         return None

@@ -31,12 +31,11 @@ class Uzytkownik(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     imie_nazwisko = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
     hashed_password = Column(String)
     stanowisko = Column(String)
     opis = Column(String)
     uprawnienia = Column(String)
-
     zbior_sesji = relationship("Sesja", back_populates="uzytkownik")
 
 
@@ -44,18 +43,16 @@ class Sesja(Base):
     __tablename__ = "zbior_sesji"
 
     id = Column(Integer, primary_key=True, index=True)
-    nazwa_sesji = Column(String)
+    nazwa_sesji = Column(String) #może unique?
     start_sesji = Column(String)
     koniec_sesji = Column(String)
     czy_aktywna = Column(Boolean)
     dlugosc_trwania_w_s = Column(String)
     uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow.id"))
-
-    zbior_paczek_danych = relationship("PaczkaDanych", back_populates="sesja")
+    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
     uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
-    #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
-
-    #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
+    zbior_paczek_danych = relationship("PaczkaDanych", back_populates="sesja")
 
 
 class PaczkaDanych(Base):
@@ -87,10 +84,11 @@ class Urzadzenie(Base):
     __tablename__ = "zbior_urzadzen"
 
     id = Column(Integer, primary_key=True, index=True)
-    nazwa_urzadzenia = Column(String)
-    numer_seryjny = Column(String)
+    nazwa_urzadzenia = Column(String, unique=True)
+    # nie jestem pewien czy powinno być unique czy nie
+    numer_seryjny = Column(String, unique=True)
     zbior_sensorow = relationship("Sensor", back_populates="urzadzenie")
-    #zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
+    zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
 
 
 class Sensor(Base):
@@ -121,5 +119,5 @@ class DekoderStatusu(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     kod = Column(String, unique=True)
-    liczba_dziesietna = Column(String, unique=True)
+    liczba_dziesietna = Column(Integer, unique=True)
     opis_kodu = Column(String)

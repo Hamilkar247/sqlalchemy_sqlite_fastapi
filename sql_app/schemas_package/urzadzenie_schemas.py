@@ -3,6 +3,7 @@ from typing import Optional, List
 from pydantic import BaseModel
 
 from sql_app.schemas_package.sensor_schemas import SensorSchema
+from sql_app.schemas_package.sesja_schemas import SesjaSchema
 
 
 class UrzadzenieBaseSchema(BaseModel):
@@ -16,8 +17,8 @@ class UrzadzenieCreateSchema(UrzadzenieBaseSchema):
 
 class UrzadzenieSchema(UrzadzenieBaseSchema):
     id: int
-    #zbior_sesji: List[SesjaSchema]
-    zbior_sensorow: List[SensorSchema]
+    zbior_sensorow: List[SensorSchema] = None
+    zbior_sesji: List[SesjaSchema] = None
 
     class Config:
         orm_mode = True

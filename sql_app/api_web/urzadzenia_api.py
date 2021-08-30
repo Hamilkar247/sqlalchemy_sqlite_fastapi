@@ -27,6 +27,11 @@ def get_db():
 
 @router.post("/", response_model=urzadzenie_schemas.UrzadzenieSchema)
 async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema, db: Session = Depends(get_db)):
+    db_urzadzenia = urzadzenie_crud.get_urzadzenie(db,
+                                    nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
+                                    numer_seryjny=urzadzenie.numer_seryjny)
+    if db_urzadzenia:
+        raise HTTPException(status_code=400, detail="Pola 'nazwa_urzadzenia' i 'numer_seryjny' powinny być unikalne !")
     return urzadzenie_crud.create_urzadzenie(db=db, urzadzenie=urzadzenie)
 
 

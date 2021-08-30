@@ -26,19 +26,30 @@ def get_db():
         db.close()
 
 
-@router.post("/id_uzytkownika={uzytkownik_id}", response_model=sesja_schemas.SesjaSchema)
-async def create_sesja(uzytkownik_id: int, sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.create_sesja_dla_uzytkownika(uzytkownik_id=uzytkownik_id, db=db, sesja=sesja)
+@router.post("/", response_model=sesja_schemas.SesjaCreateSchema)
+async def create_sesja(sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.create_sesja(db=db, sesja=sesja)
     if db_sesja is None:
         raise HTTPException(status_code=404, detail="Nie udało się dodać nowerj sesji")
     return db_sesja
 
 
-@router.post("/", response_model=sesja_schemas.SesjaSchema)
-async def create_sesja(sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.create_sesja(db=db, sesja=sesja)
+@router.post("/id_uzytkownika={uzytkownik_id}", response_model=sesja_schemas.SesjaSchema)
+async def create_sesja_id_uzytkownik(uzytkownik_id: int, sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.create_sesja_dla_uzytkownika(uzytkownik_id=uzytkownik_id, db=db, sesja=sesja)
     if db_sesja is None:
-        raise HTTPException(status_code=404, detail="Nie udało się dodać nowerj sesji")
+        raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
+    return db_sesja
+
+
+@router.post("/id_uzytkownika={uzytkownik_id}/id_urzadzenia={urzadzenie_id}", response_model=sesja_schemas.SesjaSchema)
+async def create_sesja_id_uzytkownik_id_urzadzenie(urzadzenie_id: int, uzytkownik_id: int, sesja: sesja_schemas.SesjaCreateSchema,
+                                                   db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id=urzadzenie_id,
+                                                                  uzytkownik_id=uzytkownik_id,
+                                                                  db=db, sesja=sesja)
+    if db_sesja is None:
+        raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
     return db_sesja
 
 
@@ -69,7 +80,7 @@ async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
     if zakonczona_sesja is None:
         raise HTTPException(status_code=404, detail="Nie udało się zakończyć sesje")
     else:
-        return zakoncz_sesje
+        return zakonczona_sesja
 
 
 @router.delete("/delete/id={sesja_id}", response_description="Usunieto sesje o numerze id ...")

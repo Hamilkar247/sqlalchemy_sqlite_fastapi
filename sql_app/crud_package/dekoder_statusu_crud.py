@@ -1,6 +1,13 @@
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from sql_app import models
 from sql_app.schemas_package import dekoder_statusu_schemas
+
+
+#pierwszy napotkany!
+def get_dekoder_statusu(db: Session, kod: str, liczba_dziesietna: str):
+    return db.query(models.DekoderStatusu).filter(or_(models.DekoderStatusu.kod == kod,
+                            models.DekoderStatusu.liczba_dziesietna == liczba_dziesietna)).first()
 
 
 def get_zbior_dekoderow_statusu(db: Session, skip: int = 0, limit: int = 100):

@@ -1,17 +1,26 @@
+from operator import or_
+
 from sqlalchemy.orm import Session
 from sql_app import models
 from sql_app.schemas_package import sensor_schemas, urzadzenie_schemas
 
 
+#zwraca pierwszy napotkane urzadzenie
 def get_urzadzenie(db: Session, urzadzenie_id: int):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
+
+
+#zwraca pierwsze napotkane urządzenie
+def get_urzadzenie(db: Session, nazwa_urzadzenia: str, numer_seryjny: str):
+    return db.query(models.Urzadzenie).filter(or_(models.Urzadzenie.nazwa_urzadzenia == nazwa_urzadzenia,
+                                        models.Urzadzenie.numer_seryjny == numer_seryjny)).first()
 
 
 def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Urzadzenie).offset(skip).limit(limit).all()
 
 
-def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas):
+def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema):
     db_urzadzenie = models.Urzadzenie(
         nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
         numer_seryjny=urzadzenie.numer_seryjny
