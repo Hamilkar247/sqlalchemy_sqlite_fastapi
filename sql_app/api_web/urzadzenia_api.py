@@ -27,9 +27,7 @@ def get_db():
 
 @router.post("/", response_model=urzadzenie_schemas.UrzadzenieSchema)
 async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema, db: Session = Depends(get_db)):
-    db_urzadzenia = urzadzenie_crud.get_urzadzenie(db,
-                                    nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
-                                    numer_seryjny=urzadzenie.numer_seryjny)
+    db_urzadzenia = urzadzenie_crud.get_urzadzenie_numer_seryjny(db, numer_seryjny=urzadzenie.numer_seryjny)
     if db_urzadzenia:
         raise HTTPException(status_code=400, detail="Pola 'nazwa_urzadzenia' i 'numer_seryjny' powinny być unikalne !")
     return urzadzenie_crud.create_urzadzenie(db=db, urzadzenie=urzadzenie)
@@ -44,10 +42,18 @@ async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depe
 
 
 @router.get("/id={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieSchema)
-async def get_urzadzenia(urzadzenie_id: int, db: Session = Depends(get_db)):
-    db_urzadzenie = urzadzenie_crud.get_urzadzenie(db, urzadzenie_id=urzadzenie_id)
+async def get_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
-        raise HTTPException(status_code=404, detail="Nie znaleziono sensora o tym id")
+        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym id")
+    return db_urzadzenie
+
+
+@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)
+async def get_urzadzenie_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_numer_seryjny(db, numer_seryjny=numer_seryjny)
+    if db_urzadzenie is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym numerze seryjny")
     return db_urzadzenie
 
 

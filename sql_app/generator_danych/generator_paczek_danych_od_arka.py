@@ -28,4 +28,4 @@ def generate_json_paczka():
 
     return json.dumps(value)
 
-#print(generate_json_paczka())
+print(generate_json_paczka())

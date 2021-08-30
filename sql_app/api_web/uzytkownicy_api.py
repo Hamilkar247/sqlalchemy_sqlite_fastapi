@@ -29,7 +29,9 @@ def get_db():
 async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema, db: Session = Depends(get_db)):
     db_uzytkownicy = uzytkownik_crud.get_uzytkownik_by_email(db, email=uzytkownik.email)
     if db_uzytkownicy:
-        raise HTTPException(status_code=400, detail="Na ten email jest już zarejestrowany uzytkownik")
+        detail = "Na ten email jest już zarejestrowany uzytkownik!"
+        print(detail)
+        raise HTTPException(status_code=400, detail=detail)
     return uzytkownik_crud.create_uzytkownik(db=db, uzytkownik=uzytkownik)
 
 

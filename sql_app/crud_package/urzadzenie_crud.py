@@ -6,14 +6,24 @@ from sql_app.schemas_package import sensor_schemas, urzadzenie_schemas
 
 
 #zwraca pierwszy napotkane urzadzenie
-def get_urzadzenie(db: Session, urzadzenie_id: int):
+def get_urzadzenie_id(db: Session, urzadzenie_id: int):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
 
 
 #zwraca pierwsze napotkane urządzenie
-def get_urzadzenie(db: Session, nazwa_urzadzenia: str, numer_seryjny: str):
+def get_urzadzenie_numer_seryjny(db: Session, numer_seryjny: str):
+    return db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).first()
+
+
+#zwraca pierwsze napotkane urządzenie
+def get_urzadzenie_id_and_numer_seryjny(db: Session, nazwa_urzadzenia: str, numer_seryjny: str):
     return db.query(models.Urzadzenie).filter(or_(models.Urzadzenie.nazwa_urzadzenia == nazwa_urzadzenia,
                                         models.Urzadzenie.numer_seryjny == numer_seryjny)).first()
+
+
+#zwraca pierwsze napotkane urządzenie
+def get_urzadzenia_id(db: Session, numer_seryjny: str):
+    return db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).first()
 
 
 def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
