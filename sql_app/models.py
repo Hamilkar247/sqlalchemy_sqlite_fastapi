@@ -31,29 +31,28 @@ class Uzytkownik(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     imie_nazwisko = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
     hashed_password = Column(String)
     stanowisko = Column(String)
     opis = Column(String)
     uprawnienia = Column(String)
+    zbior_sesji = relationship("Sesja", back_populates="uzytkownik")
 
 
 class Sesja(Base):
     __tablename__ = "zbior_sesji"
 
     id = Column(Integer, primary_key=True, index=True)
-    nazwa_sesji = Column(String)
+    nazwa_sesji = Column(String) #może unique?
     start_sesji = Column(String)
     koniec_sesji = Column(String)
     czy_aktywna = Column(Boolean)
     dlugosc_trwania_w_s = Column(String)
-
+    uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow.id"))
+    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
+    uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
     zbior_paczek_danych = relationship("PaczkaDanych", back_populates="sesja")
-    #urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen"))
-    #uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow"))
-
-    #urzadzenie = relationship("Urzadzenie", back_populates="zbior_sesji")
-    #uzytkownik = relationship("Uzytkownik", back_populates="zbior_sesji")
 
 
 class PaczkaDanych(Base):
@@ -78,30 +77,47 @@ class WartoscPomiaruSensora(Base):
     wartosc = Column(String)
     litery_porzadkowe = Column(String)
     paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
-
     paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
-#class Urzadzenie(Base):
-#    __tablename__ = "zbior_urzadzen"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    nazwa_urzadzenia = Column(String)
-#    numer_seryjny = Column(String)
-#
-#
-#class Sensor(Base):
-#    __tablename__ = "zbior_sensorow"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    litery_porzadkowe = Column(String)
-#    parametr = Column(String)
-#    kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
-#    min = Column(String)
-#    max = Column(String)
-#    jednostka = Column(String)
-#    status_sensora = Column(String)
-#    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
-#
-#    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
+class Urzadzenie(Base):
+    __tablename__ = "zbior_urzadzen"
 
+    id = Column(Integer, primary_key=True, index=True)
+    nazwa_urzadzenia = Column(String, unique=True)
+    # nie jestem pewien czy powinno być unique czy nie
+    numer_seryjny = Column(String, unique=True)
+    zbior_sensorow = relationship("Sensor", back_populates="urzadzenie")
+    zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
+
+
+class Sensor(Base):
+    __tablename__ = "zbior_sensorow"
+
+    id = Column(Integer, primary_key=True, index=True)
+    litery_porzadkowe = Column(String)
+    parametr = Column(String)
+    #kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
+    min = Column(String)
+    max = Column(String)
+    jednostka = Column(String)
+    status_sensora = Column(String)
+    urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
+    urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
+
+
+#class WspolczynnikKalibracji(Base):
+#    __tablename__ = "zbior_wspolczynnikow_kalibracji"
+#
+#    id = Column(Integer, primary_key=True, index=True)
+#    litery_porzadkowa = Column(String)
+#    wartosc = Column(String) # do konca nie wiem czy tu ma być float czy int czy cos innego - wiec tymczasowo string
+
+
+class DekoderStatusu(Base):
+    __tablename__ = "zbior_statusow"
+
+    id = Column(Integer, primary_key=True, index=True)
+    kod = Column(String, unique=True)
+    liczba_dziesietna = Column(Integer, unique=True)
+    opis_kodu = Column(String)
