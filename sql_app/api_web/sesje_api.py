@@ -73,6 +73,12 @@ async def zwroc_zbior_sesji_aktywne(skip: int = 0, limit: int = 100, db: Session
     return sesje
 
 
+@router.get("/aktywne_sesje/numer_seryjny_urzadzenia={numer_seryjny}", response_model=sesja_schemas.SesjaSchema)
+async def get_aktywna_sesje_urzadzenia(numer_seryjny: str, db: Session = Depends(get_db)):
+    sesja = sesja_crud.get_sesja(db, numer_seryjny)
+    return sesja
+
+
 @router.put("/id={sesja_id}", response_description="Zakończ działanie sesji")
 async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
     #jesli znajdzie aktywna sesje pod tym id, zakonczy je, jeśli takiej nie bedzie

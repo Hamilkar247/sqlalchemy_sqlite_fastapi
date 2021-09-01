@@ -17,6 +17,12 @@ def zwroc_aktywne_sesje(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Sesja).filter(models.Sesja.czy_aktywna==True).offset(skip).limit(limit).all()
 
 
+def get_aktywna_sesje_urzadzenia(db: Session, numer_seryjny: str):
+    return db.query(models.Sesja).filter(models.Sesja.czy_aktywna==True).\
+        filter(models.Sesja.urzadzenie_id == models.Urzadzenie.id).\
+        filter(models.Urzadzenie.numer_seryjny == numer_seryjny)
+
+
 def zakoncz_sesje(db: Session, sesja_id: int):
     find_sesje = db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True, models.Sesja.id == sesja_id).first()
     #print(find_sesje.start_sesji)

@@ -42,10 +42,10 @@ def send_curl_wartosc_pomiaru_sensora(id_paczki, litery_porzadkowe, wartosc):
     return output
 
 
-def get_aktywna_sesje():
+def get_aktywna_sesje_urzadzenia(numer_seryjny):
     bashCommand="""
     curl -X 'GET' \
-    'http://127.0.0.1:8000/sesje/aktywne_sesje?skip=0&limit=1' \
+    'http://127.0.0.1:8000/sesje/aktywne_sesje/numer_seryjny_urzadzenia=FWQ10100' \
     -H 'accept: application/json'
     """
     #zwroc uwage powyzej ze dalem limit=1 przez co dostane w odpowiedzi tylko jedna aktywna sesje
@@ -71,11 +71,13 @@ def dane_od_arka():
     # wydrukuj typ(?)
     #print("Type:", type(data))
 
-    id_sesji=get_aktywna_sesje()
+
+    numer_seryjny = data['sn']
+    id_sesji=get_aktywna_sesje_urzadzenia(numer_seryjny)
 
     #paczka
     kod_statusu = data['kod']
-    numer_seryjny = data['sn']
+
     czas_paczki = str(datetime.now().strftime("%d/%m/%y %H:%M:%S"))
     wart = data["wart"]
     print(kod_statusu)

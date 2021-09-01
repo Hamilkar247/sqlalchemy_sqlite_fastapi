@@ -11,6 +11,15 @@ def get_zbior_paczek_danych(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.PaczkaDanych).offset(skip).limit(limit).all()
 
 
+def get_paczka_danych_dla_urzadzenia(numer_seryjny: str, db: Session):
+    # zwraca najwiekszy indeks dla danego numeru seryjnego
+    return db.query(models.PaczkaDanych).filter(
+        models.PaczkaDanych.numer_seryjny == numer_seryjny).\
+        order_by(None).\
+        order_by(
+        models.PaczkaDanych.id.desc()).first()
+
+
 def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchema):
     db_paczka_danych = models.PaczkaDanych(
         czas_paczki=paczka_danych.czas_paczki,

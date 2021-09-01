@@ -50,6 +50,14 @@ async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)
     return db_paczek_danych
 
 
+@router.get("/numer_seryjny_urzadzenia={numer_seryjny}", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+async def get_ostatnia_paczke_danych(numer_seryjny: str, db: Session = Depends(get_db)):
+    db_paczek_danych = paczka_danych_crud.get_ostatnia_paczka_danych(numer_seryjny=numer_seryjny)
+    if db_paczek_danych is None:
+        raise HTTPException(status_code=404, detail="Dla tego urządzenia nie znaleziono paczek danych")
+    return db_paczek_danych
+
+
 @router.delete("/delete/id={paczka_danych_id}", response_description="Usuń rekord o numerze id ...")
 async def delete_id_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id
