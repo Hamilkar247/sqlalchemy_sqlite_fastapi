@@ -23,3 +23,17 @@ class PaczkaDanychSchema(PaczkaDanychBaseSchema):
 
     class Config:
         orm_mode = True
+
+
+class PaczkaDanychSchemaNested(PaczkaDanychSchema):
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
+
+
+class UrzadzeniePaczkiDanych(BaseModel):
+    id: int
+    numer_seryjny: str
+    nazwa_urzadzenia: str
+
+    class Config:
+        orm_mode = True
+

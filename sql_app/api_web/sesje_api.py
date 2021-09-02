@@ -62,7 +62,13 @@ async def get_sesja(sesja_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[sesja_schemas.SesjaSchema])
-async def get_zbior_sesja(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def get_zbior_sesji(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
+    return sesje
+
+
+@router.get("/przynalezne_zbiory", response_model=List[sesja_schemas.SesjaSchemaNested])
+async def get_zbior_sesji_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
     return sesje
 
@@ -73,9 +79,15 @@ async def zwroc_zbior_sesji_aktywne(skip: int = 0, limit: int = 100, db: Session
     return sesje
 
 
+@router.get("/aktywna_sesja/urzadzenie_id={urzadzenie_id}", response_model=sesja_schemas.SesjaSchema)
+async def get_aktywna_sesja_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
+    sesja = sesja_crud.get_aktywna_sesja_urzadzenia_id(db, urzadzenie_id)
+    return sesja
+
+
 @router.get("/aktywne_sesje/numer_seryjny_urzadzenia={numer_seryjny}", response_model=sesja_schemas.SesjaSchema)
-async def get_aktywna_sesje_urzadzenia(numer_seryjny: str, db: Session = Depends(get_db)):
-    sesja = sesja_crud.get_sesja(db, numer_seryjny)
+async def get_aktywna_sesje_urzadzenia_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
+    sesja = sesja_crud.get_aktywna_sesje_urzadzenia__num_ser(db, numer_seryjny)
     return sesja
 
 

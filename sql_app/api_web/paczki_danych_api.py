@@ -4,7 +4,7 @@ from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from starlette.responses import JSONResponse
 
-from sql_app.schemas_package import paczka_danych_schemas
+from sql_app.schemas_package import paczka_danych_schemas, urzadzenie_schemas
 from sql_app.crud_package import paczka_danych_crud
 from sql_app.database import SessionLocal
 from sqlalchemy.orm import Session
@@ -42,6 +42,12 @@ async def get_zbior_paczek_danych(skip: int = 0, limit: int = 100, db: Session =
     return paczki_danych
 
 
+@router.get("/przynalezne_zbiory", response_model=paczka_danych_schemas.PaczkaDanychSchemaNested)
+async def get_zbior_paczek_danych_z_zagniezdzeniami(db: Session = Depends(get_db)):
+    paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db)
+    return paczki_danych
+
+
 @router.get("/id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychSchema)
 async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_paczka_danych(db, paczka_danych_id=paczka_danych_id)
@@ -50,9 +56,18 @@ async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)
     return db_paczek_danych
 
 
+@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)#paczka_danych_schemas.UrzadzeniePaczkiDanych)
+async def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(numer_seryjny: str, db: Session):
+    dane = paczka_danych_crud.get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db, numer_seryjny=numer_seryjny)
+    if dane is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o podanym numerze seryjnym.")
+    return dane
+
+
 @router.get("/numer_seryjny_urzadzenia={numer_seryjny}", response_model=paczka_danych_schemas.PaczkaDanychSchema)
 async def get_ostatnia_paczke_danych(numer_seryjny: str, db: Session = Depends(get_db)):
-    db_paczek_danych = paczka_danych_crud.get_ostatnia_paczka_danych(numer_seryjny=numer_seryjny)
+    db_paczek_danych = paczka_danych_crud.get_paczka_danych_dla_urzadzenia(db=db, numer_seryjny=numer_seryjny)
+    print(db_paczek_danych)
     if db_paczek_danych is None:
         raise HTTPException(status_code=404, detail="Dla tego urządzenia nie znaleziono paczek danych")
     return db_paczek_danych

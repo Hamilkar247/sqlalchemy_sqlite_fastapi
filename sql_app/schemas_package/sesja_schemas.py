@@ -15,13 +15,15 @@ class SesjaCreateSchema(SesjaBaseSchema):
 
 class SesjaSchema(SesjaBaseSchema):
     id: int
+    urzadzenie_id: int = None
+    uzytkownik_id: int = None
     czy_aktywna: Optional[bool] = None
     start_sesji: Optional[str] = None
     koniec_sesji: Optional[str] = None
-    dlugosc_trwania_w_s: Optional[str] = None
-    zbior_paczek_danych: List[PaczkaDanychSchema] = None
-    urzadzenia_id: int = None
-    uzytkownik_id: int = None
 
     class Config:
         orm_mode = True
+
+
+class SesjaSchemaNested(SesjaBaseSchema):
+    zbior_paczek_danych: List[PaczkaDanychSchema] = None

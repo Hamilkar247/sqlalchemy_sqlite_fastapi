@@ -1,23 +1,30 @@
 from sqlalchemy.orm import Session
+from sql_app.models import PaczkaDanych
 from sql_app import models
 from sql_app.schemas_package import paczka_danych_schemas
 
 
 def get_paczka_danych(db: Session, paczka_danych_id: int):
-    return db.query(models.PaczkaDanych).filter(models.PaczkaDanych.id == paczka_danych_id).first()
+    return db.query(PaczkaDanych).filter(PaczkaDanych.id == paczka_danych_id).first()
 
 
 def get_zbior_paczek_danych(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.PaczkaDanych).offset(skip).limit(limit).all()
+    return db.query(PaczkaDanych).offset(skip).limit(limit).all()
 
 
-def get_paczka_danych_dla_urzadzenia(numer_seryjny: str, db: Session):
+def get_paczka_danych_dla_urzadzenia(db: Session, numer_seryjny: str):
     # zwraca najwiekszy indeks dla danego numeru seryjnego
-    return db.query(models.PaczkaDanych).filter(
-        models.PaczkaDanych.numer_seryjny == numer_seryjny).\
+    return db.query(PaczkaDanych).filter(
+        PaczkaDanych.numer_seryjny == numer_seryjny).\
         order_by(None).\
-        order_by(
-        models.PaczkaDanych.id.desc()).first()
+        order_by(PaczkaDanych.id.desc()).first()
+
+
+def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db: Session, numer_seryjny: str):
+    #dane = db.query(models.Urzadzenie.id, models.Urzadzenie.numer_seryjny, models.Urzadzenie.nazwa_urzadzenia).filter(
+    #    models.PaczkaDanych.numer_seryjny == models.Urzadzenie.numer_seryjny).all()
+    dane = db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny==numer_seryjny)
+    return dane
 
 
 def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchema):

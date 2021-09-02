@@ -73,7 +73,7 @@ def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
         return None
 
 
-#{"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
+# {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def tworzenie_urzadzenia_i_sensorow():
     numer_seryjny="FWQ10100"
     nazwa_urzadzenia="bomilwkar"

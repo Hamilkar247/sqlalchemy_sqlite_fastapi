@@ -39,7 +39,15 @@ async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchem
 async def get_zbior_uzytkownikow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
     if uzytkownicy is None:
-        raise HTTPException(status_code=404, detail="Użytkownik nie znaleziony")
+        raise HTTPException(status_code=404, detail="Użytkowników nie znaleziony")
+    return uzytkownicy
+
+
+@router.get("/przynalezne_zbiory", response_model=List[uzytkownik_schemas.UzytkownikSchemaNested])
+async def get_zbior_uzytkownikow_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
+    if uzytkownicy is None:
+        raise HTTPException(status_code=404, detail="Użytkownikóœ nie znaleziony")
     return uzytkownicy
 
 

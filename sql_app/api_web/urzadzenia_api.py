@@ -41,8 +41,24 @@ async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depe
     return zbior_urzadzen
 
 
+@router.get("/przynalezne_zbiory", response_model=List[urzadzenie_schemas.UrzadzenieSchemaNested])
+async def get_zbior_urzadzen_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
+    if zbior_urzadzen is None:
+        raise HTTPException(status_code=404, detail="Urzadzen nie znaleziono")
+    return zbior_urzadzen
+
+
 @router.get("/id={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieSchema)
 async def get_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
+    if db_urzadzenie is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym id")
+    return db_urzadzenie
+
+
+@router.get("/id={urzadzenie_id}/przynalezne_zbiory", response_model=urzadzenie_schemas.UrzadzenieSchemaNested)
+async def get_urzadzenia_id_z_zagniezdzeniami(urzadzenie_id: int, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
         raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym id")

@@ -17,8 +17,13 @@ class UrzadzenieCreateSchema(UrzadzenieBaseSchema):
 
 class UrzadzenieSchema(UrzadzenieBaseSchema):
     id: int
-    zbior_sensorow: List[SensorSchema] = None
-    zbior_sesji: List[SesjaSchema] = None
+    #zbior_sensorow: List[SensorSchema] = None
+    #zbior_sesji: List[SesjaSchema] = None
 
     class Config:
         orm_mode = True
+
+
+class UrzadzenieSchemaNested(UrzadzenieBaseSchema):
+    zbior_sensorow: List[SensorSchema] = None
+    zbior_sesji: List[SesjaSchema] = None
