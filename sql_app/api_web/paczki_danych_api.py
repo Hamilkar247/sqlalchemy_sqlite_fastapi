@@ -73,10 +73,20 @@ async def get_ostatnia_paczke_danych(numer_seryjny: str, db: Session = Depends(g
     return db_paczek_danych
 
 
+@router.put("/update/{item_id}", response_description="zupdatuj paczkę danych")
+async def zupdatuj_paczka_danych_by_item_id(paczka_danych_id: int, db: Session = Depends(get_db)):
+    update_paczka_danych = paczka_danych_crud.zupdatuj_paczke_danych_by_item_id(db, paczka_danych_id)
+    print(update_paczka_danych)
+    if update_paczka_danych is None:
+        raise HTTPException(status_code=404, detail="Nie ma paczki o tym item_id")
+    else:
+        return update_paczka_danych
+
+
 @router.delete("/delete/id={paczka_danych_id}", response_description="Usuń rekord o numerze id ...")
 async def delete_id_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id
-    result_str = paczka_danych_crud.delete_paczka_danych_crud(db, paczka_danych_id)
+    result_str = paczka_danych_crud.delete_paczka_danych(db, paczka_danych_id)
     if result_str == "usunieto rekord o podanym id":
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć rekord o id {paczka_danych_id}"})
     elif result_str is None:

@@ -140,6 +140,8 @@ def dane_od_arka():
             litery_porzadkowe = key
             wartosc = value
             send_curl_wartosc_pomiaru_sensora(id_paczki, litery_porzadkowe, wartosc)
+    else:
+        print("Nie ma id_urzadzenia")
 
 
 dane_od_arka()

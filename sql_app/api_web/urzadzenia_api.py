@@ -86,7 +86,7 @@ async def delete_id_urzadzenie(urzadzenie_id: int, db: Session = Depends(get_db)
 async def delete_all_urzadzenia(db: Session = Depends(get_db)):
     result = urzadzenie_crud.delete_all_urzadzenia(db)
     if result is not None:
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunięto wszystkie sesje"})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunięto wszystkie urzadzenia"})
     else:
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "nie udało się usunąć wszystkich urządzeń"})
 

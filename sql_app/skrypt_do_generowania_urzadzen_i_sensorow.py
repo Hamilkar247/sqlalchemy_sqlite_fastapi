@@ -2,7 +2,7 @@ import json
 import os
 
 
-#{"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
+# {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
     bashCommand="""\
     curl -X 'POST' \
@@ -75,7 +75,7 @@ def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
 
 # {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def tworzenie_urzadzenia_i_sensorow():
-    numer_seryjny="FWQ10100"
+    numer_seryjny="FWQ1000"
     nazwa_urzadzenia="bomilwkar"
     czy_istnieje_urzadzenie_o_tym_numerze_seryjnym = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
     print(f"czy istnieje już takie urzadzenie? {czy_istnieje_urzadzenie_o_tym_numerze_seryjnym}")

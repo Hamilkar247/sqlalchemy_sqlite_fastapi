@@ -64,7 +64,8 @@ class PaczkaDanych(Base):
     numer_seryjny = Column(String)
     sesja_id = Column(Integer, ForeignKey("zbior_sesji.id"))
     #back_populates - patrz nazwa atrybutow w WartoscPomiaruSensora
-    zbior_wartosci_pomiarow_sensorow = relationship("WartoscPomiaruSensora", back_populates="paczka_danych")
+    zbior_wartosci_pomiarow_sensorow = relationship("WartoscPomiaruSensora",
+            back_populates="paczka_danych", passive_deletes=True)
     sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
 #    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
@@ -76,7 +77,9 @@ class WartoscPomiaruSensora(Base):
     id = Column(Integer, primary_key=True, index=True)
     wartosc = Column(String)
     litery_porzadkowe = Column(String)
-    paczka_danych_id = Column(Integer, ForeignKey("zbior_paczek_danych.id"))
+    paczka_danych_id = Column(Integer, ForeignKey(
+        "zbior_paczek_danych.id", ondelete="CASCADE"), nullable=False
+    )
     paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
