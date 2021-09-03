@@ -22,6 +22,15 @@ def get_paczka_danych_dla_urzadzenia(db: Session, numer_seryjny: str):
         order_by(PaczkaDanych.id.desc()).first()
 
 
+def get_paczka_danych_dla_urzadzenia_bez_sesji(db: Session, numer_seryjny: str):
+    sesja_id=None
+    # zwraca najwiekszy indeks dla danego numeru seryjnego
+    return db.query(PaczkaDanych).filter(
+        PaczkaDanych.numer_seryjny == numer_seryjny).filter(
+        PaczkaDanych.sesja_id == sesja_id
+        ).first()
+
+
 def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db: Session, numer_seryjny: str):
     # dane = db.query(models.Urzadzenie.id, models.Urzadzenie.numer_seryjny, models.Urzadzenie.nazwa_urzadzenia).filter(
     #    models.PaczkaDanych.numer_seryjny == models.Urzadzenie.numer_seryjny).all()
@@ -57,14 +66,10 @@ def create_paczka_danych_dla_sesji(db: Session,
 
 
 def zupdatuj_paczke_danych_by_item_id(db: Session, paczka_danych_id: int):
-    find_paczke = db.query(PaczkaDanych).filter(
-        PaczkaDanych.id == paczka_danych_id).update(
-        {}
-    )
+    find_paczke = db.query(PaczkaDanych).filter()
 
     if find_paczke is not None:
-        now = datetime.now()
-        print(f"now")
+        print("ahoj!")
 
 
 def delete_paczka_danych(db: Session, paczka_danych_id: int):

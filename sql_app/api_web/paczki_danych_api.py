@@ -56,6 +56,15 @@ async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)
     return db_paczek_danych
 
 
+@router.get("/numer_seryjny={numer_seryjny}/id_sesji=null", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+async def get_paczke_danych_urzadzenia_bez_sesji(numer_seryjny: str, db: Session = Depends(get_db)):
+    id_sesji = None
+    db_paczek_danych = paczka_danych_crud.get_paczka_danych_dla_urzadzenia_bez_sesji(db, numer_seryjny)
+    if db_paczek_danych is None:
+        raise HTTPException(status_code=404, detail="Paczka danych nie znaleziony")
+    return db_paczek_danych
+
+
 #@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)#paczka_danych_schemas.UrzadzeniePaczkiDanych)
 #async def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(numer_seryjny: str, db: Session):
 #    dane = paczka_danych_crud.get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db, numer_seryjny=numer_seryjny)
