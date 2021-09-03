@@ -19,7 +19,7 @@ class PaczkaDanychSchema(PaczkaDanychBaseSchema):
     id: int
     #wartosci_pomiaru_sensorow_id: str
     sesja_id: Optional[str] = None
-    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
+    #zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
 
     class Config:
         orm_mode = True

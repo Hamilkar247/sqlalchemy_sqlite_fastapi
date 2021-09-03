@@ -56,12 +56,12 @@ async def get_paczke_danych(paczka_danych_id: int, db: Session = Depends(get_db)
     return db_paczek_danych
 
 
-@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)#paczka_danych_schemas.UrzadzeniePaczkiDanych)
-async def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(numer_seryjny: str, db: Session):
-    dane = paczka_danych_crud.get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db, numer_seryjny=numer_seryjny)
-    if dane is None:
-        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o podanym numerze seryjnym.")
-    return dane
+#@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)#paczka_danych_schemas.UrzadzeniePaczkiDanych)
+#async def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(numer_seryjny: str, db: Session):
+#    dane = paczka_danych_crud.get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db, numer_seryjny=numer_seryjny)
+#    if dane is None:
+#        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o podanym numerze seryjnym.")
+#    return dane
 
 
 @router.get("/numer_seryjny_urzadzenia={numer_seryjny}", response_model=paczka_danych_schemas.PaczkaDanychSchema)
