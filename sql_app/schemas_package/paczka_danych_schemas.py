@@ -10,6 +10,9 @@ class PaczkaDanychBaseSchema(BaseModel):
     numer_seryjny: Optional[str] = None
     czas_paczki: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
 
 class PaczkaDanychCreateSchema(PaczkaDanychBaseSchema):
     pass
@@ -21,9 +24,6 @@ class PaczkaDanychSchema(PaczkaDanychBaseSchema):
     sesja_id: Optional[str] = None
     # zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
 
-    class Config:
-        orm_mode = True
-
 
 class PaczkaDanychSchemaNested(PaczkaDanychSchema):
     zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
@@ -33,7 +33,3 @@ class UrzadzeniePaczkiDanych(BaseModel):
     id: int
     numer_seryjny: str
     nazwa_urzadzenia: str
-
-    class Config:
-        orm_mode = True
-

@@ -61,6 +61,14 @@ async def get_sesja(sesja_id: int, db: Session = Depends(get_db)):
     return db_sesja
 
 
+@router.get("/numer_seryjny={numer_seryjny}", response_model=sesja_schemas.SesjaUrzadzenieSchema)
+async def get_sesja_by_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.get_sesja_by_numer_seryjny(db, numer_seryjny=numer_seryjny)
+    if db_sesja is None:
+        raise HTTPException(status_code=404, detail="Sesji nie znaleziono")
+    return db_sesja
+
+
 @router.get("/", response_model=List[sesja_schemas.SesjaSchema])
 async def get_zbior_sesji(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
@@ -86,8 +94,8 @@ async def get_aktywna_sesja_urzadzenia_id(urzadzenie_id: int, db: Session = Depe
 
 
 @router.get("/aktywne_sesje/numer_seryjny_urzadzenia={numer_seryjny}", response_model=sesja_schemas.SesjaSchema)
-async def get_aktywna_sesje_urzadzenia_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
-    sesja = sesja_crud.get_aktywna_sesje_urzadzenia__num_ser(db, numer_seryjny)
+async def get_aktywna_sesje_numer_seryjny_urzadzenia(numer_seryjny: str, db: Session = Depends(get_db)):
+    sesja = sesja_crud.get_aktywna_sesja_numer_seryjny_urzadzenie(db, numer_seryjny)
     return sesja
 
 
@@ -98,7 +106,7 @@ async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
     if zakonczona_sesja is None:
         raise HTTPException(status_code=404, detail="Nie udało się zakończyć sesje")
     else:
-        return zakonczona_sesja
+        return f"Zakończono sesje o numerze id: {sesja_id}"
 
 
 @router.delete("/delete/id={sesja_id}", response_description="Usunieto sesje o numerze id ...")

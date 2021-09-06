@@ -9,6 +9,17 @@ def get_sesja(db: Session, sesja_id: int):
     return db.query(models.Sesja).filter(models.Sesja.id == sesja_id).first()
 
 
+def get_sesja_by_numer_seryjny(db: Session, numer_seryjny: str):
+    return db.query(models.Sesja.id,
+                    models.Sesja.czy_aktywna,
+                    models.Sesja.start_sesji,
+                    models.Sesja.koniec_sesji,
+                    models.Sesja.urzadzenie_id,
+                    models.Urzadzenie.numer_seryjny).filter(
+        models.Sesja.urzadzenie_id == models.Urzadzenie.id).filter(
+        models.Urzadzenie.numer_seryjny == numer_seryjny)
+
+
 def get_zbior_sesji(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Sesja).offset(skip).limit(limit).all()
 
@@ -22,8 +33,8 @@ def get_aktywna_sesja_urzadzenia_id(db: Session, urzadzenie_id: int):
         filter(models.Sesja.urzadzenie_id == urzadzenie_id).first()
 
 
-def get_aktywna_sesja_urzadzenie__num_ser(db: Session, numer_seryjny: str):
-    return None
+def get_aktywna_sesja_numer_seryjny_urzadzenie(db: Session, numer_seryjny: str):
+    return None #db.query(models.Sesja, ,Urzadzenie).filter
 
     #ahoj=db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).all()
     #ajon=db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).all() #\

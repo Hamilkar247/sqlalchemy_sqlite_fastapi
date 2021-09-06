@@ -10,9 +10,18 @@ def get_urzadzenie_id(db: Session, urzadzenie_id: int):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
 
 
+def get_urzadzenie_id_zagniezdzone_sesje(db: Session, urzadzenie_id: int):
+    return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
+
 #zwraca pierwsze napotkane urządzenie
-def get_urzadzenie_numer_seryjny(db: Session, numer_seryjny: str):
+def get_urzadzenie_by_numer_seryjny(db: Session, numer_seryjny: str):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).first()
+
+
+def get_urzadzenie_by_numer_seryjny__zbior_sesji(db: Session, numer_seryjny: str):
+    return db.query(models.Urzadzenie).filter(
+        models.Urzadzenie.numer_seryjny == numer_seryjny).filter(
+        models.Urzadzenie.id == models.Sesja.urzadzenie_id)
 
 
 #zwraca pierwsze napotkane urządzenie

@@ -27,7 +27,7 @@ def get_db():
 
 @router.post("/", response_model=urzadzenie_schemas.UrzadzenieSchema)
 async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema, db: Session = Depends(get_db)):
-    db_urzadzenia = urzadzenie_crud.get_urzadzenie_numer_seryjny(db, numer_seryjny=urzadzenie.numer_seryjny)
+    db_urzadzenia = urzadzenie_crud.get_urzadzenie_by_numer_seryjny(db, urzadzenie.numer_seryjny)
     if db_urzadzenia:
         raise HTTPException(status_code=400, detail="Pola 'nazwa_urzadzenia' i 'numer_seryjny' powinny być unikalne !")
     return urzadzenie_crud.create_urzadzenie(db=db, urzadzenie=urzadzenie)
@@ -37,15 +37,23 @@ async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchem
 async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
-        raise HTTPException(status_code=404, detail="Urzadzen nie znaleziono")
+        raise HTTPException(status_code=404, detail="Urzadzeń nie znaleziono")
     return zbior_urzadzen
 
 
-@router.get("/przynalezne_zbiory", response_model=List[urzadzenie_schemas.UrzadzenieSchemaNested])
+@router.get("/przynalezne_zbiory", response_model=List[urzadzenie_schemas.UrzadzenieSchemaNested_all])
 async def get_zbior_urzadzen_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
-        raise HTTPException(status_code=404, detail="Urzadzen nie znaleziono")
+        raise HTTPException(status_code=404, detail="Urzadzeń nie znaleziono")
+    return zbior_urzadzen
+
+
+@router.get("/przynalezne_zbiory/sesje", response_model=List[urzadzenie_schemas.UrzadzenieSchemaNested_sesje])
+async def get_zbior_urzadzen_z_zagniezdzeniami_sesji(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
+    if zbior_urzadzen is None:
+        raise HTTPException(status_code=404, detail="Urzadzeń nie znaleziono")
     return zbior_urzadzen
 
 
@@ -57,7 +65,7 @@ async def get_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
     return db_urzadzenie
 
 
-@router.get("/id={urzadzenie_id}/przynalezne_zbiory", response_model=urzadzenie_schemas.UrzadzenieSchemaNested)
+@router.get("/id={urzadzenie_id}/przynalezne_zbiory", response_model=urzadzenie_schemas.UrzadzenieSchemaNested_all)
 async def get_urzadzenia_id_z_zagniezdzeniami(urzadzenie_id: int, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
@@ -65,12 +73,27 @@ async def get_urzadzenia_id_z_zagniezdzeniami(urzadzenie_id: int, db: Session = 
     return db_urzadzenie
 
 
+@router.get("/id={urzadzenie_id}/przynalezne_sesje", response_model=urzadzenie_schemas.UrzadzenieSchemaNested_sesje)
+async def get_urzadzenia_id_z_zagniezdzeniami_sesji(urzadzenie_id: int, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
+    if db_urzadzenie is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym id")
+    return db_urzadzenie
+
+
 @router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)
-async def get_urzadzenie_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
-    db_urzadzenie = urzadzenie_crud.get_urzadzenie_numer_seryjny(db, numer_seryjny=numer_seryjny)
+async def get_urzadzenie_by_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_by_numer_seryjny(db, numer_seryjny=numer_seryjny)
     if db_urzadzenie is None:
         raise HTTPException(status_code=404, detail="Nie znaleziono urządzenia o tym numerze seryjny")
     return db_urzadzenie
+
+
+@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchemaNested_sesje)
+async def get_zbior_sesji_dla_urzadzenie_by_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
+    db_urzadzenie = urzadzenie_crud.get_urzadzenie_by_numer_seryjny__zbior_sesji(db, numer_seryjny=numer_seryjny)
+    if db_urzadzenie is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono sesji dla urządzenia o tym numerze seryjnym")
 
 
 @router.delete("/delete/id={urzadzenie_id}", response_description="Usuń urządzenie o numerze id ...")

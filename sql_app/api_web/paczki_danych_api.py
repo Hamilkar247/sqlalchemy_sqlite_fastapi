@@ -42,7 +42,7 @@ async def get_zbior_paczek_danych(skip: int = 0, limit: int = 100, db: Session =
     return paczki_danych
 
 
-@router.get("/przynalezne_zbiory", response_model=paczka_danych_schemas.PaczkaDanychSchemaNested)
+@router.get("/przynalezne_zbiory", response_model=List[paczka_danych_schemas.PaczkaDanychSchemaNested])
 async def get_zbior_paczek_danych_z_zagniezdzeniami(db: Session = Depends(get_db)):
     paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db)
     return paczki_danych
