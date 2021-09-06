@@ -102,7 +102,7 @@ def create_sesja_dla_uzytkownika(uzytkownik_id: int, db: Session, sesja: sesja_s
     return db_sesja
 
 
-def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id, db: Session,
+def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id: int, db: Session,
                                             sesja: sesja_schemas.SesjaCreateSchema):
     db_sesja = models.Sesja(
         nazwa_sesji=sesja.nazwa_sesji,

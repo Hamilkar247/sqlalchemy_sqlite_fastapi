@@ -92,6 +92,6 @@ def delete_all_paczki(db: Session):
     if wszystkie_rekordy is not None:
         wszystkie_rekordy.delete()
         db.commit()
-        return "usunieto"
+        return "usunieto wszystkie paczki"
     else:
         return None

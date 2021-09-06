@@ -8,6 +8,9 @@ from sql_app.schemas_package.paczka_danych_schemas import PaczkaDanychSchema
 class SesjaBaseSchema(BaseModel):
     nazwa_sesji: Optional[str] = None
 
+    class Config:
+        orm_mode = True
+
 
 class SesjaCreateSchema(SesjaBaseSchema):
     pass
@@ -20,9 +23,6 @@ class SesjaSchema(SesjaBaseSchema):
     czy_aktywna: Optional[bool] = None
     start_sesji: Optional[str] = None
     koniec_sesji: Optional[str] = None
-
-    class Config:
-        orm_mode = True
 
 
 class SesjaSchemaNested(SesjaBaseSchema):

@@ -61,6 +61,6 @@ def delete_all_urzadzenia(db: Session):
     if wszystkie_rekordy is not None:
         wszystkie_rekordy.delete()
         db.commit()
-        return "usunięto wszystkie sensory"
+        return "usunięto wszystkie urzadzenia"
     else:
         return None
