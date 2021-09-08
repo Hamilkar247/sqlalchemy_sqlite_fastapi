@@ -2,7 +2,7 @@ import json
 import os
 
 
-#{"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
+# {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
     bashCommand="""\
     curl -X 'POST' \
@@ -64,33 +64,39 @@ def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
     print(output)
     print("------------")
     data = json.loads(output)
-    print(data)
-    print(data['id'])
-    return int(data['id'])
+    try:
+        if data['id'] is not None:
+            print(data)
+            print(data['id'])
+            return int(data['id'])
+    except KeyError as e:
+        return None
 
 
-#{"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
+# {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def tworzenie_urzadzenia_i_sensorow():
-    numer_seryjny="FWQ10100"
+    numer_seryjny="FWQ1000"
     nazwa_urzadzenia="bomilwkar"
-    post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
-
-    id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
-    litery_porzadkowe=["a", "b", "c"]
-    parametr=["temperatura", "pm2.5", "pm5", "napiecie"]
-    min=["-15", "-15", "-20"]
-    max=["5", "30", "30"]
-    jednostka=["stopnie Celsjusza", "smogowe", "smogowe"]
-    status_sensora=["aktywny", "aktywny", "aktywny"]
-    iteracja=[0, 1, 2]
-    for numer in iteracja:
-        post_curl_sensor(id_urzadzenia=id_urzadzenia,
-                         litery_porzadkowe=litery_porzadkowe[numer],
-                         parametr=parametr[numer],
-                         min=min[numer],
-                         max=max[numer],
-                         jednostka=jednostka[numer],
-                         status_sensora=status_sensora[numer])
+    czy_istnieje_urzadzenie_o_tym_numerze_seryjnym = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
+    print(f"czy istnieje już takie urzadzenie? {czy_istnieje_urzadzenie_o_tym_numerze_seryjnym}")
+    if czy_istnieje_urzadzenie_o_tym_numerze_seryjnym is None:
+        post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
+        id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
+        litery_porzadkowe=["a", "b", "c"]
+        parametr=["temperatura", "pm2.5", "pm5", "napiecie"]
+        min=["-15", "-15", "-20"]
+        max=["5", "30", "30"]
+        jednostka=["stopnie Celsjusza", "smogowe", "smogowe"]
+        status_sensora=["aktywny", "aktywny", "aktywny"]
+        iteracja=[0, 1, 2]
+        for numer in iteracja:
+            post_curl_sensor(id_urzadzenia=id_urzadzenia,
+                             litery_porzadkowe=litery_porzadkowe[numer],
+                             parametr=parametr[numer],
+                             min=min[numer],
+                             max=max[numer],
+                             jednostka=jednostka[numer],
+                             status_sensora=status_sensora[numer])
 
 
 tworzenie_urzadzenia_i_sensorow()

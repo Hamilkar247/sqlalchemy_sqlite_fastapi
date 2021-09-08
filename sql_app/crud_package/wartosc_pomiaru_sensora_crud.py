@@ -1,20 +1,26 @@
 import logging
 
-from sql_app import models
+from sql_app.models import WartoscPomiaruSensora
 from sqlalchemy.orm import Session
 from sql_app.schemas_package import wartosc_pomiaru_sensora_schemas
 
 
+########################### GET ####################
 def get_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
-    return db.query(models.WartoscPomiaruSensora).filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
+    return db.query(WartoscPomiaruSensora).filter(WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
+
+
+def get_zbior_wartosci_pomiarowych_sensora_dla_paczki_o_id(db: Session, paczka_id: int):
+    return db.query(WartoscPomiaruSensora).filter(WartoscPomiaruSensora.paczka_danych_id == paczka_id).all()
 
 
 def get_zbior_wartosci_pomiarowych_sensorow(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.WartoscPomiaruSensora).offset(skip).limit(limit).all()
+    return db.query(WartoscPomiaruSensora).offset(skip).limit(limit).all()
 
 
+######################### CREATE #####################
 def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas):
-    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+    db_wartosc_pomiaru_sensora = WartoscPomiaruSensora(
         wartosc=wartosc_pomiaru_sensora.wartosc,
         litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe
     )
@@ -27,7 +33,7 @@ def create_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora: wartosc
 def create_wartosc_pomiaru_sensora_dla_paczki(db: Session,
                 wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas,
                                               id_paczki: int):
-    db_wartosc_pomiaru_sensora = models.WartoscPomiaruSensora(
+    db_wartosc_pomiaru_sensora = WartoscPomiaruSensora(
         wartosc=wartosc_pomiaru_sensora.wartosc,
         litery_porzadkowe=wartosc_pomiaru_sensora.litery_porzadkowe,
         paczka_danych_id=id_paczki
@@ -38,10 +44,10 @@ def create_wartosc_pomiaru_sensora_dla_paczki(db: Session,
     return db_wartosc_pomiaru_sensora
 
 
-def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
-    result_str = ""
+####################### DELETE ###################
+def usun_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int):
     try:
-        obj_to_delete = db.query(models.WartoscPomiaruSensora).filter(models.WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
+        obj_to_delete = db.query(WartoscPomiaruSensora).filter(WartoscPomiaruSensora.id == wartosc_pomiaru_sensora_id).first()
         if obj_to_delete is None:
             return None
         db.delete(obj_to_delete)
@@ -53,8 +59,19 @@ def delete_wartosc_pomiaru_sensora(db: Session, wartosc_pomiaru_sensora_id: int)
         return result_str
 
 
-def delete_all_wartosci_pomiaru_sensora(db: Session):
-    wszystkie_rekordy = db.query(models.WartoscPomiaruSensora)
+def usun_zbior_wartosci_pomiaru_sensora_z_paczki_o_id(db: Session, paczka_id: int):
+    usun_zbior_wartosci_pomiaru_sensora \
+                 = db.query(WartoscPomiaruSensora).filter(WartoscPomiaruSensora.paczka_danych_id==paczka_id)
+    if usun_zbior_wartosci_pomiaru_sensora is not None:
+        usun_zbior_wartosci_pomiaru_sensora.delete()
+        db.commit()
+        return "usunieto"
+    else:
+        return None
+
+
+def usun_caly_zbior_wartosci_pomiaru_sensora(db: Session):
+    wszystkie_rekordy = db.query(WartoscPomiaruSensora)
     if wszystkie_rekordy is not None:
         wszystkie_rekordy.delete()
         db.commit()

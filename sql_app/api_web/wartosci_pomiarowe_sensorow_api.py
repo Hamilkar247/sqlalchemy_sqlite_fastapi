@@ -4,8 +4,8 @@ from fastapi import Depends, APIRouter, HTTPException
 from starlette import status
 from starlette.responses import JSONResponse
 
-from sql_app.schemas_package import uzytkownik_schemas, wartosc_pomiaru_sensora_schemas
-from sql_app.crud_package import uzytkownik_crud, wartosc_pomiaru_sensora_crud
+from sql_app.schemas_package import wartosc_pomiaru_sensora_schemas
+from sql_app.crud_package import wartosc_pomiaru_sensora_crud
 from sql_app.database import SessionLocal
 from sqlalchemy.orm import Session
 import logging
@@ -66,10 +66,30 @@ async def get_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db: Sessi
     return db_wartosc_pomiaru_sensora
 
 
+@router.get("/paczka_id={paczka_id}", response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema)
+async def get_wartosc_pomiaru_z_paczki_o_id(paczka_id: int, db: Session = Depends(get_db)):
+    db_wartosc_pomiaru_sensora = \
+        wartosc_pomiaru_sensora_crud.get_zbior_wartosci_pomiarowych_sensora_dla_paczki_o_id(db, paczka_id)
+    if db_wartosc_pomiaru_sensora is None:
+        raise HTTPException(status_code=404, detail="Nie znaleziono wartości przypisanych temu id paczki")
+    return db_wartosc_pomiaru_sensora
+
+
+####################### DELETE ########################
+@router.delete("/delete/id_paczki={paczka_id}", response_description="Usunięto wartości pomiarów sensora dla paczki o id ...")
+async def delete_wartosci_pomiarow_z_paczki_o_id(paczka_id: int, db: Session = Depends(get_db)):
+    result_str = wartosc_pomiaru_sensora_crud.usun_zbior_wartosci_pomiaru_sensora_z_paczki_o_id(db, paczka_id)
+    if result_str is not None:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć wartosci pomiarow z paczki o id {paczka_id}"})
+    elif result_str is None:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f" nie udało się usunąć wartosci pomiarow z paczki od id {paczka_id} "})
+    return result_str
+
+
 @router.delete("/delete/id={wartosc_pomiaru_sensora_id}", response_description="Usunieto rekord o numerze id ...")
 async def delete_id_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id
-    result_str = wartosc_pomiaru_sensora_crud.delete_wartosc_pomiaru_sensora(db, wartosc_pomiaru_sensora_id)
+    result_str = wartosc_pomiaru_sensora_crud.usun_wartosc_pomiaru_sensora(db, wartosc_pomiaru_sensora_id)
     if result_str == "usunieto rekord o podanym id":
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć rekord o id {wartosc_pomiaru_sensora_id}"})
     elif result_str is None:
@@ -79,7 +99,7 @@ async def delete_id_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db:
 
 @router.delete("/delete/all_records", response_description="Usunieto wszystkie rekordy")
 async def delete_all_wartosc_pomiaru_sensora(db: Session = Depends(get_db)):
-    result = wartosc_pomiaru_sensora_crud.delete_all_wartosci_pomiaru_sensora(db)
+    result = wartosc_pomiaru_sensora_crud.usun_caly_zbior_wartosci_pomiaru_sensora(db)
     if result is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunieto wszystie rekordy"})
     else:

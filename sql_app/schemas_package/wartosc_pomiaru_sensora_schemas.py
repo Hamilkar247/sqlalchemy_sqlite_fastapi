@@ -7,7 +7,6 @@ class WartoscPomiaruSensoraBaseSchema(BaseModel):
     litery_porzadkowe: Optional[str] = None
 
 
-
 class WartoscPomiaruSensoraCreateSchema(WartoscPomiaruSensoraBaseSchema):
      pass
 

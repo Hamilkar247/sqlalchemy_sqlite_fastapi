@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from . import models
 from .api_web import uzytkownicy_api, sesje_api, paczki_danych_api, wartosci_pomiarowe_sensorow_api, \
-    users_api, items_api, dekodery_statusu_api, urzadzenia_api
+     dekodery_statusu_api, urzadzenia_api
 from .api_web import sensory_api
 from .database import engine
 

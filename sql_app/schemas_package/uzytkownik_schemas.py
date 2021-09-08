@@ -20,8 +20,12 @@ class UzytkownikCreateSchema(UzytkownikBaseSchema):
 
 class UzytkownikSchema(UzytkownikBaseSchema):
     id: int
-    zbior_sesji: List[SesjaSchema]
     #zbior_urzadzen: List[Urzadzenie] = []
 
     class Config:
         orm_mode = True
+
+
+class UzytkownikSchemaNested(UzytkownikSchema):
+    zbior_sesji: List[SesjaSchema]
+    #zbior_urzadzen: List[Urzadzenie] = []

@@ -25,6 +25,7 @@ def get_db():
         db.close()
 
 
+##################### POST ######################33
 @router.post("/", response_model=uzytkownik_schemas.UzytkownikSchema)
 async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema, db: Session = Depends(get_db)):
     db_uzytkownicy = uzytkownik_crud.get_uzytkownik_by_email(db, email=uzytkownik.email)
@@ -35,11 +36,20 @@ async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchem
     return uzytkownik_crud.create_uzytkownik(db=db, uzytkownik=uzytkownik)
 
 
+################### GET ###########################3
 @router.get("/", response_model=List[uzytkownik_schemas.UzytkownikSchema])
 async def get_zbior_uzytkownikow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
     if uzytkownicy is None:
-        raise HTTPException(status_code=404, detail="Użytkownik nie znaleziony")
+        raise HTTPException(status_code=404, detail="Użytkowników nie znaleziony")
+    return uzytkownicy
+
+
+@router.get("/przynalezne_zbiory", response_model=List[uzytkownik_schemas.UzytkownikSchemaNested])
+async def get_zbior_uzytkownikow_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
+    if uzytkownicy is None:
+        raise HTTPException(status_code=404, detail="Użytkownikóœ nie znaleziony")
     return uzytkownicy
 
 
@@ -51,6 +61,7 @@ async def get_uzytkownik(uzytkownik_id: int, db: Session = Depends(get_db)):
     return db_uzytkownik
 
 
+#################### DELETE #########################
 @router.delete("/delete/id={uzytkownik_id}", response_description="Usunieto użytkownika o numerze id ...")
 async def delete_id_uzytkownika(uzytkownik_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id

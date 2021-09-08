@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from sql_app import models
+from sql_app.format_danych import FormatDaty
 from sql_app.schemas_package import sesja_schemas
 
 
@@ -9,42 +10,72 @@ def get_sesja(db: Session, sesja_id: int):
     return db.query(models.Sesja).filter(models.Sesja.id == sesja_id).first()
 
 
+def get_sesja_by_numer_seryjny(db: Session, numer_seryjny: str):
+    return db.query(models.Sesja.id,
+                    models.Sesja.czy_aktywna,
+                    models.Sesja.start_sesji,
+                    models.Sesja.koniec_sesji,
+                    models.Sesja.urzadzenie_id,
+                    models.Urzadzenie.numer_seryjny).filter(
+        models.Sesja.urzadzenie_id == models.Urzadzenie.id).filter(
+        models.Urzadzenie.numer_seryjny == numer_seryjny)
+
+
 def get_zbior_sesji(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Sesja).offset(skip).limit(limit).all()
 
 
 def zwroc_aktywne_sesje(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Sesja).filter(models.Sesja.czy_aktywna==True).offset(skip).limit(limit).all()
+    return db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).offset(skip).limit(limit).all()
+
+
+def get_aktywna_sesja_urzadzenia_id(db: Session, urzadzenie_id: int):
+    return db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).\
+        filter(models.Sesja.urzadzenie_id == urzadzenie_id).first()
+
+
+def get_aktywna_sesja_numer_seryjny_urzadzenie(db: Session, numer_seryjny: str):
+    return None #db.query(models.Sesja, ,Urzadzenie).filter
+
+    #ahoj=db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).all()
+    #ajon=db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).all() #\
+    #print()
+    #xwer=db.query(models.Urzadzenie).filter(models.Sesja.urzadzenie_id == models.Urzadzenie.id).
+    #    \
+    #    .filter(models.Sesja.czy_aktywna == True). \
+    #    filter(models.Sesja.urzadzenie_id == models.Urzadzenie.id). \
+    #    filter(models.Urzadzenie.numer_seryjny == numer_seryjny).all()
 
 
 def zakoncz_sesje(db: Session, sesja_id: int):
     find_sesje = db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True, models.Sesja.id == sesja_id).first()
-    #print(find_sesje.start_sesji)
-    #return find_sesje
+    # print(find_sesje.start_sesji)
+    # return find_sesje
     if find_sesje is not None:
         now = datetime.now()
-        print(f"now={now}")
         dt_string = now.strftime("%d/%m/%y %H:%M:%S")
         print(f"data i czas = {dt_string}")
         dlugosc_sesji_w_s = "nie do okreslenia"
-        koniec_sesji=dt_string
+        koniec_sesji = FormatDaty().obecny_czas()
         try:
             start_timestamp = datetime.strptime(find_sesje.start_sesji, "%d/%m/%y %H:%M:%S").timestamp()
-            end_timestamp=now.timestamp()
-            print(end_timestamp-start_timestamp)
-            dlugosc_sesji_w_s=round(end_timestamp-start_timestamp)
+            end_timestamp = now.timestamp()
+            print(end_timestamp - start_timestamp)
+            dlugosc_sesji_w_s = round(end_timestamp - start_timestamp)
             print(dlugosc_sesji_w_s)
         except Exception as e:
-            print("start_sesja: "+str(find_sesje))
+            print("start_sesja: " + str(find_sesje))
             print("zmienna start_sesja nie przechowuje daty")
-            dlugosc_sesji_w_s="nie do okreslenia"
+            dlugosc_sesji_w_s = "nie do okreslenia"
 
         find_update_sesje = db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True, models.Sesja.id == sesja_id) \
-            .update({
+            .update(
+            {
             models.Sesja.czy_aktywna: False,
             models.Sesja.dlugosc_trwania_w_s: dlugosc_sesji_w_s,
             models.Sesja.koniec_sesji: koniec_sesji
-            })
+            }
+        )
         print("---------")
         print(find_update_sesje)
         db.commit()
@@ -54,7 +85,7 @@ def zakoncz_sesje(db: Session, sesja_id: int):
         return None
 
 
-#def update_status_sesji_czy_aktywna(db: Session, sesja_id: int, nowa_wartosc_boolean: bool):
+# def update_status_sesji_czy_aktywna(db: Session, sesja_id: int, nowa_wartosc_boolean: bool):
 #    find_sesja = db.query(models.Sesja).filter(models.Sesja.id==sesja_id, models.Sesja.id==sesja_id).all()
 #    find_sesja.update()
 
@@ -84,7 +115,8 @@ def create_sesja_dla_uzytkownika(uzytkownik_id: int, db: Session, sesja: sesja_s
     return db_sesja
 
 
-def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id, db: Session, sesja: sesja_schemas.SesjaCreateSchema):
+def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id: int, db: Session,
+                                            sesja: sesja_schemas.SesjaCreateSchema):
     db_sesja = models.Sesja(
         nazwa_sesji=sesja.nazwa_sesji,
         start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
@@ -121,7 +153,7 @@ def delete_all_sesje(db: Session):
     if db_wszystkie_rekordy is not None:
         db_wszystkie_rekordy.delete()
         db.commit()
-        #db.refresh(db_wszystkie_rekordy)
+        # db.refresh(db_wszystkie_rekordy)
         return "usunieto"
     else:
         return None
