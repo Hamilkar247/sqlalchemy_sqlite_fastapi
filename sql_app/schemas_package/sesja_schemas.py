@@ -12,16 +12,13 @@ class SesjaUrzadzenieBaseSchema(BaseModel):
         orm_mode = True
 
 
-class SesjaUrzadzenieSchema(BaseModel):
+class SesjaUrzadzenieSchema(SesjaUrzadzenieBaseSchema):
     id: int
     czy_aktywna: Optional[bool] = None
     start_sesji: Optional[str] = None
     koniec_sesji: Optional[str] = None
     numer_seryjny: str
     urzadzenie_id: int = None
-
-    class Config:
-        orm_mode = True
 
 
 class SesjaBaseSchema(BaseModel):

@@ -25,6 +25,7 @@ def get_db():
         db.close()
 
 
+###################### POST ############################
 @router.post("/", response_model=sensor_schemas.SensorSchema)
 async def create_sensor(sensor: sensor_schemas.SensorCreateSchema, db: Session = Depends(get_db)):
     return sensor_crud.create_sensor(db=db, sensor=sensor)
@@ -35,6 +36,7 @@ async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchema,
     return sensor_crud.create_sensor_id_urzadzenia(db=db, sensor=sensor, id_urzadzenia=urzadzenie_id)
 
 
+##################### GET ##############################
 @router.get("/", response_model=List[sensor_schemas.SensorSchema])
 async def get_zbior_sensorow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     sensory = sensor_crud.get_zbior_sensorow(db, skip=skip, limit=limit)
@@ -51,6 +53,7 @@ async def get_sensor(sensor_id: int, db: Session = Depends(get_db)):
     return db_sensor
 
 
+################# DELETE ###############################
 @router.delete("/delete/id={sensor_id}", response_description="Usuń sensor o numerze id ...")
 async def delete_id_sensory(sensor_id: int, db: Session = Depends(get_db)):
     result_str = sensor_crud.delete_sensor(db, sensor_id)

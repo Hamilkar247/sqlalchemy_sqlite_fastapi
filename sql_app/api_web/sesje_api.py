@@ -25,7 +25,7 @@ def get_db():
     finally:
         db.close()
 
-
+######################## CREATE #######################
 @router.post("/", response_model=sesja_schemas.SesjaCreateSchema)
 async def create_sesja(sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
     db_sesja = sesja_crud.create_sesja(db=db, sesja=sesja)
@@ -52,7 +52,7 @@ async def create_sesja_id_uzytkownik_id_urzadzenie(urzadzenie_id: int, uzytkowni
         raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
     return db_sesja
 
-
+######################### GET ##############################
 @router.get("/id={sesja_id}", response_model=sesja_schemas.SesjaSchema)
 async def get_sesja(sesja_id: int, db: Session = Depends(get_db)):
     db_sesja = sesja_crud.get_sesja(db, sesja_id=sesja_id)

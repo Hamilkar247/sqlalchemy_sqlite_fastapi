@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from sql_app import models
+from sql_app.format_danych import FormatDaty
 from sql_app.schemas_package import sesja_schemas
 
 
@@ -52,11 +53,10 @@ def zakoncz_sesje(db: Session, sesja_id: int):
     # return find_sesje
     if find_sesje is not None:
         now = datetime.now()
-        print(f"now={now}")
         dt_string = now.strftime("%d/%m/%y %H:%M:%S")
         print(f"data i czas = {dt_string}")
         dlugosc_sesji_w_s = "nie do okreslenia"
-        koniec_sesji = dt_string
+        koniec_sesji = FormatDaty().obecny_czas()
         try:
             start_timestamp = datetime.strptime(find_sesje.start_sesji, "%d/%m/%y %H:%M:%S").timestamp()
             end_timestamp = now.timestamp()
@@ -69,11 +69,13 @@ def zakoncz_sesje(db: Session, sesja_id: int):
             dlugosc_sesji_w_s = "nie do okreslenia"
 
         find_update_sesje = db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True, models.Sesja.id == sesja_id) \
-            .update({
+            .update(
+            {
             models.Sesja.czy_aktywna: False,
             models.Sesja.dlugosc_trwania_w_s: dlugosc_sesji_w_s,
             models.Sesja.koniec_sesji: koniec_sesji
-        })
+            }
+        )
         print("---------")
         print(find_update_sesje)
         db.commit()
