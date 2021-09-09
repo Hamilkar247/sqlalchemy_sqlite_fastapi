@@ -1,5 +1,6 @@
 import logging
 import sys
+import traceback
 from datetime import datetime
 import subprocess
 import json
@@ -49,6 +50,7 @@ def send_curl_paczka_create(id_sesji, kod_statusu, numer_seryjny):
         except KeyError as k:
             print("nie znaleziono paczki w bazie danych!")
             print(k)
+            print(traceback.print_exc())
         if id_paczki is None:
             print("nie ma paczki nie zrzeszonej dla tego urządzenia")
             bashCommand = """
@@ -143,10 +145,12 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
     print(output[1:-1])
     data = json.loads(output)  # [1:-1])
     # print(data)
-    if data['id'] is not None:
+    try:
         print(data['id'])
         return int(data['id'])
-    else:
+    except KeyError as e:
+        print(f"KeyError wystąpił - {e}")
+        print(traceback.print_exc())
         return None
 
 
@@ -161,6 +165,7 @@ def dane_od_arka():
     # print("Type:", type(data))
 
     numer_seryjny = data['sn']
+    print(f"-----------%%%%------------ f{numer_seryjny} ----------%%%------")
     id_urzadzenia = get_id_urzadzenia_dla_tej_paczki(numer_seryjny)
     if id_urzadzenia is not None:
         print(f"id_urzadzenia: {id_urzadzenia}")

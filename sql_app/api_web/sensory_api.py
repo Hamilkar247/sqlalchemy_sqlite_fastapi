@@ -65,6 +65,8 @@ async def delete_id_sensory(sensor_id: int, db: Session = Depends(get_db)):
 
 @router.delete("/delete/all_records", response_description="Usuń wszystkie sensory")
 async def delete_all_sensory(db: Session = Depends(get_db)):
-    result = sensor_crud.delete_all_sensory(db)
+    result = sensor_crud.delete_caly_zbior_sensorow(db)
     if result is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunięto wszystkie sensory"})
+    elif result is None:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f" nie udało się usunąć zbioru sensorów"})

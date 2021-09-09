@@ -14,10 +14,6 @@ class UrzadzenieBaseSchema(BaseModel):
         orm_mode = True
 
 
-class UrzadzenieCreateSchema(UrzadzenieBaseSchema):
-    pass
-
-
 class UrzadzenieSchema(UrzadzenieBaseSchema):
     id: int
 

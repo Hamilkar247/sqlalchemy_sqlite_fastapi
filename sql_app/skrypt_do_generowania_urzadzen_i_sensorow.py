@@ -63,12 +63,11 @@ def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
     print("------------")
     print(output)
     print("------------")
-    data = json.loads(output)
     try:
-        if data['id'] is not None:
-            print(data)
-            print(data['id'])
-            return int(data['id'])
+        data = json.loads(output)
+        print(data)
+        print(data['id'])
+        return int(data['id'])
     except KeyError as e:
         return None
 
@@ -82,7 +81,7 @@ def tworzenie_pierwszego_urzadzenia_i_sensorow():
     if czy_istnieje_urzadzenie_o_tym_numerze_seryjnym is None:
         post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
         id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
-        litery_porzadkowe = ["a", "b", "c"]
+        litery_porzadkowe = ["a", "b", "c", "z"]
         parametr = ["temperatura", "pm2.5", "pm5", "napiecie"]
         min = ["-15", "-15", "-20", "-5"]
         max = ["5", "30", "30", "5"]
@@ -97,6 +96,8 @@ def tworzenie_pierwszego_urzadzenia_i_sensorow():
                              max=max[numer],
                              jednostka=jednostka[numer],
                              status_sensora=status_sensora[numer])
+    else:
+        print("urzadzenie o podanym numerze seryjnym już istnieje")
 
 
 def tworzenie_drugiego_urzadzenia_i_sensorow():
@@ -107,7 +108,7 @@ def tworzenie_drugiego_urzadzenia_i_sensorow():
     if czy_istnieje_urzadzenie_o_tym_numerze_seryjnym is None:
         post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
         id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
-        litery_porzadkowe = ["a", "b", "c"]
+        litery_porzadkowe = ["a", "b", "c", "z"]
         parametr = ["stezenie wodoru", "hydrowodór", "alkohol etylowy", "napiecie"]
         min = ["-15", "-15", "-20", "-5"]
         max = ["5", "30", "30", "5"]
@@ -126,4 +127,3 @@ def tworzenie_drugiego_urzadzenia_i_sensorow():
 
 tworzenie_pierwszego_urzadzenia_i_sensorow()
 tworzenie_drugiego_urzadzenia_i_sensorow()
-# get_urzadzenie_id_by_numer_seryjny("FWQ1000")

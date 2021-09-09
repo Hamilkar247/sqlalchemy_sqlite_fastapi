@@ -25,17 +25,16 @@ def get_db():
         db.close()
 
 
-################## CREATE #############################
-@router.post("/", response_model=urzadzenie_schemas.UrzadzenieSchema)
-async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema, db: Session = Depends(get_db)):
+###################### CREATE #############################
+@router.post("/", response_model=urzadzenie_schemas.UrzadzenieBaseSchema)
+async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchema, db: Session = Depends(get_db)):
     db_urzadzenia = urzadzenie_crud.get_urzadzenie_by_numer_seryjny(db, urzadzenie.numer_seryjny)
     if db_urzadzenia:
         raise HTTPException(status_code=400, detail="Pola 'nazwa_urzadzenia' i 'numer_seryjny' powinny być unikalne !")
     return urzadzenie_crud.create_urzadzenie(db=db, urzadzenie=urzadzenie)
 
 
-
-################## GET ######################################
+######################## GET ######################################
 @router.get("/", response_model=List[urzadzenie_schemas.UrzadzenieSchema])
 async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
@@ -98,7 +97,8 @@ async def get_zbior_sesji_dla_urzadzenie_by_numer_seryjny(numer_seryjny: str, db
     if db_urzadzenie is None:
         raise HTTPException(status_code=404, detail="Nie znaleziono sesji dla urządzenia o tym numerze seryjnym")
 
-################## DELETE ###########################
+
+################## DELETE #####################3
 @router.delete("/delete/id={urzadzenie_id}", response_description="Usuń urządzenie o numerze id ...")
 async def delete_id_urzadzenie(urzadzenie_id: int, db: Session = Depends(get_db)):
     result_str = urzadzenie_crud.delete_urzadzenie(db, urzadzenie_id)
@@ -108,9 +108,9 @@ async def delete_id_urzadzenie(urzadzenie_id: int, db: Session = Depends(get_db)
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"Nie udało się usunąć urządzenia o numerze id"})
 
 
-@router.delete("/delete/all_records", response_description="Usunięto wszystkie rekordy")
+@router.delete("/delete/wszystkie", response_description="Usunięto wszystkie urządzenia")
 async def delete_all_urzadzenia(db: Session = Depends(get_db)):
-    result = urzadzenie_crud.delete_all_urzadzenia(db)
+    result = urzadzenie_crud.delete_caly_zbior_urzadzenia(db)
     if result is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunięto wszystkie urzadzenia"})
     else:

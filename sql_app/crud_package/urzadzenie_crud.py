@@ -39,7 +39,7 @@ def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Urzadzenie).offset(skip).limit(limit).all()
 
 
-def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieCreateSchema):
+def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieSchema):
     db_urzadzenie = models.Urzadzenie(
         nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
         numer_seryjny=urzadzenie.numer_seryjny
@@ -65,11 +65,11 @@ def delete_urzadzenie(db: Session, urzadzenie_id: int):
         return None
 
 
-def delete_all_urzadzenia(db: Session):
-    wszystkie_rekordy = db.query(models.Urzadzenie)
-    if wszystkie_rekordy is not None:
-        wszystkie_rekordy.delete()
+def delete_caly_zbior_urzadzenia(db: Session):
+    wszystkie_urzadzenia = db.query(models.Urzadzenie)
+    if wszystkie_urzadzenia is not None:
+        wszystkie_urzadzenia.delete()
         db.commit()
-        return "usunięto wszystkie urzadzenia"
+        return "usunięto wszystkie urządzenia"
     else:
         return None

@@ -38,7 +38,6 @@ def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas, id_urzadzen
     return db_sensor
 
 
-
 def delete_sensor(db: Session, sensor_id: int):
     result_str = ""
     try:
@@ -55,10 +54,10 @@ def delete_sensor(db: Session, sensor_id: int):
         return None
 
 
-def delete_all_sensory(db: Session):
-    wszystkie_rekordy = db.query(models.Sensor)
-    if wszystkie_rekordy is not None:
-        wszystkie_rekordy.delete()
+def delete_caly_zbior_sensorow(db: Session):
+    wszystkie_sensory = db.query(models.Sensor)
+    if wszystkie_sensory is not None:
+        wszystkie_sensory.delete()
         db.commit()
         return "usunieto wszystkie sensory"
     else:
