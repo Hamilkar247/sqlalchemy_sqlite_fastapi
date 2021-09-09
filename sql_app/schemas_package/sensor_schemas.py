@@ -16,6 +16,10 @@ class SensorCreateSchema(SensorBaseSchema):
     pass
 
 
+class SensorUpdateSchema(SensorBaseSchema):
+    urzadzenie_id: Optional[int] = None
+
+
 class SensorSchema(SensorBaseSchema):
     id: int
     urzadzenie_id: Optional[int] = None

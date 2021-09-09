@@ -5,6 +5,19 @@ from sql_app import models
 from sql_app.schemas_package import sensor_schemas, urzadzenie_schemas
 
 
+################ CREATE ##################
+def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchema):
+    db_urzadzenie = models.Urzadzenie(
+        nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
+        numer_seryjny=urzadzenie.numer_seryjny
+    )
+    db.add(db_urzadzenie)
+    db.commit()
+    db.refresh(db_urzadzenie)
+    return db_urzadzenie
+
+
+################### GET ################3
 #zwraca pierwszy napotkane urzadzenie
 def get_urzadzenie_id(db: Session, urzadzenie_id: int):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
@@ -12,6 +25,7 @@ def get_urzadzenie_id(db: Session, urzadzenie_id: int):
 
 def get_urzadzenie_id_zagniezdzone_sesje(db: Session, urzadzenie_id: int):
     return db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
+
 
 #zwraca pierwsze napotkane urządzenie
 def get_urzadzenie_by_numer_seryjny(db: Session, numer_seryjny: str):
@@ -39,18 +53,27 @@ def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Urzadzenie).offset(skip).limit(limit).all()
 
 
-def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieSchema):
-    db_urzadzenie = models.Urzadzenie(
-        nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
-        numer_seryjny=urzadzenie.numer_seryjny
-    )
-    db.add(db_urzadzenie)
-    db.commit()
-    db.refresh(db_urzadzenie)
-    return db_urzadzenie
+################### UPDATE ######################
+def update_urzadzenie_o_id(db: Session, urzadzenie_id: int, urzadzenie: urzadzenie_schemas.UrzadzenieUpdateSchema):
+    print("update_urzadzenie_o_id")
+    znajdz_i_zamien = db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id) \
+                  .update(
+                      {
+                         models.Urzadzenie.numer_seryjny: urzadzenie.numer_seryjny,
+                         models.Urzadzenie.nazwa_urzadzenia: urzadzenie.nazwa_urzadzenia
+                      }
+                  )
+    print(znajdz_i_zamien)
+    if znajdz_i_zamien is not None:
+        print(znajdz_i_zamien)
+        db.commit()
+        return znajdz_i_zamien
+    else:
+        return None
 
 
-def delete_urzadzenie(db: Session, urzadzenie_id: int):
+#################### DELETE ################
+def delete_urzadzenie_o_id(db: Session, urzadzenie_id: int):
     try:
         obj_to_delete = db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id).first()
         if obj_to_delete is None:

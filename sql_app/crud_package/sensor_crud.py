@@ -3,14 +3,7 @@ from sql_app import models
 from sql_app.schemas_package import sensor_schemas
 
 
-def get_sensor(db: Session, sensor_id: int):
-    return db.query(models.Sensor).filter(models.Sensor.id == sensor_id).first()
-
-
-def get_zbior_sensorow(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Sensor).offset(skip).limit(limit).all()
-
-
+##################### CREATE ##########################
 def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
@@ -38,7 +31,38 @@ def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas, id_urzadzen
     return db_sensor
 
 
-def delete_sensor(db: Session, sensor_id: int):
+######################## GET #########################3
+def get_sensor(db: Session, sensor_id: int):
+    return db.query(models.Sensor).filter(models.Sensor.id == sensor_id).first()
+
+
+def get_zbior_sensorow(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Sensor).offset(skip).limit(limit).all()
+
+
+######################## UPDATE ########################
+def update_sensor_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorUpdateSchema):
+    znajdz_i_zamien = db.query(models.Sensor).filter(models.Sensor.id == sensor_id) \
+                  .update(
+                      {
+                          models.Sensor.status_sensora: sensor.status_sensora,
+                          models.Sensor.max: sensor.max,
+                          models.Sensor.min: sensor.min,
+                          models.Sensor.urzadzenie_id: sensor.urzadzenie_id,
+                          models.Sensor.jednostka: sensor.jednostka,
+                          models.Sensor.parametr: sensor.parametr,
+                          models.Sensor.litery_porzadkowe: sensor.litery_porzadkowe
+                      }
+                  )
+    if znajdz_i_zamien is not None:
+        db.commit()
+        return znajdz_i_zamien
+    else:
+        return None
+
+
+####################### DELETE ###################################
+def delete_sensor_o_id(db: Session, sensor_id: int):
     result_str = ""
     try:
         obj_to_delete = db.query(models.Sensor).filter(models.Sensor.id == sensor_id).first()

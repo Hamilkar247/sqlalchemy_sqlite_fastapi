@@ -39,7 +39,7 @@ async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchema,
 ##################### GET ##############################
 @router.get("/", response_model=List[sensor_schemas.SensorSchema])
 async def get_zbior_sensorow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sensory = sensor_crud.get_zbior_sensorow(db, skip=skip, limit=limit)
+    sensory = sensor_crud.get_zbior_sensorow(db=db, skip=skip, limit=limit)
     if sensory is None:
         raise HTTPException(status_code=404, detail="Żadnego sensora nie znaleziono")
     return sensory
@@ -47,24 +47,33 @@ async def get_zbior_sensorow(skip: int = 0, limit: int = 100, db: Session = Depe
 
 @router.get("/id={sensor_id}", response_model=sensor_schemas.SensorSchema)
 async def get_sensor(sensor_id: int, db: Session = Depends(get_db)):
-    db_sensor = sensor_crud.get_sensor(db, sensor_id=sensor_id)
+    db_sensor = sensor_crud.get_sensor(db=db, sensor_id=sensor_id)
     if db_sensor is None:
         raise HTTPException(status_code=404, detail="Nie znaleziono sensora o tym id")
     return db_sensor
 
 
-################# DELETE ###############################
-@router.delete("/delete/id={sensor_id}", response_description="Usuń sensor o numerze id ...")
+#################### UPDATE ___ PUT ########################
+@router.put("/id_sensor={sensor_id}", response_model=sensor_schemas.SensorUpdateSchema)
+async def update_sensor_o_id(sensor_id: int, sensor: sensor_schemas.SensorUpdateSchema, db: Session = Depends(get_db)):
+    update_sensor = sensor_crud.update_sensor_o_id(db=db, sensor_id=sensor_id, sensor=sensor)
+    if update_sensor is None:
+        raise HTTPException(status_code=404, detail=f"Nie udało się zupdateować sensora o id {sensor_id}")
+    return update_sensor
+
+
+######################### DELETE ###############################
+@router.delete("/usun/id={sensor_id}", response_description="Usuń sensor o numerze id ...")
 async def delete_id_sensory(sensor_id: int, db: Session = Depends(get_db)):
-    result_str = sensor_crud.delete_sensor(db, sensor_id)
+    result_str = sensor_crud.delete_sensor_o_id(db, sensor_id)
     if result_str is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"udało się usunąć sensora o id {sensor_id}"})
     elif result_str is None:
-       return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie ma sensora o id {sensor_id}"})
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"nie ma sensora o id {sensor_id}"})
 
 
-@router.delete("/delete/all_records", response_description="Usuń wszystkie sensory")
-async def delete_all_sensory(db: Session = Depends(get_db)):
+@router.delete("/usun/wszystkie_sensory", response_description="Usuń wszystkie sensory")
+async def delete_wszystkie_sensory(db: Session = Depends(get_db)):
     result = sensor_crud.delete_caly_zbior_sensorow(db)
     if result is not None:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"message": f"usunięto wszystkie sensory"})
