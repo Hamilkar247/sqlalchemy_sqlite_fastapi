@@ -4,7 +4,7 @@ import os
 
 # {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
-    bashCommand="""\
+    bashCommand = """\
     curl -X 'POST' \
       'http://127.0.0.1:8000/urzadzenia/' \
       -H 'accept: application/json' \
@@ -25,7 +25,7 @@ def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
 
 def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jednostka, status_sensora):
     print(f"id_sensora: {id_urzadzenia}")
-    bashCommand="""
+    bashCommand = """
     curl -X 'POST'\\
     'http://127.0.0.1:8000/sensory/id_urzadzenia={{id_urzadzenia}}?urzadzenie_id={var_id_urzadzenia}' \\
     -H 'accept: application/json' \\
@@ -52,7 +52,7 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
 
 
 def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
-    bashCommand="""
+    bashCommand = """
     curl -X 'GET' \
     'http://127.0.0.1:8000/urzadzenia/numer_seryjny={var_numer_seryjny}' \
     -H 'accept: application/json' 
@@ -74,21 +74,21 @@ def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
 
 
 # {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
-def tworzenie_urzadzenia_i_sensorow():
-    numer_seryjny="FWQ1000"
-    nazwa_urzadzenia="bomilwkar"
+def tworzenie_pierwszego_urzadzenia_i_sensorow():
+    numer_seryjny = "FWQ1000"
+    nazwa_urzadzenia = "bomilwkar"
     czy_istnieje_urzadzenie_o_tym_numerze_seryjnym = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
     print(f"czy istnieje już takie urzadzenie? {czy_istnieje_urzadzenie_o_tym_numerze_seryjnym}")
     if czy_istnieje_urzadzenie_o_tym_numerze_seryjnym is None:
         post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
         id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
-        litery_porzadkowe=["a", "b", "c"]
-        parametr=["temperatura", "pm2.5", "pm5", "napiecie"]
-        min=["-15", "-15", "-20"]
-        max=["5", "30", "30"]
-        jednostka=["stopnie Celsjusza", "smogowe", "smogowe"]
-        status_sensora=["aktywny", "aktywny", "aktywny"]
-        iteracja=[0, 1, 2]
+        litery_porzadkowe = ["a", "b", "c"]
+        parametr = ["temperatura", "pm2.5", "pm5", "napiecie"]
+        min = ["-15", "-15", "-20", "-5"]
+        max = ["5", "30", "30", "5"]
+        jednostka = ["stopnie Celsjusza", "smogowe", "smogowe", "volty"]
+        status_sensora = ["aktywny", "aktywny", "aktywny", "aktywny"]
+        iteracja = [0, 1, 2, 3]
         for numer in iteracja:
             post_curl_sensor(id_urzadzenia=id_urzadzenia,
                              litery_porzadkowe=litery_porzadkowe[numer],
@@ -99,5 +99,31 @@ def tworzenie_urzadzenia_i_sensorow():
                              status_sensora=status_sensora[numer])
 
 
-tworzenie_urzadzenia_i_sensorow()
-#get_urzadzenie_id_by_numer_seryjny("FWQ1000")
+def tworzenie_drugiego_urzadzenia_i_sensorow():
+    numer_seryjny = "AMD1000"
+    nazwa_urzadzenia = "tabnit"
+    czy_istnieje_urzadzenie_o_tym_numerze_seryjnym = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
+    print(f"czy istnieje już takie urzadzenie? {czy_istnieje_urzadzenie_o_tym_numerze_seryjnym}")
+    if czy_istnieje_urzadzenie_o_tym_numerze_seryjnym is None:
+        post_curl_urzadzenia(numer_seryjny=numer_seryjny, nazwa_urzadzenia=nazwa_urzadzenia)
+        id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
+        litery_porzadkowe = ["a", "b", "c"]
+        parametr = ["stezenie wodoru", "hydrowodór", "alkohol etylowy", "napiecie"]
+        min = ["-15", "-15", "-20", "-5"]
+        max = ["5", "30", "30", "5"]
+        jednostka = ["procent", "objętość", "procent", "volty"]
+        status_sensora = ["aktywny", "aktywny", "aktywny", "aktywny"]
+        iteracja = [0, 1, 2]
+        for numer in iteracja:
+            post_curl_sensor(id_urzadzenia=id_urzadzenia,
+                             litery_porzadkowe=litery_porzadkowe[numer],
+                             parametr=parametr[numer],
+                             min=min[numer],
+                             max=max[numer],
+                             jednostka=jednostka[numer],
+                             status_sensora=status_sensora[numer])
+
+
+tworzenie_pierwszego_urzadzenia_i_sensorow()
+tworzenie_drugiego_urzadzenia_i_sensorow()
+# get_urzadzenie_id_by_numer_seryjny("FWQ1000")
