@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -25,18 +25,19 @@ def get_db():
     finally:
         db.close()
 
+
 ######################## CREATE #######################
 @router.post("/", response_model=sesja_schemas.SesjaCreateSchema)
 async def create_sesja(sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
     db_sesja = sesja_crud.create_sesja(db=db, sesja=sesja)
     if db_sesja is None:
-        raise HTTPException(status_code=404, detail="Nie udało się dodać nowerj sesji")
+        raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
     return db_sesja
 
 
 @router.post("/id_uzytkownika={uzytkownik_id}", response_model=sesja_schemas.SesjaSchema)
 async def create_sesja_id_uzytkownik(uzytkownik_id: int, sesja: sesja_schemas.SesjaCreateSchema, db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.create_sesja_dla_uzytkownika(uzytkownik_id=uzytkownik_id, db=db, sesja=sesja)
+    db_sesja = sesja_crud.create_sesja(uzytkownik_id=uzytkownik_id, db=db, sesja=sesja)
     if db_sesja is None:
         raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
     return db_sesja
@@ -45,60 +46,54 @@ async def create_sesja_id_uzytkownik(uzytkownik_id: int, sesja: sesja_schemas.Se
 @router.post("/id_uzytkownika={uzytkownik_id}/id_urzadzenia={urzadzenie_id}", response_model=sesja_schemas.SesjaSchema)
 async def create_sesja_id_uzytkownik_id_urzadzenie(urzadzenie_id: int, uzytkownik_id: int, sesja: sesja_schemas.SesjaCreateSchema,
                                                    db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id=urzadzenie_id,
-                                                                  uzytkownik_id=uzytkownik_id,
-                                                                  db=db, sesja=sesja)
+    db_sesja = sesja_crud.create_sesja(urzadzenie_id=urzadzenie_id,
+                                       uzytkownik_id=uzytkownik_id,
+                                       db=db, sesja=sesja)
     if db_sesja is None:
         raise HTTPException(status_code=404, detail="Nie udało się dodać nowej sesji")
     return db_sesja
 
+
 ######################### GET ##############################
 @router.get("/id={sesja_id}", response_model=sesja_schemas.SesjaSchema)
-async def get_sesja(sesja_id: int, db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.get_sesja(db, sesja_id=sesja_id)
-    if db_sesja is None:
-        raise HTTPException(status_code=404, detail="Sesji nie znaleziono")
-    return db_sesja
-
-
-@router.get("/numer_seryjny={numer_seryjny}", response_model=sesja_schemas.SesjaUrzadzenieSchema)
-async def get_sesja_by_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
-    db_sesja = sesja_crud.get_sesja_by_numer_seryjny(db, numer_seryjny=numer_seryjny)
+async def get_sesja_o_id(sesja_id: int, db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.get_sesja_o_id(db=db, sesja_id=sesja_id)
     if db_sesja is None:
         raise HTTPException(status_code=404, detail="Sesji nie znaleziono")
     return db_sesja
 
 
 @router.get("/", response_model=List[sesja_schemas.SesjaSchema])
-async def get_zbior_sesji(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
+async def get_zbior_sesji(skip: Optional[int] = None, limit: Optional[int] = None, db: Session = Depends(get_db)):
+    sesje = sesja_crud.get_zbior_sesji(db=db, skip=skip, limit=limit)
     return sesje
 
 
 @router.get("/przynalezne_zbiory", response_model=List[sesja_schemas.SesjaSchemaNested])
-async def get_zbior_sesji_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sesje = sesja_crud.get_zbior_sesji(db, skip=skip, limit=limit)
+async def get_zbior_sesji_z_zagniezdzeniami(skip: Optional[int] = None, limit: Optional[int] = None, db: Session = Depends(get_db)):
+    sesje = sesja_crud.get_zbior_sesji(db=db, skip=skip, limit=limit)
     return sesje
 
 
 @router.get("/aktywne_sesje", response_model=List[sesja_schemas.SesjaSchema])
 async def zwroc_zbior_sesji_aktywne(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sesje = sesja_crud.zwroc_aktywne_sesje(db, skip=skip, limit=limit)
+    sesje = sesja_crud.zwroc_aktywne_sesje(db=db, skip=skip, limit=limit)
     return sesje
 
 
 @router.get("/aktywna_sesja/urzadzenie_id={urzadzenie_id}", response_model=sesja_schemas.SesjaSchema)
 async def get_aktywna_sesja_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
-    sesja = sesja_crud.get_aktywna_sesja_urzadzenia_id(db, urzadzenie_id)
+    sesja = sesja_crud.get_aktywna_sesja_urzadzenia_id(db=db, urzadzenie_id=urzadzenie_id)
     return sesja
 
 
 @router.get("/aktywne_sesje/numer_seryjny_urzadzenia={numer_seryjny}", response_model=sesja_schemas.SesjaSchema)
-async def get_aktywna_sesje_numer_seryjny_urzadzenia(numer_seryjny: str, db: Session = Depends(get_db)):
-    sesja = sesja_crud.get_aktywna_sesja_numer_seryjny_urzadzenie(db, numer_seryjny)
+async def get_aktywna_sesje_urzadzenia_o_numerze_seryjnym(numer_seryjny: str, db: Session = Depends(get_db)):
+    sesja = sesja_crud.get_aktywna_sesja_urzadzenia_o_numerze_seryjnym(db, numer_seryjny)
     return sesja
 
 
+######################
 @router.put("/id={sesja_id}", response_description="Zakończ działanie sesji")
 async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
     #jesli znajdzie aktywna sesje pod tym id, zakonczy je, jeśli takiej nie bedzie

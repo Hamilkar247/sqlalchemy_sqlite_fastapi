@@ -2,6 +2,16 @@ import json
 import os
 
 
+def execute_bash_command(bashCommand: str):
+    print(f"bashCommand: {bashCommand}")
+    stream = os.popen(bashCommand)
+    output = stream.read()
+    print("------------")
+    print(output)
+    print("------------")
+    return output
+
+
 # {"sn": "FWQ1000", "wart": {"a": 2, "b": 7, "c": 5, "z": 5}, "kod": "0000000"}
 def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
     bashCommand = """\
@@ -14,17 +24,12 @@ def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
       "numer_seryjny": "{var_numer_seryjny}"\
     }}'
     """.format(var_nazwa_urzadzenia=nazwa_urzadzenia, var_numer_seryjny=numer_seryjny)
-    print(bashCommand)
-    stream = os.popen(bashCommand)
-    output = stream.read()
-    print("--------------")
-    print(output)
-    print("--------------")
+    output = execute_bash_command(bashCommand)
     return output
 
 
 def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jednostka, status_sensora):
-    print(f"id_sensora: {id_urzadzenia}")
+    print(f"id_urzadzenia: {id_urzadzenia}")
     bashCommand = """
     curl -X 'POST'\\
     'http://127.0.0.1:8000/sensory/id_urzadzenia={{id_urzadzenia}}?urzadzenie_id={var_id_urzadzenia}' \\
@@ -43,12 +48,7 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
                var_parametr=parametr, var_min=min,
                var_max=max, var_jednostka=jednostka,
                var_status_sensora=status_sensora)
-    print(bashCommand)
-    stream = os.popen(bashCommand)
-    output = stream.read()
-    print("--------------")
-    print(output)
-    print("--------------")
+    output = execute_bash_command(bashCommand)
 
 
 def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
@@ -114,7 +114,7 @@ def tworzenie_drugiego_urzadzenia_i_sensorow():
         max = ["5", "30", "30", "5"]
         jednostka = ["procent", "objętość", "procent", "volty"]
         status_sensora = ["aktywny", "aktywny", "aktywny", "aktywny"]
-        iteracja = [0, 1, 2]
+        iteracja = [0, 1, 2, 3]
         for numer in iteracja:
             post_curl_sensor(id_urzadzenia=id_urzadzenia,
                              litery_porzadkowe=litery_porzadkowe[numer],

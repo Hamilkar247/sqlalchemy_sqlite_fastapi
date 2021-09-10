@@ -109,7 +109,7 @@ async def update_urzadzenie_o_id(urzadzenie_id: int, urzadzenie: urzadzenie_sche
 
 
 ####################### DELETE ########################
-@router.delete("/usun/id={urzadzenie_id}", response_description="Usuń urządzenie o numerze id ...")
+@router.delete("/id={urzadzenie_id}", response_description="Usuń urządzenie o numerze id ...")
 async def delete_id_urzadzenie(urzadzenie_id: int, db: Session = Depends(get_db)):
     result_str = urzadzenie_crud.delete_urzadzenie_o_id(db=db, urzadzenie_id=urzadzenie_id)
     if result_str is not None:
@@ -118,7 +118,7 @@ async def delete_id_urzadzenie(urzadzenie_id: int, db: Session = Depends(get_db)
         return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": f"Nie udało się usunąć urządzenia o numerze id"})
 
 
-@router.delete("/usun/wszystkie_urzadzenia", response_description="Usunięto wszystkie urządzenia")
+@router.delete("/wszystkie_urzadzenia", response_description="Usunięto wszystkie urządzenia")
 async def delete_wszystkie_urzadzenia(db: Session = Depends(get_db)):
     result = urzadzenie_crud.delete_caly_zbior_urzadzenia(db=db)
     if result is not None:
