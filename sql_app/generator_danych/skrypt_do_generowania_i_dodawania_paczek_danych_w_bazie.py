@@ -8,10 +8,9 @@ import os
 
 from dotenv import load_dotenv
 
-from generator_danych import generator_paczek_danych_od_arka
 
 
-str_path_to_env = ".env"
+str_path_to_env = "../.env"
 load_dotenv(str_path_to_env)
 HOST = os.environ.get("HOST")
 PORT = os.environ.get("UVICORN_PORT")
@@ -189,16 +188,8 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
         return None
 
 
-def generuje_paczki_danych():
-    json_arek_daty = generator_paczek_danych_od_arka.generate_json_paczka()
-    print(json_arek_daty)
-    # serializacja
-    dane = json.loads(json_arek_daty)
-    return dane
-
-
-def dane_od_arka():
-    dane = generuje_paczki_danych()
+def dane_od_arka(paczka_danych_json):
+    dane=paczka_danych_json
     numer_seryjny = dane['sn']
     print(f"-----------%%%%------------ {numer_seryjny} ----------%%%------")
     id_urzadzenia = get_id_urzadzenia_dla_tej_paczki(numer_seryjny=numer_seryjny)
@@ -219,12 +210,13 @@ def dane_od_arka():
                                                           numer_seryjny=numer_seryjny)
         dane_paczki = json.loads(output_json_z_id_paczki)
         print(f"dane_paczki {dane_paczki}")
+        id_paczki = None
         if type(dane_paczki) == list:
             if len(dane_paczki)>0:
                 id_paczki = dane_paczki[0]["id"]
         else:
             id_paczki = dane_paczki["id"]
-        # wart
+
         for key, value in wart.items():
             print(key, value)
             litery_porzadkowe = key
@@ -232,6 +224,3 @@ def dane_od_arka():
             send_curl_wartosc_pomiaru_sensora(id_paczki=id_paczki, litery_porzadkowe=litery_porzadkowe, wartosc=wartosc)
     else:
         print("Nie ma id_urzadzenia")
-
-
-dane_od_arka()
