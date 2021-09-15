@@ -5,7 +5,17 @@ from datetime import datetime
 import subprocess
 import json
 import os
+
+from dotenv import load_dotenv
+
 from generator_danych import generator_paczek_danych_od_arka
+
+
+str_path_to_env = ".env"
+load_dotenv(str_path_to_env)
+HOST = os.environ.get("HOST")
+PORT = os.environ.get("UVICORN_PORT")
+basic_url = "http://"+HOST+":"+PORT
 
 
 def execute_bash_command(bashCommand: str):
@@ -18,88 +28,88 @@ def execute_bash_command(bashCommand: str):
 def get_urzadzenie_o_numerze_seryjnym(numer_seryjny):
     bashCommand = """
     curl -X 'GET' \
-    'http://127.0.0.1:8000/urzadzenia/numer_seryjny={var_numer_seryjny}' \
+    '{basic_url}/urzadzenia/numer_seryjny={var_numer_seryjny}' \
     -H 'accept: application/json'
-    """.format(var_numer_seryjny=numer_seryjny)
+    """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny)
     return execute_bash_command(bashCommand)
 
 
 def post_paczke_danych_dla_sesji(id_sesji, kod_statusu, numer_seryjny):
     bashCommand = """\
-    curl -X 'POST' 'http://127.0.0.1:8000/paczki_danych/id_sesji={var_id_sesji}' -H 'accept: application/json' -H 'Content-Type: application/json' \
+    curl -X 'POST' '{basic_url}/paczki_danych/id_sesji={var_id_sesji}' -H 'accept: application/json' -H 'Content-Type: application/json' \
     -d ' {{  \
     "kod_statusu": "{var_kod_statusu}", \
     "numer_seryjny": "{var_numer_seryjny}"\
     }} '
-    """.format(var_id_sesji=id_sesji, var_kod_statusu=kod_statusu, var_numer_seryjny=numer_seryjny)
+    """.format(basic_url=basic_url, var_id_sesji=id_sesji, var_kod_statusu=kod_statusu, var_numer_seryjny=numer_seryjny)
     return execute_bash_command(bashCommand)
 
 
 def get_paczke_danych__bez_sesji_dla_numeru_seryjnego(numer_seryjny):
     bashCommand = """
     curl -X 'GET' \
-      'http://127.0.0.1:8000/paczki_danych/bez_sesji/numer_seryjny={var_numer_seryjny}' \
+      '{basic_url}/paczki_danych/bez_sesji/numer_seryjny={var_numer_seryjny}' \
       -H 'accept: application/json'
-    """.format(var_numer_seryjny=numer_seryjny)
+    """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny)
     return execute_bash_command(bashCommand)
 
 
 def post_pierwsza_paczke_danych__bez_sesji_dla_numeru_seryjnego(numer_seryjny, kod_statusu):
     bashCommand = """
     curl -X 'POST' \
-      'http://127.0.0.1:8000/paczki_danych/' \
+      '{{basic_url}/paczki_danych/' \
       -H 'accept: application/json' \
       -H 'Content-Type: application/json' \
       -d '{{ \
       "kod_statusu": "{var_kod_statusu}", \
       "numer_seryjny": "{var_numer_seryjny}"\
     }}'
-    """.format(var_numer_seryjny=numer_seryjny, var_kod_statusu=kod_statusu)
+    """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny, var_kod_statusu=kod_statusu)
     return execute_bash_command(bashCommand)
 
 
 def update_paczke_danych__bez_sesji_dla_numeru_seryjnego(numer_seryjny, kod_statusu):
     bashCommand = """
      curl -X 'PUT' \
-       'http://127.0.0.1:8000/paczki_danych/zmien/brak_sesji/numer_seryjny_urzadzenia={var_numer_seryjny}' \
+       '{basic_url}/paczki_danych/zmien/brak_sesji/numer_seryjny_urzadzenia={var_numer_seryjny}' \
        -H 'accept: application/json' \
        -H 'Content-Type: application/json' \
        -d '{{  \
        "kod_statusu": "{var_kod_statusu}" \
        }}'
-     """.format(var_numer_seryjny=numer_seryjny, var_kod_statusu=kod_statusu)
+     """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny, var_kod_statusu=kod_statusu)
     return execute_bash_command(bashCommand)
 
 
 def delete_stare_wartosci_paczki(id_paczki):
     bashCommand = """
      curl -X 'DELETE' \
-       'http://127.0.0.1:8000/wartosci_pomiarowe_sensora/delete/id_paczki={var_id_paczki}' \
+       '{basic_url}/wartosci_pomiarowe_sensora/delete/id_paczki={var_id_paczki}' \
        -H 'accept: application/json'
-     """.format(var_id_paczki=id_paczki)
+     """.format(basic_url=basic_url, var_id_paczki=id_paczki)
     return execute_bash_command(bashCommand)
 
 
 def post_nowa_wartosc_pomiaru_sensora_dla_paczki_o_id(id_paczki, wartosc, litery_porzadkowe):
     bashCommand = """
     curl -X 'POST' \
-   'http://127.0.0.1:8000/wartosci_pomiarowe_sensora/id_paczki={var_id_paczki}' \
+   '{basic_url}/wartosci_pomiarowe_sensora/id_paczki={var_id_paczki}' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -d '{{
     "wartosc": "{var_wartosc}",
     "litery_porzadkowe": "{var_litery_porzadkowe}"
     }}'
-    """.format(var_id_paczki=id_paczki, var_wartosc=wartosc, var_litery_porzadkowe=litery_porzadkowe)
+    """.format(basic_url=basic_url, var_id_paczki=id_paczki, var_wartosc=wartosc, var_litery_porzadkowe=litery_porzadkowe)
     return execute_bash_command(bashCommand)
 
 
 def get_aktywna_sesja_dla_urzadzenia_o_id(id_urzadzenia):
     bashCommand = """
     curl -X 'GET' \
-    'http://127.0.0.1:8000/sesje/aktywna_sesja/urzadzenie_id={var_urzadzenie_id}' \
+    '{basic_url}/sesje/aktywna_sesja/urzadzenie_id={var_urzadzenie_id}' \
     -H 'accept: application/json'
-    """.format(var_urzadzenie_id=id_urzadzenia)
+    """.format(basic_url=basic_url, var_urzadzenie_id=id_urzadzenia)
     return execute_bash_command(bashCommand)
 
 
@@ -167,6 +177,7 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
     # print(output[1:-1])
     print("------------------")
     print(dane_zapytania)
+    print("------------------")
     rekord = json.loads(dane_zapytania)  # [1:-1])
     # print(data)
     try:

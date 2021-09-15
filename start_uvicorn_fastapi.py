@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 def get_boolean_value_from_string(string):
     print(f"ahoj {string}")
     if string is not None:
-        if string.lower in ["true", "True"]:
+        if string.lower() in ["true"]:
             return True
         else:
             return False
@@ -18,9 +18,9 @@ def get_boolean_value_from_string(string):
 
 
 if __name__ == "__main__":
-    dotenv_path = join("sql_app/"+dirname(__file__), ".env")
-    print(dirname(__file__))
-    load_dotenv(dotenv_path)
+    str_path_to_env="sql_app"+"/.env"
+    print(str_path_to_env)
+    load_dotenv(str_path_to_env)
     host = os.environ.get("HOST")
     port_uvicorn = int(os.environ.get("UVICORN_PORT"))
     reload = get_boolean_value_from_string(os.environ.get("RELOAD"))
@@ -30,5 +30,5 @@ if __name__ == "__main__":
     print(reload)
     print(debug)
     print(workers)
-    uvicorn.run("sql_app.main:app", host=host, port=port_uvicorn, reload=True, debug=True) #, workers=3) #workers)
-
+    uvicorn.run("sql_app.main:app", host=host, port=port_uvicorn, reload=reload, debug=debug) #, workers=3) #workers)
+    print("ahoj!")
