@@ -11,44 +11,7 @@ from sql_app.schemas_package import paczka_danych_schemas
 from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
 
 
-def get_paczka_danych(db: Session, paczka_danych_id: int):
-    return db.query(PaczkaDanych).filter(PaczkaDanych.id == paczka_danych_id).first()
-
-
-def get_zbior_paczek_danych(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(PaczkaDanych).offset(skip).limit(limit).all()
-
-
-def get_paczka_danych_dla_urzadzenia(db: Session, numer_seryjny: str):
-    # zwraca najwiekszy indeks dla danego numeru seryjnego
-    return db.query(PaczkaDanych).filter(
-        PaczkaDanych.numer_seryjny == numer_seryjny). \
-        order_by(None). \
-        order_by(PaczkaDanych.id.desc()).first()
-
-
-def get_zbior_paczek_danych_bez_przypisanej_sesji(db: Session):
-    # zwraca najwiekszy indeks dla danego numeru seryjnego
-    return db.query(PaczkaDanych).filter(
-        PaczkaDanych.sesja_id == None
-    ).all()
-
-
-def get_paczka_danych_dla_urzadzenia_bez_przypisanej_sesji(db: Session, numer_seryjny: str):
-    # zwraca najwiekszy indeks dla danego numeru seryjnego
-    return db.query(PaczkaDanych).filter(
-        PaczkaDanych.numer_seryjny == numer_seryjny).filter(
-        PaczkaDanych.sesja_id == None
-    ).first()
-
-
-def get_paczke_danych_i_odpowiadajace_mu_urzadzenie(db: Session, numer_seryjny: str):
-    # dane = db.query(models.Urzadzenie.id, models.Urzadzenie.numer_seryjny, models.Urzadzenie.nazwa_urzadzenia).filter(
-    #    models.PaczkaDanych.numer_seryjny == models.Urzadzenie.numer_seryjny).all()
-    dane = db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny)
-    return dane
-
-
+##################### CREATE ###########################
 def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychSchema):
     db_paczka_danych = PaczkaDanych(
         kod_statusu=paczka_danych.kod_statusu,
@@ -61,13 +24,6 @@ def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.Paczk
     return db_paczka_danych
 
 
-# def paczka_danych_zamien_lub_stworz(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychSchema):
-#    db_paczka_danych = db.query(models.PaczkaDanych)\
-#        .filter_by(models.PaczkaDanych.numer_seryjny == paczka_danych.numer_seryjny)\
-#        .update()
-
-
-# jeśli nie ma żadnej przypisanej sesji - nadpisuje dane ostatniej paczki urządzenia
 def create_paczka_danych_dla_sesji(db: Session,
                                    paczka_danych: paczka_danych_schemas,
                                    sesja_id: Optional[int] = None):
@@ -83,6 +39,52 @@ def create_paczka_danych_dla_sesji(db: Session,
     return db_paczka_danych
 
 
+##################### GET #############################
+def get_paczka_danych_o_id(db: Session, paczka_danych_id: Optional[int]=None):
+    return db.query(PaczkaDanych).filter(PaczkaDanych.id == paczka_danych_id).first()
+
+
+def get_zbior_paczek_danych(db: Session, skip: Optional[int] = None, limit: Optional[int] = None,
+                            id_sesji: Optional[int] = None):
+    paczki_danych = db.query(PaczkaDanych).\
+        offset(skip).limit(limit).all()
+    return paczki_danych
+
+
+def get_zbior_paczek_danych_o_id_sesji(sesja_id: int, db: Session,
+                    skip: Optional[int] = None, limit: Optional[int] = None):
+    if sesja_id is not None:
+        if limit != 1:
+             return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id)\
+                      .offset(skip).limit(limit).all()
+        else:
+            return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id) \
+                      .offset(skip).limit(limit).first()
+    return None
+
+
+def get_zbior_paczek_danych_bez_przypisanej_sesji(db: Session,
+                    skip: Optional[int] = None, limit: Optional[int] = None, numer_seryjny: Optional[str] = None):
+    print(f'chodz {numer_seryjny}')
+    #gdy nie chcemy filtrować po numerze seryjnym
+    if numer_seryjny is not None:
+        return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == None) \
+            .filter(PaczkaDanych.numer_seryjny == numer_seryjny) \
+            .order_by(None).order_by(PaczkaDanych.czas_paczki.desc()) \
+            .offset(skip).limit(limit).all()
+    else:
+        return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == None)\
+            .order_by(None).order_by(PaczkaDanych.czas_paczki.desc())\
+            .offset(skip).limit(limit).all()
+
+
+def get_zbior_paczek_danych_o_numerze_seryjnym(db: Session, numer_seryjny: str,
+                                               skip: Optional[int] = None, limit: Optional[int] = None):
+    return db.query(PaczkaDanych).filter(PaczkaDanych.numer_seryjny == numer_seryjny).offset(skip).limit(limit).all()
+            #order_by(models.PaczkaDanych.czas_paczki.desc())
+
+
+###################### UPDATE #####################################
 def zmien_paczke_danych_o_id(db: Session, paczka_danych_id: int,
                                paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema):
     znajdz_i_zmien_paczke = db.query(models.PaczkaDanych).filter(models.PaczkaDanych.id == paczka_danych_id).update(
@@ -136,6 +138,7 @@ def zmien_paczke_danych_o_id__usun_dotychaczsowe_wartosci_pomiarow(db: Session, 
         return None
 
 
+############################# DELETE #################################
 def delete_paczka_danych(db: Session, paczka_danych_id: int):
     result_str = ""
     try:
@@ -151,7 +154,7 @@ def delete_paczka_danych(db: Session, paczka_danych_id: int):
         return result_str
 
 
-def delete_all_paczki(db: Session):
+def delete_wszystkie_paczki_danych(db: Session):
     wszystkie_rekordy = db.query(PaczkaDanych)
     if wszystkie_rekordy is not None:
         wszystkie_rekordy.delete()

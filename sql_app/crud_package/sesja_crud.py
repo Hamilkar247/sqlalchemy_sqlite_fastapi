@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy.orm import Session
 from sql_app import models
@@ -6,23 +7,42 @@ from sql_app.format_danych import FormatDaty
 from sql_app.schemas_package import sesja_schemas
 
 
-def get_sesja(db: Session, sesja_id: int):
+################ CREATE ##################
+def create_sesja(db: Session,
+                                            sesja: sesja_schemas.SesjaCreateSchema,
+                                            urzadzenie_id: Optional[int] = None,
+                                            uzytkownik_id: Optional[int] = None
+                                            ):
+    db_sesja = models.Sesja(
+        nazwa_sesji=sesja.nazwa_sesji,
+        start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
+        koniec_sesji="trwa",
+        czy_aktywna=True,
+        dlugosc_trwania_w_s="trwa",
+        uzytkownik_id=uzytkownik_id,
+        urzadzenie_id=urzadzenie_id
+    )
+    db.add(db_sesja)
+    db.commit()
+    db.refresh(db_sesja)
+    return db_sesja
+
+
+################# GET ####################
+def get_sesja_o_id(db: Session, sesja_id: int):
     return db.query(models.Sesja).filter(models.Sesja.id == sesja_id).first()
 
 
-def get_sesja_by_numer_seryjny(db: Session, numer_seryjny: str):
-    return db.query(models.Sesja.id,
-                    models.Sesja.czy_aktywna,
-                    models.Sesja.start_sesji,
-                    models.Sesja.koniec_sesji,
-                    models.Sesja.urzadzenie_id,
-                    models.Urzadzenie.numer_seryjny).filter(
-        models.Sesja.urzadzenie_id == models.Urzadzenie.id).filter(
+def get_zbior_sesji(db: Session, skip: Optional[int] = None, limit: Optional[int] = None):
+    if limit != 1:
+        return db.query(models.Sesja).offset(skip).limit(limit).all()
+    else:
+        return db.query(models.Sesja).offset(skip).limit(limit).first()
+
+
+def get_sesja_dla_urzadzen_o_numerze_seryjnym(db: Session, numer_seryjny: str):
+    return db.query(models.Sesja, models.Urzadzenie).filter(models.Sesja.urzadzenie_id == models.Urzadzenie.id).filter(
         models.Urzadzenie.numer_seryjny == numer_seryjny)
-
-
-def get_zbior_sesji(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Sesja).offset(skip).limit(limit).all()
 
 
 def zwroc_aktywne_sesje(db: Session, skip: int = 0, limit: int = 100):
@@ -34,8 +54,10 @@ def get_aktywna_sesja_urzadzenia_id(db: Session, urzadzenie_id: int):
         filter(models.Sesja.urzadzenie_id == urzadzenie_id).first()
 
 
-def get_aktywna_sesja_numer_seryjny_urzadzenie(db: Session, numer_seryjny: str):
-    return None #db.query(models.Sesja, ,Urzadzenie).filter
+def get_aktywna_sesja_urzadzenia_o_numerze_seryjnym(db: Session, numer_seryjny: str):
+    return db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).\
+        filter(models.Sesja.urzadzenie_id == models.Urzadzenie.id).\
+        filter(models.Urzadzenie.numer_seryjny == numer_seryjny).first()
 
     #ahoj=db.query(models.Urzadzenie).filter(models.Urzadzenie.numer_seryjny == numer_seryjny).all()
     #ajon=db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True).all() #\
@@ -89,47 +111,6 @@ def zakoncz_sesje(db: Session, sesja_id: int):
 #    find_sesja = db.query(models.Sesja).filter(models.Sesja.id==sesja_id, models.Sesja.id==sesja_id).all()
 #    find_sesja.update()
 
-
-def create_sesja(db: Session, sesja: sesja_schemas.SesjaCreateSchema):
-    db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
-                            start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
-                            koniec_sesji="trwa",
-                            czy_aktywna=True,
-                            dlugosc_trwania_w_s="trwa")  # , urzadzenie_id=urzadzenie_id, uzytkownik_id=uzytkownik_id)
-    db.add(db_sesja)
-    db.commit()
-    db.refresh(db_sesja)
-    return db_sesja
-
-
-def create_sesja_dla_uzytkownika(uzytkownik_id: int, db: Session, sesja: sesja_schemas.SesjaCreateSchema):
-    db_sesja = models.Sesja(nazwa_sesji=sesja.nazwa_sesji,
-                            start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
-                            koniec_sesji="trwa",
-                            czy_aktywna=True,
-                            dlugosc_trwania_w_s="trwa",
-                            uzytkownik_id=uzytkownik_id)  # , urzadzenie_id=urzadzenie_id, uzytkownik_id=uzytkownik_id)
-    db.add(db_sesja)
-    db.commit()
-    db.refresh(db_sesja)
-    return db_sesja
-
-
-def create_sesja_urzadzenia_dla_uzytkownika(urzadzenie_id: int, uzytkownik_id: int, db: Session,
-                                            sesja: sesja_schemas.SesjaCreateSchema):
-    db_sesja = models.Sesja(
-        nazwa_sesji=sesja.nazwa_sesji,
-        start_sesji=str(datetime.now().strftime("%d/%m/%y %H:%M:%S")),
-        koniec_sesji="trwa",
-        czy_aktywna=True,
-        dlugosc_trwania_w_s="trwa",
-        uzytkownik_id=uzytkownik_id,
-        urzadzenie_id=urzadzenie_id
-    )
-    db.add(db_sesja)
-    db.commit()
-    db.refresh(db_sesja)
-    return db_sesja
 
 
 def delete_sesja(db: Session, sesje_id: int):
