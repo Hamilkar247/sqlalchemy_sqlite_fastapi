@@ -3,6 +3,8 @@ import os
 import shutil
 from time import sleep
 
+from dotenv import load_dotenv
+
 from skrypt_do_generowania_i_dodawania_paczek_danych_w_bazie import dane_od_arka
 
 
@@ -48,6 +50,9 @@ def srednia_z_dotychaczasowych_pomiarow(path):
 
 
 def generate_json_paczka():
+    ### usrednianie
+    load_dotenv(".."+"/.env")
+    liczba_elementow_do_usredniania = int(os.environ.get("USREDNIANIE"))
     list_of_sn = []
     ahoj=0
     while True:
@@ -55,7 +60,7 @@ def generate_json_paczka():
         for folder in urzadzenia_foldery:
             ahoj = ahoj + 1
             print(folder)
-            if len(os.listdir(os.curdir+"/paczki/"+folder)) < 5:
+            if len(os.listdir(os.curdir+"/paczki/"+folder)) < liczba_elementow_do_usredniania:
                 print("za malo danych")
             else:
                 path = os.curdir+"/paczki/"+folder
