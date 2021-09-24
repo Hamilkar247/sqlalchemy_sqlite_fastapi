@@ -1,6 +1,15 @@
 import json
 import os
 
+from dotenv import load_dotenv
+
+str_path_to_env = "../../.env"
+load_dotenv(str_path_to_env)
+UVICORN_HOST = os.environ.get("UVICORN_HOST")
+FASTAPI_PORT = os.environ.get("FASTAPI_PORT")
+HTTPS_HTTP = os.environ.get("HTTPS_HTTP")
+basic_url = HTTPS_HTTP+"://"+UVICORN_HOST+":"+FASTAPI_PORT
+
 
 def execute_bash_command(bashCommand: str):
     print(f"bashCommand: {bashCommand}")
@@ -16,14 +25,14 @@ def execute_bash_command(bashCommand: str):
 def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
     bashCommand = """\
     curl -X 'POST' \
-      'http://127.0.0.1:8000/urzadzenia/' \
+      '{basic_url}/urzadzenia/' \
       -H 'accept: application/json' \
       -H 'Content-Type: application/json' \
       -d '{{\
       "nazwa_urzadzenia": "{var_nazwa_urzadzenia}",\
       "numer_seryjny": "{var_numer_seryjny}"\
     }}'
-    """.format(var_nazwa_urzadzenia=nazwa_urzadzenia, var_numer_seryjny=numer_seryjny)
+    """.format(basic_url=basic_url, var_nazwa_urzadzenia=nazwa_urzadzenia, var_numer_seryjny=numer_seryjny)
     output = execute_bash_command(bashCommand)
     return output
 
@@ -32,7 +41,7 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
     print(f"id_urzadzenia: {id_urzadzenia}")
     bashCommand = """
     curl -X 'POST'\\
-    'http://127.0.0.1:8000/sensory/id_urzadzenia={{id_urzadzenia}}?urzadzenie_id={var_id_urzadzenia}' \\
+    '{basic_url}/sensory/id_urzadzenia={{id_urzadzenia}}?urzadzenie_id={var_id_urzadzenia}' \\
     -H 'accept: application/json' \\
     -H 'Content-Type: application/json' \\
     -d '{{
@@ -43,7 +52,8 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
     "jednostka": "{var_jednostka}",
     "status_sensora": "{var_status_sensora}"
     }}'
-    """.format(var_id_urzadzenia=id_urzadzenia,
+    """.format(basic_url=basic_url,
+               var_id_urzadzenia=id_urzadzenia,
                var_litery_porzadkowe=litery_porzadkowe,
                var_parametr=parametr, var_min=min,
                var_max=max, var_jednostka=jednostka,
@@ -54,9 +64,10 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
 def get_urzadzenie_id_by_numer_seryjny(numer_seryjny):
     bashCommand = """
     curl -X 'GET' \
-    'http://127.0.0.1:8000/urzadzenia/numer_seryjny={var_numer_seryjny}' \
+    '{basic_url}/urzadzenia/numer_seryjny={var_numer_seryjny}' \
     -H 'accept: application/json' 
-    """.format(var_numer_seryjny=numer_seryjny)
+    """.format(basic_url=basic_url,
+               var_numer_seryjny=numer_seryjny)
     print(bashCommand)
     stream = os.popen(bashCommand)
     output = stream.read()

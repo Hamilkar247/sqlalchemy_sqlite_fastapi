@@ -10,11 +10,12 @@ from dotenv import load_dotenv
 
 
 
-str_path_to_env = "../.env"
+str_path_to_env = "../../.env"
 load_dotenv(str_path_to_env)
-HOST = os.environ.get("HOST")
-PORT = os.environ.get("UVICORN_PORT")
-basic_url = "http://"+HOST+":"+PORT
+UVICORN_HOST = os.environ.get("UVICORN_HOST")
+FASTAPI_PORT = os.environ.get("FASTAPI_PORT")
+HTTPS_HTTP = os.environ.get("HTTPS_HTTP")
+basic_url = HTTPS_HTTP+"://"+UVICORN_HOST+":"+FASTAPI_PORT
 
 
 def execute_bash_command(bashCommand: str):

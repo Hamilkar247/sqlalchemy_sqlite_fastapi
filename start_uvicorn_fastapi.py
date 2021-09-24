@@ -18,7 +18,7 @@ def get_boolean_value_from_string(string):
 
 
 if __name__ == "__main__":
-    str_path_to_env="sql_app"+"/.env"
+    str_path_to_env = ".env"
     print(str_path_to_env)
     load_dotenv(str_path_to_env)
     host = os.environ.get("HOST")
