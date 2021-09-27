@@ -2,3 +2,7 @@ venv
 .idea
 __pycache__
 *.db
+sql_app/.env
+sql_app/generator_danych/paczki/*
+.env
+*.swp

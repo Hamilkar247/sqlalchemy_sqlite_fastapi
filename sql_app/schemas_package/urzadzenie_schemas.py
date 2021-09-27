@@ -14,22 +14,22 @@ class UrzadzenieBaseSchema(BaseModel):
         orm_mode = True
 
 
-class UrzadzenieCreateSchema(UrzadzenieBaseSchema):
-    pass
-
-
 class UrzadzenieSchema(UrzadzenieBaseSchema):
     id: int
 
 
-class UrzadzenieSchemaNested_all(UrzadzenieBaseSchema):
+class UrzadzenieUpdateSchema(UrzadzenieBaseSchema):
+    pass
+
+
+class UrzadzenieSchema_ZagniezdzoneZbiory(UrzadzenieSchema):
     zbior_sensorow: List[SensorSchema] = None
     zbior_sesji: List[SesjaSchema] = None
 
 
-class UrzadzenieSchemaNested_sensory(UrzadzenieBaseSchema):
+class UrzadzenieSchema_ZagniezdzoneSensory(UrzadzenieSchema):
     zbior_sensorow: List[SensorSchema] = None
 
 
-class UrzadzenieSchemaNested_sesje(UrzadzenieBaseSchema):
+class UrzadzenieSchema_ZagniezdzoneSesje(UrzadzenieSchema):
     zbior_sesji: List[SesjaSchema] = None

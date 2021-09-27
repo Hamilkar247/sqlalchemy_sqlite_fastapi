@@ -8,8 +8,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    email = Column(String(100), unique=True, index=True)
+    hashed_password = Column(String(50))
     is_active = Column(Boolean, default=True)
 
     items = relationship("Item", back_populates="owner")
@@ -19,8 +19,8 @@ class Item(Base):
     __tablename__ = "items"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
+    title = Column(String(100), index=True)
+    description = Column(String(500), index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="items")
@@ -30,12 +30,12 @@ class Uzytkownik(Base):
     __tablename__ = "zbior_uzytkownikow"
 
     id = Column(Integer, primary_key=True, index=True)
-    imie_nazwisko = Column(String)
-    email = Column(String, unique=True)
-    hashed_password = Column(String)
-    stanowisko = Column(String)
-    opis = Column(String)
-    uprawnienia = Column(String)
+    imie_nazwisko = Column(String(75))
+    email = Column(String(100), unique=True)
+    hashed_password = Column(String(50))
+    stanowisko = Column(String(75))
+    opis = Column(String(100))
+    uprawnienia = Column(String(50))
     zbior_sesji = relationship("Sesja", back_populates="uzytkownik", passive_deletes=True)
 
 
@@ -43,11 +43,11 @@ class Sesja(Base):
     __tablename__ = "zbior_sesji"
 
     id = Column(Integer, primary_key=True, index=True)
-    nazwa_sesji = Column(String)  # może unique?
-    start_sesji = Column(String)
-    koniec_sesji = Column(String)
+    nazwa_sesji = Column(String(80))  # może unique?
+    start_sesji = Column(String(80))
+    koniec_sesji = Column(String(80))
     czy_aktywna = Column(Boolean)
-    dlugosc_trwania_w_s = Column(String)
+    dlugosc_trwania_w_s = Column(String(40))
     uzytkownik_id = Column(Integer, ForeignKey("zbior_uzytkownikow.id",
                                                ondelete="CASCADE"))  # , nullable=False)
     urzadzenie_id = Column(Integer, ForeignKey("zbior_urzadzen.id"))
@@ -60,9 +60,9 @@ class PaczkaDanych(Base):
     __tablename__ = "zbior_paczek_danych"
 
     id = Column(Integer, primary_key=True, index=True)
-    czas_paczki = Column(String)  # moze do dodania pola z datą
-    kod_statusu = Column(String)
-    numer_seryjny = Column(String)
+    czas_paczki = Column(String(50))  # moze do dodania pola z datą
+    kod_statusu = Column(String(50))
+    numer_seryjny = Column(String(50))
     sesja_id = Column(Integer, ForeignKey("zbior_sesji.id", ondelete="CASCADE"))
     # back_populates - patrz nazwa atrybutow w WartoscPomiaruSensora
     zbior_wartosci_pomiarow_sensorow = relationship("WartoscPomiaruSensora",
@@ -77,8 +77,8 @@ class WartoscPomiaruSensora(Base):
     __tablename__ = "zbior_wartosci_pomiarow_sensorow"
 
     id = Column(Integer, primary_key=True, index=True)
-    wartosc = Column(String)
-    litery_porzadkowe = Column(String)
+    wartosc = Column(String(50))
+    litery_porzadkowe = Column(String(50))
     paczka_danych_id = Column(Integer, ForeignKey(
         "zbior_paczek_danych.id", ondelete="CASCADE")
                               , nullable=False
@@ -90,9 +90,9 @@ class Urzadzenie(Base):
     __tablename__ = "zbior_urzadzen"
 
     id = Column(Integer, primary_key=True, index=True)
-    nazwa_urzadzenia = Column(String, unique=True)
+    nazwa_urzadzenia = Column(String(50), unique=True)
     # nie jestem pewien czy powinno być unique czy nie
-    numer_seryjny = Column(String, unique=True)
+    numer_seryjny = Column(String(50), unique=True)
     zbior_sensorow = relationship("Sensor", back_populates="urzadzenie", passive_deletes=True)
     zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
 
@@ -101,13 +101,13 @@ class Sensor(Base):
     __tablename__ = "zbior_sensorow"
 
     id = Column(Integer, primary_key=True, index=True)
-    litery_porzadkowe = Column(String)
-    parametr = Column(String)
+    litery_porzadkowe = Column(String(10))
+    parametr = Column(String(50))
     # kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
-    min = Column(String)
-    max = Column(String)
-    jednostka = Column(String)
-    status_sensora = Column(String)
+    min = Column(String(25))
+    max = Column(String(25))
+    jednostka = Column(String(20))
+    status_sensora = Column(String(25))
     urzadzenie_id = Column(Integer, ForeignKey(
         "zbior_urzadzen.id", ondelete="CASCADE")
                            , nullable=False)
@@ -126,6 +126,6 @@ class DekoderStatusu(Base):
     __tablename__ = "zbior_statusow"
 
     id = Column(Integer, primary_key=True, index=True)
-    kod = Column(String, unique=True)
+    kod = Column(String(25), unique=True)
     liczba_dziesietna = Column(Integer, unique=True)
-    opis_kodu = Column(String)
+    opis_kodu = Column(String(200))
