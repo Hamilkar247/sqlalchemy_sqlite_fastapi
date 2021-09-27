@@ -1,11 +1,24 @@
 import json
 import os
 import shutil
+import sys
+import traceback
+from json import JSONDecodeError
 from time import sleep
 
 from dotenv import load_dotenv
 
 from skrypt_do_generowania_i_dodawania_paczek_danych_w_bazie import dane_od_arka
+
+
+def get_value_dotenv(name_to_value):
+    if name_to_value is not None:
+        wartosc=os.environ.get(name_to_value)
+        if wartosc is not None:
+            print("wartosc "+name_to_value+":"+wartosc)
+            return wartosc
+        else:
+            print(" nie ma wartosci dla zmiennej "+name_to_value)
 
 
 def srednia_z_elementow_pomiarow(dict_wart_srednia, dict_wart_paczki):
@@ -24,20 +37,26 @@ def srednia_z_dotychaczasowych_pomiarow(path):
     dict_wart_srednia = None
     dict_wart_paczki = None
     for name_json_file in os.listdir(path):
+        print(name_json_file)
         json_data = None
-        j = open(path+"/"+name_json_file, "r")
-        if j is not None:
-            json_data = json.loads(j.read())
-            if json_data is not None:
-                if sn is None:
-                    sn = json_data["sn"]
-                if kod is None:
-                    kod = json_data["kod"]
-                if dict_wart_srednia is None:
-                    dict_wart_srednia = json_data["wart"]
-                else:
-                    dict_wart_paczki = json_data["wart"]
-                    dict_wart_srednia = srednia_z_elementow_pomiarow(dict_wart_srednia, dict_wart_paczki)
+        with open(path+"/"+name_json_file, "r") as jsonfile:
+            json_data = json.load(jsonfile)
+        if json_data is not None:
+            try:
+                print(json_data)
+                if json_data is not None:
+                    if sn is None:
+                        sn = json_data["sn"]
+                    if kod is None:
+                        kod = json_data["kod"]
+                    if dict_wart_srednia is None:
+                        dict_wart_srednia = json_data["wart"]
+                    else:
+                        dict_wart_paczki = json_data["wart"]
+                        dict_wart_srednia = srednia_z_elementow_pomiarow(dict_wart_srednia, dict_wart_paczki)
+            except JSONDecodeError as e:
+                traceback.print_exc()
+                print(f"Wystapil blad typu JSONDecodeError: {e}")
     print(dict_wart_srednia)
     print("usunieto pliki z pomiarami")
     shutil.rmtree(path)
@@ -51,11 +70,12 @@ def srednia_z_dotychaczasowych_pomiarow(path):
 
 def generate_json_paczka():
     ### usrednianie
-    load_dotenv(".."+"/.env")
+    load_dotenv("../.."+"/.env")
     liczba_elementow_do_usredniania = int(os.environ.get("USREDNIANIE"))
     list_of_sn = []
     ahoj=0
     while True:
+        print(f"folder: "+os.curdir+"/paczki/")
         urzadzenia_foldery = os.listdir(os.curdir+"/paczki/")
         for folder in urzadzenia_foldery:
             ahoj = ahoj + 1
@@ -63,6 +83,7 @@ def generate_json_paczka():
             if len(os.listdir(os.curdir+"/paczki/"+folder)) < liczba_elementow_do_usredniania:
                 print("za malo danych")
             else:
+                print("wystarczająco danych")
                 path = os.curdir+"/paczki/"+folder
                 srednia_z_dotychaczasowych_pomiarow(path=path)
         print("zzzzzz")

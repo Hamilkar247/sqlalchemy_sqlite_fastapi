@@ -9,13 +9,22 @@ import os
 from dotenv import load_dotenv
 
 
+def get_value_dotenv(name_to_value):
+    if name_to_value is not None:
+        wartosc=os.environ.get(name_to_value)
+        if wartosc is not None:
+            print("wartosc "+name_to_value+":"+wartosc)
+            return wartosc
+        else:
+            print(" nie ma wartosci dla zmiennej "+name_to_value)
+
 
 str_path_to_env = "../../.env"
 load_dotenv(str_path_to_env)
-UVICORN_HOST = os.environ.get("UVICORN_HOST")
-FASTAPI_PORT = os.environ.get("FASTAPI_PORT")
-HTTPS_HTTP = os.environ.get("HTTPS_HTTP")
-basic_url = HTTPS_HTTP+"://"+UVICORN_HOST+":"+FASTAPI_PORT
+UVICORN_HOST = get_value_dotenv("UVICORN_HOST")
+UVICORN_PORT = get_value_dotenv("UVICORN_PORT")
+HTTPS_HTTP = get_value_dotenv("HTTPS_HTTP")
+basic_url = HTTPS_HTTP+"://"+UVICORN_HOST+":"+UVICORN_PORT
 
 
 def execute_bash_command(bashCommand: str):
@@ -57,7 +66,7 @@ def get_paczke_danych__bez_sesji_dla_numeru_seryjnego(numer_seryjny):
 def post_pierwsza_paczke_danych__bez_sesji_dla_numeru_seryjnego(numer_seryjny, kod_statusu):
     bashCommand = """
     curl -X 'POST' \
-      '{{basic_url}/paczki_danych/' \
+      '{basic_url}/paczki_danych/' \
       -H 'accept: application/json' \
       -H 'Content-Type: application/json' \
       -d '{{ \
@@ -175,11 +184,10 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
     print(numer_seryjny)
     dane_zapytania = get_urzadzenie_o_numerze_seryjnym(numer_seryjny=numer_seryjny)
     # print(output[1:-1])
-    print("------------------")
+    print("--------dane_zapytania----------")
     print(dane_zapytania)
     print("------------------")
     rekord = json.loads(dane_zapytania)  # [1:-1])
-    # print(data)
     try:
         print(rekord['id'])
         return int(rekord['id'])
@@ -190,7 +198,7 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
 
 
 def dane_od_arka(paczka_danych_json):
-    dane=paczka_danych_json
+    dane = paczka_danych_json
     numer_seryjny = dane['sn']
     print(f"-----------%%%%------------ {numer_seryjny} ----------%%%------")
     id_urzadzenia = get_id_urzadzenia_dla_tej_paczki(numer_seryjny=numer_seryjny)
@@ -213,7 +221,7 @@ def dane_od_arka(paczka_danych_json):
         print(f"dane_paczki {dane_paczki}")
         id_paczki = None
         if type(dane_paczki) == list:
-            if len(dane_paczki)>0:
+            if len(dane_paczki) > 0:
                 id_paczki = dane_paczki[0]["id"]
         else:
             id_paczki = dane_paczki["id"]

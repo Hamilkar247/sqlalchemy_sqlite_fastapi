@@ -34,7 +34,6 @@ def generate_pojedynczy_json_paczka():
 
 
 def main():
-    #print(generate_pojedynczy_json_paczka())
     list_of_sn = []
     ahoj=0
     while True:

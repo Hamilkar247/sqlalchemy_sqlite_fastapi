@@ -21,7 +21,7 @@ if __name__ == "__main__":
     str_path_to_env = ".env"
     print(str_path_to_env)
     load_dotenv(str_path_to_env)
-    host = os.environ.get("HOST")
+    host = os.environ.get("UVICORN_HOST")
     port_uvicorn = int(os.environ.get("UVICORN_PORT"))
     reload = get_boolean_value_from_string(os.environ.get("RELOAD"))
     debug = get_boolean_value_from_string(os.environ.get("DEBUG"))
@@ -30,5 +30,17 @@ if __name__ == "__main__":
     print(reload)
     print(debug)
     print(workers)
-    uvicorn.run("sql_app.main:app", host=host, port=port_uvicorn, reload=reload, debug=debug) #, workers=3) #workers)
+    if host is not None:
+        if port_uvicorn is not None:
+            if reload is not None:
+                if debug is not None:
+                    uvicorn.run("sql_app.main:app", host=host, port=port_uvicorn, reload=reload, debug=debug) #, workers=3) #workers)
+                else:
+                    print("nie ma ustawionej żadnego trybu debug")
+            else:
+                print("nie ma ustawionej wartości reload")
+        else:
+            print("port uvicorn nie ma żadnej wartości")
+    else:
+        print("host nie ma zadnej wartości")
     print("ahoj!")
