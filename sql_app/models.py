@@ -4,28 +4,6 @@ from sqlalchemy.orm import relationship
 from .database import Base  # może z kropką przed database?
 
 
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(100), unique=True, index=True)
-    hashed_password = Column(String(50))
-    is_active = Column(Boolean, default=True)
-
-    items = relationship("Item", back_populates="owner")
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), index=True)
-    description = Column(String(500), index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-
-    owner = relationship("User", back_populates="items")
-
-
 class Uzytkownik(Base):
     __tablename__ = "zbior_uzytkownikow"
 
@@ -70,9 +48,6 @@ class PaczkaDanych(Base):
     sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
 
 
-#    sesja = relationship("Sesja", back_populates="zbior_paczek_danych")
-
-
 class WartoscPomiaruSensora(Base):
     __tablename__ = "zbior_wartosci_pomiarow_sensorow"
 
@@ -81,8 +56,9 @@ class WartoscPomiaruSensora(Base):
     litery_porzadkowe = Column(String(50))
     paczka_danych_id = Column(Integer, ForeignKey(
         "zbior_paczek_danych.id", ondelete="CASCADE")
-                              , nullable=False
-                              )
+                             , nullable=False
+                             )
+
     paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
@@ -103,7 +79,7 @@ class Sensor(Base):
     id = Column(Integer, primary_key=True, index=True)
     litery_porzadkowe = Column(String(10))
     parametr = Column(String(50))
-    # kalibr_wspolczynnika = Column(String) #może zewnetrzna klasa ?
+    wspolczynniki_kalibracyjne = Column(String(25))
     min = Column(String(25))
     max = Column(String(25))
     jednostka = Column(String(20))
@@ -112,14 +88,6 @@ class Sensor(Base):
         "zbior_urzadzen.id", ondelete="CASCADE")
                            , nullable=False)
     urzadzenie = relationship("Urzadzenie", back_populates="zbior_sensorow")
-
-
-# class WspolczynnikKalibracji(Base):
-#    __tablename__ = "zbior_wspolczynnikow_kalibracji"
-#
-#    id = Column(Integer, primary_key=True, index=True)
-#    litery_porzadkowa = Column(String)
-#    wartosc = Column(String) # do konca nie wiem czy tu ma być float czy int czy cos innego - wiec tymczasowo string
 
 
 class DekoderStatusu(Base):

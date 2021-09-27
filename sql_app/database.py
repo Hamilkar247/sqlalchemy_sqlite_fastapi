@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import event
 
 #SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://db_user:db_pass@localhost/db_name"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://db:db@localhost/db"
 
 
 ##check_same_thread - tylko dla sqlite

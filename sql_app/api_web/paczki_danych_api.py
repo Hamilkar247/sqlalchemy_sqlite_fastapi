@@ -98,6 +98,11 @@ async def get_najnowsza_paczke_danych_o_numerze_seryjnym(numer_seryjny: str, db:
     return db_paczek_danych
 
 
+@router.get("/id_sesji={sesja_id}/per=50", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+async def get_rekord_per_50_dla_sesji(sesja_id: int, skip: Optional[int] = None, limit: Optional[int] = None,
+                                             db: Session = Depends(get_db)):
+    db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jeden_per_50()
+
 ############################### PUT ################################33
 
 @router.put("/paczka_danych_id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychUpdateSchema
