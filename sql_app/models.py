@@ -4,28 +4,6 @@ from sqlalchemy.orm import relationship
 from .database import Base  # może z kropką przed database?
 
 
-class User(Base):
-    __tablename__ = "users"
-
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(100), unique=True, index=True)
-    hashed_password = Column(String(50))
-    is_active = Column(Boolean, default=True)
-
-    items = relationship("Item", back_populates="owner")
-
-
-class Item(Base):
-    __tablename__ = "items"
-
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), index=True)
-    description = Column(String(500), index=True)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-
-    owner = relationship("User", back_populates="items")
-
-
 class Uzytkownik(Base):
     __tablename__ = "zbior_uzytkownikow"
 
@@ -81,8 +59,9 @@ class WartoscPomiaruSensora(Base):
     litery_porzadkowe = Column(String(50))
     paczka_danych_id = Column(Integer, ForeignKey(
         "zbior_paczek_danych.id", ondelete="CASCADE")
-                              , nullable=False
-                              )
+                             , nullable=False
+                             )
+
     paczka_danych = relationship("PaczkaDanych", back_populates="zbior_wartosci_pomiarow_sensorow")
 
 
