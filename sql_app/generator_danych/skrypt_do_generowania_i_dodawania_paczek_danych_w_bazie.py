@@ -40,6 +40,7 @@ def get_urzadzenie_o_numerze_seryjnym(numer_seryjny):
     '{basic_url}/urzadzenia/numer_seryjny={var_numer_seryjny}' \
     -H 'accept: application/json'
     """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny)
+    print(bashCommand)
     return execute_bash_command(bashCommand)
 
 

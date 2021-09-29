@@ -63,6 +63,39 @@ async def get_sesja_o_id(sesja_id: int, db: Session = Depends(get_db)):
     return db_sesja
 
 
+######################### GET ##############################
+@router.get("/id={sesja_id}/przynalezne_zbiory", response_model=sesja_schemas.SesjaSchemaNested)
+async def get_sesja_o_id_z_przynaleznymi_zbiorami(sesja_id: int, db: Session = Depends(get_db)):
+    db_sesja = sesja_crud.get_sesja_o_id(db=db, sesja_id=sesja_id)
+    if db_sesja is None:
+        raise HTTPException(status_code=404, detail="Sesji nie znaleziono")
+    return db_sesja
+
+
+@router.get("/id={sesja_id}/jedna_per_n={jedna_per_n}", response_model=sesja_schemas.SesjaSchema)
+async def get_sesja_o_id__i__get_jedna_paczka_per_n_paczek_dla_tej_sesji(sesja_id: int,
+                                     jedna_per_n: int,
+                                     db: Session = Depends(get_db)):
+    print("ahouj")
+    db_paczek_danych_per_n = sesja_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+        db=db,
+        sesja_id=sesja_id,
+        jedna_per_n=jedna_per_n)
+    return db_paczek_danych_per_n
+
+
+#@router.get("/id_sesji={sesja_id}/jedna_per_n={jedna_per_n}/przynalezne_zbiory/uproszczone", response_model=List[paczka_danych_schemas.PaczkaDanychProstaNested])
+#async def get_jedna_paczka_per_n_dla_sesji_z_wartosciami(sesja_id: int,
+#                                     jedna_per_n: int,
+#                                     db: Session = Depends(get_db)):
+#    print("ahouj")
+#    db_paczek_danych_per_n = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+#        db=db,
+#        sesja_id=sesja_id,
+#        jedna_per_n=jedna_per_n)
+#    return db_paczek_danych_per_n
+
+
 @router.get("/", response_model=List[sesja_schemas.SesjaSchema])
 async def get_zbior_sesji(skip: Optional[int] = None, limit: Optional[int] = None, db: Session = Depends(get_db)):
     sesje = sesja_crud.get_zbior_sesji(db=db, skip=skip, limit=limit)
@@ -93,7 +126,7 @@ async def get_aktywna_sesje_urzadzenia_o_numerze_seryjnym(numer_seryjny: str, db
     return sesja
 
 
-######################
+##################### UPDATE ##############################
 @router.put("/id={sesja_id}", response_description="Zakończ działanie sesji")
 async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
     #jesli znajdzie aktywna sesje pod tym id, zakonczy je, jeśli takiej nie bedzie
@@ -104,6 +137,7 @@ async def zakoncz_sesje(sesja_id: int, db: Session = Depends(get_db)):
         return f"Zakończono sesje o numerze id: {sesja_id}"
 
 
+############### DELETE ##################3
 @router.delete("/delete/id={sesja_id}", response_description="Usunieto sesje o numerze id ...")
 async def delete_id_sesji(sesja_id: int, db: Session = Depends(get_db)):
     #usuwam rekord o numerze id

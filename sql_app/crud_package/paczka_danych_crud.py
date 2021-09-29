@@ -5,7 +5,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from sql_app.format_danych import FormatDaty
-from sql_app.models import PaczkaDanych
+from sql_app.models import PaczkaDanych, Sesja
 from sql_app import models
 from sql_app.schemas_package import paczka_danych_schemas
 from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
@@ -55,7 +55,7 @@ def get_zbior_paczek_danych_o_id_sesji(sesja_id: int, db: Session,
                     skip: Optional[int] = None, limit: Optional[int] = None):
     if sesja_id is not None:
         if limit != 1:
-             return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id)\
+            return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id)\
                       .offset(skip).limit(limit).all()
         else:
             return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id) \
@@ -81,7 +81,19 @@ def get_zbior_paczek_danych_bez_przypisanej_sesji(db: Session,
 def get_zbior_paczek_danych_o_numerze_seryjnym(db: Session, numer_seryjny: str,
                                                skip: Optional[int] = None, limit: Optional[int] = None):
     return db.query(PaczkaDanych).filter(PaczkaDanych.numer_seryjny == numer_seryjny).offset(skip).limit(limit).all()
-            #order_by(models.PaczkaDanych.czas_paczki.desc())
+
+
+def get_zbior_paczek_danych_dla_sesji_jedna_per_n(db: Session, sesja_id: int, jedna_per_n: int):
+    liczba = 0
+    lista = []
+    while True:
+        element = db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id).offset(liczba).first()
+        if element is not None:
+            lista.append(element)
+        else:
+            break
+        liczba = liczba + jedna_per_n
+    return lista
 
 
 ###################### UPDATE #####################################

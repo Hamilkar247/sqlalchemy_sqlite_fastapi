@@ -50,7 +50,7 @@ async def create_wartosc_pomiaru_sensora_dla_paczki_id(paczka_id: int,
             response_model=List[wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema])
 async def get_zbior_wartosci_pomiaru_sensora(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_wartosci_pomiaru_sensora = wartosc_pomiaru_sensora_crud.get_zbior_wartosci_pomiarowych_sensorow(db,
-                                                                                      skip=skip, limit=limit)
+                                skip=skip, limit=limit)
     if zbior_wartosci_pomiaru_sensora is None:
         raise HTTPException(status_code=404, detail="Nie znaleziono wartosci pomiaru sensora o id")
     return zbior_wartosci_pomiaru_sensora

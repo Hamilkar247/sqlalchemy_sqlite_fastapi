@@ -66,6 +66,7 @@ async def get_zbior_paczek_danych_o_id_sesji(sesja_id: int, skip: Optional[int] 
                                              db: Session = Depends(get_db)):
     paczki_danych \
         = paczka_danych_crud.get_zbior_paczek_danych_o_id_sesji(db=db, sesja_id=sesja_id, skip=skip, limit=limit)
+    return paczki_danych
 
 
 @router.get("/bez_sesji", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
@@ -98,13 +99,31 @@ async def get_najnowsza_paczke_danych_o_numerze_seryjnym(numer_seryjny: str, db:
     return db_paczek_danych
 
 
-@router.get("/id_sesji={sesja_id}/per=50", response_model=paczka_danych_schemas.PaczkaDanychSchema)
-async def get_rekord_per_50_dla_sesji(sesja_id: int, skip: Optional[int] = None, limit: Optional[int] = None,
-                                             db: Session = Depends(get_db)):
-    db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jeden_per_50()
+@router.get("/id_sesji={sesja_id}/jedna_per_n={jedna_per_n}", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+async def get_jedna_paczka_per_n_dla_sesji(sesja_id: int,
+                                     jedna_per_n: int,
+                                     db: Session = Depends(get_db)):
+    print("ahouj")
+    db_paczek_danych_per_n = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+        db=db,
+        sesja_id=sesja_id,
+        jedna_per_n=jedna_per_n)
+    return db_paczek_danych_per_n
+
+
+@router.get("/id_sesji={sesja_id}/jedna_per_n={jedna_per_n}/przynalezne_zbiory/uproszczone", response_model=List[paczka_danych_schemas.PaczkaDanychProstaNested])
+async def get_jedna_paczka_per_n_dla_sesji_z_wartosciami(sesja_id: int,
+                                     jedna_per_n: int,
+                                     db: Session = Depends(get_db)):
+    print("ahouj")
+    db_paczek_danych_per_n = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+        db=db,
+        sesja_id=sesja_id,
+        jedna_per_n=jedna_per_n)
+    return db_paczek_danych_per_n
+
 
 ############################### PUT ################################33
-
 @router.put("/paczka_danych_id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychUpdateSchema
     , response_description="zmień paczkę danych")
 async def update_paczka_danych_o_id(paczka_danych_id: int, paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema

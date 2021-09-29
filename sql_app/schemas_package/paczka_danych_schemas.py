@@ -1,24 +1,34 @@
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
-from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
+from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema, \
+    WartoscPomiaruProstaSchema
+
+
+def to_camel(string):
+    return ''.join(word.capitalize() for word in string.split('_'))
+
+
+class CamelSchema(BaseModel):
+    class Config:
+        alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
 
 
 #czas updatuj po prostu na aktualny czas
-class PaczkaDanychUpdateSchema_czas_i_kod(BaseModel):
+class PaczkaDanychUpdateSchema_czas_i_kod(CamelSchema):
     kod_statusu: Optional[str] = None
 
-    class Config:
-        orm_mode = True
 
-
-class PaczkaDanychBaseSchema(BaseModel):
+class PaczkaDanychBaseSchema(CamelSchema):
     kod_statusu: Optional[str] = None
     numer_seryjny: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+
+class PaczkaDanychProsta(CamelSchema):
+    pass
 
 
 class PaczkaDanychCreateSchema(PaczkaDanychBaseSchema):
@@ -43,7 +53,8 @@ class PaczkaDanychSchemaNested(PaczkaDanychSchema):
     zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
 
 
-class UrzadzeniePaczkiDanych(BaseModel):
-    id: int
-    numer_seryjny: str
-    nazwa_urzadzenia: str
+class PaczkaDanychProstaNested(PaczkaDanychProsta):
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruProstaSchema] #alias="zb_wart")
+
+    class Config(PaczkaDanychProsta.Config):
+        fields = {"zbior_wartosci_pomiarow_sensorow": "ZbWart"}
