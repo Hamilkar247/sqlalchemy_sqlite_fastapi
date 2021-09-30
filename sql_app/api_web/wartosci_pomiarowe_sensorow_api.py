@@ -28,18 +28,18 @@ def get_db():
 
 
 @router.post("/",
-             response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema)
+             response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchemat)
 async def create_wartosc_pomiaru_sensora(
-        wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraCreateSchema,
+        wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraCreateSchemat,
                                          db: Session = Depends(get_db)):
     return wartosc_pomiaru_sensora_crud.create_wartosc_pomiaru_sensora(
         db=db, wartosc_pomiaru_sensora=wartosc_pomiaru_sensora)
 
 
 @router.post("/id_paczki={paczka_id}",
-             response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema)
+             response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchemat)
 async def create_wartosc_pomiaru_sensora_dla_paczki_id(paczka_id: int,
-        wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraCreateSchema,
+        wartosc_pomiaru_sensora: wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraCreateSchemat,
                                          db: Session = Depends(get_db)):
 
     return wartosc_pomiaru_sensora_crud.create_wartosc_pomiaru_sensora_dla_paczki(
@@ -47,7 +47,7 @@ async def create_wartosc_pomiaru_sensora_dla_paczki_id(paczka_id: int,
 
 
 @router.get("/",
-            response_model=List[wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema])
+            response_model=List[wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchemat])
 async def get_zbior_wartosci_pomiaru_sensora(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_wartosci_pomiaru_sensora = wartosc_pomiaru_sensora_crud.get_zbior_wartosci_pomiarowych_sensorow(db,
                                 skip=skip, limit=limit)
@@ -56,7 +56,7 @@ async def get_zbior_wartosci_pomiaru_sensora(skip: int = 0, limit: int = 100, db
     return zbior_wartosci_pomiaru_sensora
 
 
-@router.get("/id={wartosc_pomiaru_sensora_id}", response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema)
+@router.get("/id={wartosc_pomiaru_sensora_id}", response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchemat)
 async def get_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db: Session = Depends(get_db)):
     db_wartosc_pomiaru_sensora = \
         wartosc_pomiaru_sensora_crud.get_wartosc_pomiaru_sensora(
@@ -66,7 +66,7 @@ async def get_wartosc_pomiaru_sensora(wartosc_pomiaru_sensora_id: int, db: Sessi
     return db_wartosc_pomiaru_sensora
 
 
-@router.get("/paczka_id={paczka_id}", response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchema)
+@router.get("/paczka_id={paczka_id}", response_model=wartosc_pomiaru_sensora_schemas.WartoscPomiaruSensoraSchemat)
 async def get_wartosc_pomiaru_z_paczki_o_id(paczka_id: int, db: Session = Depends(get_db)):
     db_wartosc_pomiaru_sensora = \
         wartosc_pomiaru_sensora_crud.get_zbior_wartosci_pomiarowych_sensora_dla_paczki_o_id(db, paczka_id)

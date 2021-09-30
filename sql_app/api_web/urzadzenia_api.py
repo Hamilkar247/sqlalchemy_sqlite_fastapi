@@ -26,8 +26,8 @@ def get_db():
 
 
 ########################### CREATE #############################
-@router.post("/", response_model=urzadzenie_schemas.UrzadzenieBaseSchema)
-async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchema, db: Session = Depends(get_db)):
+@router.post("/", response_model=urzadzenie_schemas.UrzadzenieBaseSchemat)
+async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchemat, db: Session = Depends(get_db)):
     db_urzadzenia = urzadzenie_crud.get_urzadzenie_by_numer_seryjny(db, urzadzenie.numer_seryjny)
     if db_urzadzenia:
         raise HTTPException(status_code=400, detail="Pamiętaj, że pola 'nazwa_urzadzenia' i 'numer_seryjny' powinny być unikalne !")
@@ -35,7 +35,7 @@ async def create_urzadzenie(urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchema,
 
 
 ############################ GET ######################################
-@router.get("/", response_model=List[urzadzenie_schemas.UrzadzenieSchema])
+@router.get("/", response_model=List[urzadzenie_schemas.UrzadzenieSchemat])
 async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
@@ -43,7 +43,7 @@ async def get_zbior_urzadzen(skip: int = 0, limit: int = 100, db: Session = Depe
     return zbior_urzadzen
 
 
-@router.get("/przynalezne_zbiory/wszystkie", response_model=List[urzadzenie_schemas.UrzadzenieSchema_ZagniezdzoneZbiory])
+@router.get("/przynalezne_zbiory/wszystkie", response_model=List[urzadzenie_schemas.UrzadzenieSchemat_ZagniezdzoneZbiory])
 async def get_zbior_urzadzen_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
@@ -51,7 +51,7 @@ async def get_zbior_urzadzen_z_zagniezdzeniami(skip: int = 0, limit: int = 100, 
     return zbior_urzadzen
 
 
-@router.get("/przynalezne_zbiory/sesje", response_model=List[urzadzenie_schemas.UrzadzenieSchema_ZagniezdzoneSesje])
+@router.get("/przynalezne_zbiory/sesje", response_model=List[urzadzenie_schemas.UrzadzenieSchemat_ZagniezdzoneSesje])
 async def get_zbior_urzadzen_z_zagniezdzeniami_sesji(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
@@ -59,7 +59,7 @@ async def get_zbior_urzadzen_z_zagniezdzeniami_sesji(skip: int = 0, limit: int =
     return zbior_urzadzen
 
 
-@router.get("/przynalezne_zbiory/sensory", response_model=List[urzadzenie_schemas.UrzadzenieSchema_ZagniezdzoneSensory])
+@router.get("/przynalezne_zbiory/sensory", response_model=List[urzadzenie_schemas.UrzadzenieSchemat_ZagniezdzoneSensory])
 async def get_zbior_urzadzen_z_zagniezdzeniami_sensorami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     zbior_urzadzen = urzadzenie_crud.get_zbior_urzadzen(db, skip=skip, limit=limit)
     if zbior_urzadzen is None:
@@ -67,7 +67,7 @@ async def get_zbior_urzadzen_z_zagniezdzeniami_sensorami(skip: int = 0, limit: i
     return zbior_urzadzen
 
 
-@router.get("/id={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieSchema)
+@router.get("/id={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieSchemat)
 async def get_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
@@ -75,7 +75,7 @@ async def get_urzadzenia_id(urzadzenie_id: int, db: Session = Depends(get_db)):
     return db_urzadzenie
 
 
-@router.get("/id={urzadzenie_id}/przynalezne_zbiory", response_model=urzadzenie_schemas.UrzadzenieSchema_ZagniezdzoneZbiory)
+@router.get("/id={urzadzenie_id}/przynalezne_zbiory", response_model=urzadzenie_schemas.UrzadzenieSchemat_ZagniezdzoneZbiory)
 async def get_urzadzenia_id_z_zagniezdzeniami(urzadzenie_id: int, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
@@ -83,7 +83,7 @@ async def get_urzadzenia_id_z_zagniezdzeniami(urzadzenie_id: int, db: Session = 
     return db_urzadzenie
 
 
-@router.get("/id={urzadzenie_id}/przynalezne_sesje", response_model=urzadzenie_schemas.UrzadzenieSchema_ZagniezdzoneZbiory)
+@router.get("/id={urzadzenie_id}/przynalezne_sesje", response_model=urzadzenie_schemas.UrzadzenieSchemat_ZagniezdzoneZbiory)
 async def get_urzadzenia_id_z_zagniezdzeniami_sesji(urzadzenie_id: int, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_id(db, urzadzenie_id=urzadzenie_id)
     if db_urzadzenie is None:
@@ -91,7 +91,7 @@ async def get_urzadzenia_id_z_zagniezdzeniami_sesji(urzadzenie_id: int, db: Sess
     return db_urzadzenie
 
 
-@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchema)
+@router.get("/numer_seryjny={numer_seryjny}", response_model=urzadzenie_schemas.UrzadzenieSchemat)
 async def get_urzadzenie_by_numer_seryjny(numer_seryjny: str, db: Session = Depends(get_db)):
     db_urzadzenie = urzadzenie_crud.get_urzadzenie_by_numer_seryjny(db=db, numer_seryjny=numer_seryjny)
     if db_urzadzenie is None:
@@ -100,8 +100,8 @@ async def get_urzadzenie_by_numer_seryjny(numer_seryjny: str, db: Session = Depe
 
 
 ###################### UPDATE ___ PUT ########################
-@router.put("/id_urzadzenie={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieUpdateSchema)
-async def update_urzadzenie_o_id(urzadzenie_id: int, urzadzenie: urzadzenie_schemas.UrzadzenieUpdateSchema, db: Session = Depends(get_db)):
+@router.put("/id_urzadzenie={urzadzenie_id}", response_model=urzadzenie_schemas.UrzadzenieUpdateSchemat)
+async def update_urzadzenie_o_id(urzadzenie_id: int, urzadzenie: urzadzenie_schemas.UrzadzenieUpdateSchemat, db: Session = Depends(get_db)):
     update_urzadzenie = urzadzenie_crud.update_urzadzenie_o_id(db=db, urzadzenie_id=urzadzenie_id, urzadzenie=urzadzenie)
     if update_urzadzenie is None:
         raise HTTPException(status_code=404, detail="Nie znalezionio urządzenia do update")

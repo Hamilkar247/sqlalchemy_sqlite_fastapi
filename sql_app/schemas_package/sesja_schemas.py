@@ -2,21 +2,28 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
-from sql_app.schemas_package.paczka_danych_schemas import PaczkaDanychSchemaNested
+from sql_app.schemas_package.paczka_danych_schemas import PaczkaDanychSchematNested
 
 
-class SesjaBaseSchema(BaseModel):
+class PodstawowySchemat(BaseModel):
+    class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
+
+
+class SesjaBaseSchemat(PodstawowySchemat):
     nazwa_sesji: Optional[str] = None
 
     class Config:
         orm_mode = True
 
 
-class SesjaCreateSchema(SesjaBaseSchema):
+class SesjaCreateSchemat(SesjaBaseSchemat):
     pass
 
 
-class SesjaSchema(SesjaBaseSchema):
+class SesjaSchemat(SesjaBaseSchemat):
     id: int
     urzadzenie_id: int = None
     uzytkownik_id: int = None
@@ -25,5 +32,5 @@ class SesjaSchema(SesjaBaseSchema):
     koniec_sesji: Optional[str] = None
 
 
-class SesjaSchemaNested(SesjaBaseSchema):
-    zbior_paczek_danych: List[PaczkaDanychSchemaNested] = None
+class SesjaSchematNested(SesjaBaseSchemat):
+    zbior_paczek_danych: List[PaczkaDanychSchematNested] = None

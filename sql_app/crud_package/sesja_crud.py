@@ -10,7 +10,7 @@ from sql_app.schemas_package import sesja_schemas
 
 ################ CREATE ##################
 def create_sesja(db: Session,
-                                            sesja: sesja_schemas.SesjaCreateSchema,
+                                            sesja: sesja_schemas.SesjaCreateSchemat,
                                             urzadzenie_id: Optional[int] = None,
                                             uzytkownik_id: Optional[int] = None
                                             ):

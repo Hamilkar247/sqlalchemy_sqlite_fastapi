@@ -2,7 +2,14 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 
-class SensorBaseSchema(BaseModel):
+class PodstawowySchemat(BaseModel):
+    class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
+
+
+class SensorBaseSchemat(BaseModel):
     litery_porzadkowe: Optional[str] = None
     parametr: Optional[str] = None
     wspolczynniki_kalibracyjne: Optional[str] = "0;1"
@@ -12,17 +19,14 @@ class SensorBaseSchema(BaseModel):
     status_sensora: Optional[str] = None
 
 
-class SensorCreateSchema(SensorBaseSchema):
+class SensorCreateSchemat(SensorBaseSchemat):
     pass
 
 
-class SensorUpdateSchema(SensorBaseSchema):
+class SensorUpdateSchemat(SensorBaseSchemat):
     urzadzenie_id: Optional[int] = None
 
 
-class SensorSchema(SensorBaseSchema):
+class SensorSchemat(SensorBaseSchemat):
     id: int
     urzadzenie_id: Optional[int] = None
-
-    class Config:
-        orm_mode = True

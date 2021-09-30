@@ -2,24 +2,31 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class WartoscPomiaruSensoraBaseSchema(BaseModel):
+class PodstawowySchemat(BaseModel):
+    class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
+
+
+class WartoscPomiaruSensoraBaseSchemat(PodstawowySchemat):
     wartosc: Optional[str] = None
     litery_porzadkowe: Optional[str] = None
 
 
-class WartoscPomiaruSensoraCreateSchema(WartoscPomiaruSensoraBaseSchema):
+class WartoscPomiaruSensoraCreateSchemat(WartoscPomiaruSensoraBaseSchemat):
      pass
 
 
-class WartoscPomiaruProstaSchema(WartoscPomiaruSensoraBaseSchema):
-    class Config(WartoscPomiaruSensoraBaseSchema.Config):
+class WartoscPomiaruProstaSchemat(WartoscPomiaruSensoraBaseSchemat):
+    class Config(WartoscPomiaruSensoraBaseSchemat.Config):
         fields = {
             "wartosc": "w",
             "litery_porzadkowe": "l"
         }
 
 
-class WartoscPomiaruSensoraSchema(WartoscPomiaruSensoraBaseSchema):
+class WartoscPomiaruSensoraSchemat(WartoscPomiaruSensoraBaseSchemat):
     id: int
     paczka_danych_id: Optional[int] = None
 

@@ -14,7 +14,7 @@ def get_zbior_dekoderow_statusu(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.DekoderStatusu).offset(skip).limit(limit).all()
 
 
-def create_dekodera_statusu(db: Session, dekoder_statusu: dekoder_statusu_schemas.DekoderStatusuCreateSchema):
+def create_dekodera_statusu(db: Session, dekoder_statusu: dekoder_statusu_schemas.DekoderStatusuCreateSchemat):
     db_dekoder_statusu = models.DekoderStatusu(
         kod=dekoder_statusu.kod,
         liczba_dziesietna=dekoder_statusu.liczba_dziesietna,

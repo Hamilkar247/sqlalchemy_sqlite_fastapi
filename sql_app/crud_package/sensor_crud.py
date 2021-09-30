@@ -4,7 +4,7 @@ from sql_app.schemas_package import sensor_schemas
 
 
 ##################### CREATE ##########################
-def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
+def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchemat):
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
                               min=sensor.min,
@@ -41,7 +41,7 @@ def get_zbior_sensorow(db: Session, skip: int = 0, limit: int = 100):
 
 
 ######################## UPDATE ########################
-def update_sensor_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorUpdateSchema):
+def update_sensor_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorUpdateSchemat):
     znajdz_i_zamien = db.query(models.Sensor).filter(models.Sensor.id == sensor_id) \
                   .update(
                       {
