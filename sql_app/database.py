@@ -14,9 +14,11 @@ from dotenv import load_dotenv
 #czynnik ?charset=utf8mb4 jest dla polskich znaków ( i inne literki nie angielskie)
 str_path_to_env = "../.env"
 load_dotenv(str_path_to_env)
+#SQLALCHEMY_DATABASE_URL = "mysql+pymysql://db:db@localhost/db"
+print(os.environ.get("DB_NAME"))
 SQLALCHEMY_DATABASE_URL = "mysql+pymysql://{user}:{password}@{host}/{name_database}?charset=utf8mb4".format(
     host="localhost:"+os.environ.get("MYSQL_PORT"),
-    name_database=os.environ.get("DB_NAME"),
+    name_database=os.environ.get("DB_DATABASE"),#"db",#os.environ.get("DB_NAME"),
     user=os.environ.get("DB_USER"),
     password=os.environ.get("DB_PASSWORD")
     )
