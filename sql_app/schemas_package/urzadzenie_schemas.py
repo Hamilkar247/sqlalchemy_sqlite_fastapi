@@ -1,10 +1,12 @@
 from typing import Optional, List
+
+from pydantic import BaseModel
+
 from sql_app.schemas_package.sensor_schemas import SensorSchema
 from sql_app.schemas_package.sesja_schemas import SesjaSchema
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
 
-class UrzadzenieBaseSchema(CamelSchema):
+class UrzadzenieBaseSchema(BaseModel):
     nazwa_urzadzenia: Optional[str] = None
     numer_seryjny: Optional[str] = None
 

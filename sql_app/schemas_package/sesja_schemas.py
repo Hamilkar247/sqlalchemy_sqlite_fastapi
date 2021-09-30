@@ -1,10 +1,11 @@
 from typing import List, Optional
 
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
+from pydantic import BaseModel
+
 from sql_app.schemas_package.paczka_danych_schemas import PaczkaDanychSchemaNested
 
 
-class SesjaBaseSchema(CamelSchema):
+class SesjaBaseSchema(BaseModel):
     nazwa_sesji: Optional[str] = None
 
     class Config:

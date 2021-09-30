@@ -1,10 +1,8 @@
 from typing import Optional
+from pydantic import BaseModel
 
 
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
-
-
-class WartoscPomiaruSensoraBaseSchema(CamelSchema):
+class WartoscPomiaruSensoraBaseSchema(BaseModel):
     wartosc: Optional[str] = None
     litery_porzadkowe: Optional[str] = None
 

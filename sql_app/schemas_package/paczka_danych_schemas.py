@@ -1,23 +1,15 @@
 from typing import List, Optional
-
-from pydantic import BaseModel, Field
-
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
+from pydantic import BaseModel
 from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema, \
     WartoscPomiaruProstaSchema
 
 
-#czas updatuj po prostu na aktualny czas
-class PaczkaDanychUpdateSchema_czas_i_kod(CamelSchema):
-    kod_statusu: Optional[str] = None
-
-
-class PaczkaDanychBaseSchema(CamelSchema):
+class PaczkaDanychBaseSchema(BaseModel):
     kod_statusu: Optional[str] = None
     numer_seryjny: Optional[str] = None
 
 
-class PaczkaDanychProsta(CamelSchema):
+class PaczkaDanychProsta(BaseModel):
     pass
 
 

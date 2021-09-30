@@ -1,13 +1,9 @@
 from typing import Optional, List
-
 from pydantic import BaseModel
-
 from sql_app.schemas_package.sesja_schemas import SesjaSchema
 
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
-
-class UzytkownikBaseSchema(CamelSchema):
+class UzytkownikBaseSchema(BaseModel):
     hashed_password: Optional[str] = None
     uprawnienia: Optional[str] = None
     imie_nazwisko: Optional[str] = None

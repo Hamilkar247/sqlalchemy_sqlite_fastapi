@@ -1,9 +1,8 @@
 from typing import List, Optional
+from pydantic import BaseModel
 
-from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
-
-class SensorBaseSchema(CamelSchema):
+class SensorBaseSchema(BaseModel):
     litery_porzadkowe: Optional[str] = None
     parametr: Optional[str] = None
     wspolczynniki_kalibracyjne: Optional[str] = "0;1"
