@@ -1,9 +1,9 @@
-from typing import List, Optional
+from typing import Optional
 
-from pydantic import BaseModel
+from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
 
-class DekoderStatusuBaseSchema(BaseModel):
+class DekoderStatusuBaseSchema(CamelSchema):
     kod: Optional[str]
     liczba_dziesietna: Optional[int]
     opis_kodu: Optional[str]

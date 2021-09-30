@@ -1,19 +1,10 @@
-from typing import List, Optional
-from pydantic import BaseModel
+from typing import Optional
 
 
-def to_camel(string):
-    return ''.join(word.capitalize() for word in string.split('_'))
+from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
 
-class CamelModel(BaseModel):
-    class Config:
-        alias_generator = to_camel
-        allow_population_by_field_name = True
-        orm_mode = True
-
-
-class WartoscPomiaruSensoraBaseSchema(CamelModel):
+class WartoscPomiaruSensoraBaseSchema(CamelSchema):
     wartosc: Optional[str] = None
     litery_porzadkowe: Optional[str] = None
 

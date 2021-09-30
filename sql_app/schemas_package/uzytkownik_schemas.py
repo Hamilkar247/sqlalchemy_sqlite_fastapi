@@ -4,8 +4,10 @@ from pydantic import BaseModel
 
 from sql_app.schemas_package.sesja_schemas import SesjaSchema
 
+from sql_app.schemas_package.ogolne_schemas import CamelSchema
 
-class UzytkownikBaseSchema(BaseModel):
+
+class UzytkownikBaseSchema(CamelSchema):
     hashed_password: Optional[str] = None
     uprawnienia: Optional[str] = None
     imie_nazwisko: Optional[str] = None
@@ -20,7 +22,6 @@ class UzytkownikCreateSchema(UzytkownikBaseSchema):
 
 class UzytkownikSchema(UzytkownikBaseSchema):
     id: int
-    #zbior_urzadzen: List[Urzadzenie] = []
 
     class Config:
         orm_mode = True
@@ -28,4 +29,3 @@ class UzytkownikSchema(UzytkownikBaseSchema):
 
 class UzytkownikSchemaNested(UzytkownikSchema):
     zbior_sesji: List[SesjaSchema]
-    #zbior_urzadzen: List[Urzadzenie] = []
