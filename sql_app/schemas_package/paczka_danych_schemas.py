@@ -54,7 +54,7 @@ class PaczkaDanychSchemaNested(PaczkaDanychSchema):
 
 
 class PaczkaDanychProstaNested(PaczkaDanychProsta):
-    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruProstaSchema] #alias="zb_wart")
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruProstaSchema]
 
     class Config(PaczkaDanychProsta.Config):
         fields = {"zbior_wartosci_pomiarow_sensorow": "ZbWart"}
