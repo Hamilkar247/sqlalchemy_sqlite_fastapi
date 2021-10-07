@@ -188,14 +188,18 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
     print("--------dane_zapytania----------")
     print(dane_zapytania)
     print("------------------")
-    rekord = json.loads(dane_zapytania)  # [1:-1])
-    try:
-        print(rekord['id'])
-        return int(rekord['id'])
-    except KeyError as e:
-        print(f"KeyError wystąpił - {e}")
-        print(traceback.print_exc())
-        return None
+    if dane_zapytania is not None:
+        rekord = json.loads(dane_zapytania)  # [1:-1])
+        try:
+            print(rekord['id'])
+            return int(rekord['id'])
+        except KeyError as e:
+            print(f"KeyError wystąpił - {e}")
+            print(traceback.print_exc())
+            return None
+    else:
+        print("zapytanie jest puste !")
+        traceback.print_exc()
 
 
 def dane_od_arka(paczka_danych_json):

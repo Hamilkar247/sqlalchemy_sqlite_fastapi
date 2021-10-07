@@ -80,6 +80,7 @@ class Sensor(Base):
     litery_porzadkowe = Column(String(10))
     parametr = Column(String(50))
     wspolczynniki_kalibracyjne = Column(String(25))
+    data_kalibracji = Column(String(50))
     min = Column(String(25))
     max = Column(String(25))
     jednostka = Column(String(20))

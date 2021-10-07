@@ -13,6 +13,7 @@ class SensorBaseSchemat(BaseModel):
     litery_porzadkowe: Optional[str] = None
     parametr: Optional[str] = None
     wspolczynniki_kalibracyjne: Optional[str] = "0;1"
+    data_kalibracji: Optional[str] = None
     min: Optional[str] = None
     max: Optional[str] = None
     jednostka: Optional[str] = None
