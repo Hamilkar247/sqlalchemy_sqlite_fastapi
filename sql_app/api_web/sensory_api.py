@@ -26,12 +26,12 @@ def get_db():
 
 
 ###################### POST ############################
-@router.post("/", response_model=sensor_schemas.SensorSchemat)
-async def create_sensor(sensor: sensor_schemas.SensorCreateSchemat, db: Session = Depends(get_db)):
-    return sensor_crud.create_sensor(db=db, sensor=sensor)
+#@router.post("/", response_model=sensor_schemas.SensorCreateSchemat)
+#async def create_sensor(sensor: sensor_schemas.SensorCreateSchemat, db: Session = Depends(get_db)):
+#    return sensor_crud.create_sensor(db=db, sensor=sensor)
 
 
-@router.post("/id_urzadzenia={id_urzadzenia}", response_model=sensor_schemas.SensorSchemat)
+@router.post("/id_urzadzenia={id_urzadzenia}", response_model=sensor_schemas.SensorCreateSchemat)
 async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchemat, urzadzenie_id: int, db: Session = Depends(get_db)):
     return sensor_crud.create_sensor_id_urzadzenia(db=db, sensor=sensor, id_urzadzenia=urzadzenie_id)
 
@@ -60,6 +60,15 @@ async def update_sensor_o_id(sensor_id: int, sensor: sensor_schemas.SensorUpdate
     if update_sensor is None:
         raise HTTPException(status_code=404, detail=f"Nie udało się zupdateować sensora o id {sensor_id}")
     return update_sensor
+
+
+@router.put("/rekalibracja/id_sensor={sensor_id}", response_model=sensor_schemas.SensorRekalibracjaSchemat)
+async def rekalibracja_sensora_o_id(sensor_id: int, sensor: sensor_schemas.SensorRekalibracjaSchemat, \
+                                    db: Session = Depends(get_db)):
+    rekalibracja_sensora = sensor_crud.zmien_wspolczynnik_kalibracji(db=db, sensor_id=sensor_id, sensor=sensor)
+    if rekalibracja_sensora is None:
+        raise HTTPException(status_code=404, detail=f"Nie udało się zmienić wsp_kalibracji o id {sensor_id}")
+    return rekalibracja_sensora
 
 
 ######################### DELETE ###############################

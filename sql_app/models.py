@@ -70,7 +70,7 @@ class Urzadzenie(Base):
     # nie jestem pewien czy powinno być unique czy nie
     numer_seryjny = Column(String(50), unique=True)
     zbior_sensorow = relationship("Sensor", back_populates="urzadzenie", passive_deletes=True)
-    zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
+    zbior_sesji = relationship("Sesja", back_populates="urzadzenie", passive_deletes=True)
 
 
 class Sensor(Base):

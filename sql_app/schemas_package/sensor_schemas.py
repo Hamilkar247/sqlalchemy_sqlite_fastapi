@@ -9,15 +9,18 @@ class PodstawowySchemat(BaseModel):
         orm_mode = True
 
 
-class SensorBaseSchemat(BaseModel):
+class SensorBaseSchemat(PodstawowySchemat):
     litery_porzadkowe: Optional[str] = None
     parametr: Optional[str] = None
     wspolczynniki_kalibracyjne: Optional[str] = "0;1"
-    data_kalibracji: Optional[str] = None
     min: Optional[str] = None
     max: Optional[str] = None
     jednostka: Optional[str] = None
     status_sensora: Optional[str] = None
+
+
+class SensorRekalibracjaSchemat(PodstawowySchemat):
+    wspolczynniki_kalibracyjne: Optional[str] = "0;1"
 
 
 class SensorCreateSchemat(SensorBaseSchemat):
@@ -31,3 +34,4 @@ class SensorUpdateSchemat(SensorBaseSchemat):
 class SensorSchemat(SensorBaseSchemat):
     id: int
     urzadzenie_id: Optional[int] = None
+    data_kalibracji: Optional[str] = None
