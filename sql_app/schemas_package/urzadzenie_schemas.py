@@ -2,11 +2,18 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
-from sql_app.schemas_package.sensor_schemas import SensorSchema
-from sql_app.schemas_package.sesja_schemas import SesjaSchema
+from sql_app.schemas_package.sensor_schemas import SensorSchemat
+from sql_app.schemas_package.sesja_schemas import SesjaSchemat
 
 
-class UrzadzenieBaseSchema(BaseModel):
+class PodstawowySchemat(BaseModel):
+    class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
+
+
+class UrzadzenieBaseSchemat(PodstawowySchemat):
     nazwa_urzadzenia: Optional[str] = None
     numer_seryjny: Optional[str] = None
 
@@ -14,22 +21,22 @@ class UrzadzenieBaseSchema(BaseModel):
         orm_mode = True
 
 
-class UrzadzenieSchema(UrzadzenieBaseSchema):
+class UrzadzenieSchemat(UrzadzenieBaseSchemat):
     id: int
 
 
-class UrzadzenieUpdateSchema(UrzadzenieBaseSchema):
+class UrzadzenieUpdateSchemat(UrzadzenieBaseSchemat):
     pass
 
 
-class UrzadzenieSchema_ZagniezdzoneZbiory(UrzadzenieSchema):
-    zbior_sensorow: List[SensorSchema] = None
-    zbior_sesji: List[SesjaSchema] = None
+class UrzadzenieSchemat_ZagniezdzoneZbiory(UrzadzenieSchemat):
+    zbior_sensorow: List[SensorSchemat] = None
+    zbior_sesji: List[SesjaSchemat] = None
 
 
-class UrzadzenieSchema_ZagniezdzoneSensory(UrzadzenieSchema):
-    zbior_sensorow: List[SensorSchema] = None
+class UrzadzenieSchemat_ZagniezdzoneSensory(UrzadzenieSchemat):
+    zbior_sensorow: List[SensorSchemat] = None
 
 
-class UrzadzenieSchema_ZagniezdzoneSesje(UrzadzenieSchema):
-    zbior_sesji: List[SesjaSchema] = None
+class UrzadzenieSchemat_ZagniezdzoneSesje(UrzadzenieSchemat):
+    zbior_sesji: List[SesjaSchemat] = None

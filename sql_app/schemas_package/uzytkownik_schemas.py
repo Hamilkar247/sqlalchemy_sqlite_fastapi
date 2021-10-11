@@ -1,11 +1,16 @@
 from typing import Optional, List
-
 from pydantic import BaseModel
+from sql_app.schemas_package.sesja_schemas import SesjaSchemat
 
-from sql_app.schemas_package.sesja_schemas import SesjaSchema
+
+class PodstawowySchemat(BaseModel):
+    class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
+        orm_mode = True
 
 
-class UzytkownikBaseSchema(BaseModel):
+class UzytkownikBaseSchemat(PodstawowySchemat):
     hashed_password: Optional[str] = None
     uprawnienia: Optional[str] = None
     imie_nazwisko: Optional[str] = None
@@ -14,18 +19,13 @@ class UzytkownikBaseSchema(BaseModel):
     opis: Optional[str] = None
 
 
-class UzytkownikCreateSchema(UzytkownikBaseSchema):
+class UzytkownikCreateSchemat(UzytkownikBaseSchemat):
     pass
 
 
-class UzytkownikSchema(UzytkownikBaseSchema):
+class UzytkownikSchemat(UzytkownikBaseSchemat):
     id: int
-    #zbior_urzadzen: List[Urzadzenie] = []
-
-    class Config:
-        orm_mode = True
 
 
-class UzytkownikSchemaNested(UzytkownikSchema):
-    zbior_sesji: List[SesjaSchema]
-    #zbior_urzadzen: List[Urzadzenie] = []
+class UzytkownikSchematNested(UzytkownikSchemat):
+    zbior_sesji: List[SesjaSchemat]

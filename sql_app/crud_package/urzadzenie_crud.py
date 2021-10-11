@@ -6,7 +6,7 @@ from sql_app.schemas_package import sensor_schemas, urzadzenie_schemas
 
 
 ################ CREATE ##################
-def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchema):
+def create_urzadzenie(db: Session, urzadzenie: urzadzenie_schemas.UrzadzenieBaseSchemat):
     db_urzadzenie = models.Urzadzenie(
         nazwa_urzadzenia=urzadzenie.nazwa_urzadzenia,
         numer_seryjny=urzadzenie.numer_seryjny
@@ -54,7 +54,7 @@ def get_zbior_urzadzen(db: Session, skip: int = 0, limit: int = 100):
 
 
 ################### UPDATE ######################
-def update_urzadzenie_o_id(db: Session, urzadzenie_id: int, urzadzenie: urzadzenie_schemas.UrzadzenieUpdateSchema):
+def update_urzadzenie_o_id(db: Session, urzadzenie_id: int, urzadzenie: urzadzenie_schemas.UrzadzenieUpdateSchemat):
     print("update_urzadzenie_o_id")
     znajdz_i_zamien = db.query(models.Urzadzenie).filter(models.Urzadzenie.id == urzadzenie_id) \
                   .update(

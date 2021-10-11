@@ -25,22 +25,22 @@ def get_db():
 
 
 ########################## POST ################################
-@router.post("/", response_description="stworz paczkę bez sesji", response_model=paczka_danych_schemas.PaczkaDanychSchema)
-async def create_paczka_danych(paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchema,
+@router.post("/", response_description="stworz paczkę bez sesji", response_model=paczka_danych_schemas.PaczkaDanychSchemat)
+async def create_paczka_danych(paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchemat,
                                db: Session = Depends(get_db)):
     return paczka_danych_crud.create_paczka_danych_dla_sesji(db=db, paczka_danych=paczka_danych)
 
 
-@router.post("/id_sesji={sesja_id}", response_description="stworz paczkę z sesją", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+@router.post("/id_sesji={sesja_id}", response_description="stworz paczkę z sesją", response_model=paczka_danych_schemas.PaczkaDanychSchemat)
 async def create_paczka_danych(
         sesja_id: int,
-        paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchema,
+        paczka_danych: paczka_danych_schemas.PaczkaDanychCreateSchemat,
         db: Session = Depends(get_db)):
     return paczka_danych_crud.create_paczka_danych_dla_sesji(db=db, paczka_danych=paczka_danych, sesja_id=sesja_id)
 
 
 ########################## GET ######################################
-@router.get("/id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+@router.get("/id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychSchemat)
 async def get_paczke_danych_o_id(paczka_danych_id: int, db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_paczka_danych_o_id(db, paczka_danych_id=paczka_danych_id)
     if db_paczek_danych is None:
@@ -48,40 +48,41 @@ async def get_paczke_danych_o_id(paczka_danych_id: int, db: Session = Depends(ge
     return db_paczek_danych
 
 
-@router.get("/", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+@router.get("/", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
 async def get_zbior_paczek_danych(skip: Optional[int] = None, limit: Optional[int] = None, db: Session = Depends(get_db)):
     paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db=db, skip=skip, limit=limit)
     return paczki_danych
 
 
-@router.get("/przynalezne_zbiory", response_model=List[paczka_danych_schemas.PaczkaDanychSchemaNested])
+@router.get("/przynalezne_zbiory", response_model=List[paczka_danych_schemas.PaczkaDanychSchematNested])
 async def get_zbior_paczek_danych_z_zagniezdzeniami(skip: Optional[int] = None, limit: Optional[int] = None,
                                                     db: Session = Depends(get_db)):
     paczki_danych = paczka_danych_crud.get_zbior_paczek_danych(db=db, skip=skip, limit=limit)
     return paczki_danych
 
 
-@router.get("/id_sesji={sesja_id}", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+@router.get("/id_sesji={sesja_id}", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
 async def get_zbior_paczek_danych_o_id_sesji(sesja_id: int, skip: Optional[int] = None, limit: Optional[int] = None,
                                              db: Session = Depends(get_db)):
     paczki_danych \
         = paczka_danych_crud.get_zbior_paczek_danych_o_id_sesji(db=db, sesja_id=sesja_id, skip=skip, limit=limit)
+    return paczki_danych
 
 
-@router.get("/bez_sesji", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+@router.get("/bez_sesji", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
 async def get_zbior_paczek_danych_bez_przypisanej_sesji(skip: Optional[int] = None, limit: Optional[int] = None,
                                                         db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_bez_przypisanej_sesji(db=db, skip=skip, limit=limit)
     return db_paczek_danych
 
 
-@router.get("/bez_sesji/numer_seryjny={numer_seryjny}", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+@router.get("/bez_sesji/numer_seryjny={numer_seryjny}", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
 async def get_zbior_paczek_o_numerze_seryjnym__bez_przypisanej_sesji(numer_seryjny: str, skip: Optional[int] = None, limit: Optional[int] = None,  db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_bez_przypisanej_sesji(db=db, numer_seryjny=numer_seryjny, skip=skip, limit=limit)
     return db_paczek_danych
 
 
-@router.get("/numer_seryjny={numer_seryjny}", response_model=List[paczka_danych_schemas.PaczkaDanychSchema])
+@router.get("/numer_seryjny={numer_seryjny}", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
 async def get_zbior_paczek_danych_o_numerze_seryjnym(numer_seryjny: str, skip: Optional[int] = None, limit: Optional[int] = None, db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_o_numerze_seryjnym(db=db, skip=skip, limit=limit, numer_seryjny=numer_seryjny)
     if db_paczek_danych is None:
@@ -89,7 +90,7 @@ async def get_zbior_paczek_danych_o_numerze_seryjnym(numer_seryjny: str, skip: O
     return db_paczek_danych
 
 
-@router.get("/numer_seryjny={numer_seryjny}/najnowszy_pomiar", response_model=paczka_danych_schemas.PaczkaDanychSchema)
+@router.get("/numer_seryjny={numer_seryjny}/najnowszy_pomiar", response_model=paczka_danych_schemas.PaczkaDanychSchemat)
 async def get_najnowsza_paczke_danych_o_numerze_seryjnym(numer_seryjny: str, db: Session = Depends(get_db)):
     db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_bez_przypisanej_sesji(db=db, numer_seryjny=numer_seryjny, limit=1)
     print(db_paczek_danych)
@@ -98,16 +99,34 @@ async def get_najnowsza_paczke_danych_o_numerze_seryjnym(numer_seryjny: str, db:
     return db_paczek_danych
 
 
-@router.get("/id_sesji={sesja_id}/per=50", response_model=paczka_danych_schemas.PaczkaDanychSchema)
-async def get_rekord_per_50_dla_sesji(sesja_id: int, skip: Optional[int] = None, limit: Optional[int] = None,
-                                             db: Session = Depends(get_db)):
-    db_paczek_danych = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jeden_per_50()
+@router.get("/id_sesji={sesja_id}/jedna_per_n={jedna_per_n}", response_model=List[paczka_danych_schemas.PaczkaDanychSchemat])
+async def get_jedna_paczka_per_n_dla_sesji(sesja_id: int,
+                                     jedna_per_n: int,
+                                     db: Session = Depends(get_db)):
+    print("ahouj")
+    db_paczek_danych_per_n = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+        db=db,
+        sesja_id=sesja_id,
+        jedna_per_n=jedna_per_n)
+    return db_paczek_danych_per_n
+
+
+@router.get("/id_sesji={sesja_id}/jedna_per_n={jedna_per_n}/przynalezne_zbiory/uproszczone", response_model=List[paczka_danych_schemas.PaczkaDanychProstaNested])
+async def get_jedna_paczka_per_n_dla_sesji_z_wartosciami(sesja_id: int,
+                                     jedna_per_n: int,
+                                     db: Session = Depends(get_db)):
+    print("ahouj")
+    db_paczek_danych_per_n = paczka_danych_crud.get_zbior_paczek_danych_dla_sesji_jedna_per_n(
+        db=db,
+        sesja_id=sesja_id,
+        jedna_per_n=jedna_per_n)
+    return db_paczek_danych_per_n
+
 
 ############################### PUT ################################33
-
-@router.put("/paczka_danych_id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychUpdateSchema
+@router.put("/paczka_danych_id={paczka_danych_id}", response_model=paczka_danych_schemas.PaczkaDanychUpdateSchemat
     , response_description="zmień paczkę danych")
-async def update_paczka_danych_o_id(paczka_danych_id: int, paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema
+async def update_paczka_danych_o_id(paczka_danych_id: int, paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemat
                                    , db: Session = Depends(get_db)):
     update_paczka_danych = paczka_danych_crud.zmien_paczke_danych_o_id(db, paczka_danych_id, paczka_danych)
     print(update_paczka_danych)
@@ -118,10 +137,10 @@ async def update_paczka_danych_o_id(paczka_danych_id: int, paczka_danych: paczka
 
 
 @router.put("/paczka_danych_id={paczka_danych_id}/usun_zastane_wartosci",
-            response_model=paczka_danych_schemas.PaczkaDanychUpdateSchemaNested
+            response_model=paczka_danych_schemas.PaczkaDanychUpdateSchematNested
     , response_description="zmień paczkę danych")
 async def update_paczka_danych_o_id_usun_zastane_wartosci(paczka_danych_id: int,
-                                                         paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemaNested
+                                                         paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchematNested
                                                          , db: Session = Depends(get_db)):
     update_paczka_danych = paczka_danych_crud.zmien_paczke_danych_o_id__usun_dotychaczsowe_wartosci_pomiarow(db,
                                                                                                              paczka_danych_id,
@@ -134,10 +153,10 @@ async def update_paczka_danych_o_id_usun_zastane_wartosci(paczka_danych_id: int,
 
 
 @router.put("/brak_sesji/numer_seryjny_urzadzenia={numer_seryjny}",
-            response_model=paczka_danych_schemas.PaczkaDanychUpdateSchema_czas_i_kod)
+            response_model=paczka_danych_schemas.PaczkaDanychUpdateSchemat_czas_i_kod)
 async def update_paczka_danych_bez_przypisanej_sesji_o_numerze_seryjny(numer_seryjny: str
                                                                       ,
-                                                                      paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema_czas_i_kod
+                                                                      paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemat_czas_i_kod
                                                                       , db: Session = Depends(get_db)):
     update_paczka_danych = paczka_danych_crud.zmien_paczke_danych__bez_sesji_o_numerze_seryjnym(db,
                                                                                                 numer_seryjny,

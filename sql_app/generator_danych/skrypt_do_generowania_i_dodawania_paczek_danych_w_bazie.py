@@ -40,6 +40,7 @@ def get_urzadzenie_o_numerze_seryjnym(numer_seryjny):
     '{basic_url}/urzadzenia/numer_seryjny={var_numer_seryjny}' \
     -H 'accept: application/json'
     """.format(basic_url=basic_url, var_numer_seryjny=numer_seryjny)
+    print(bashCommand)
     return execute_bash_command(bashCommand)
 
 
@@ -187,14 +188,18 @@ def get_id_urzadzenia_dla_tej_paczki(numer_seryjny):
     print("--------dane_zapytania----------")
     print(dane_zapytania)
     print("------------------")
-    rekord = json.loads(dane_zapytania)  # [1:-1])
-    try:
-        print(rekord['id'])
-        return int(rekord['id'])
-    except KeyError as e:
-        print(f"KeyError wystąpił - {e}")
-        print(traceback.print_exc())
-        return None
+    if dane_zapytania is not None:
+        rekord = json.loads(dane_zapytania)  # [1:-1])
+        try:
+            print(rekord['id'])
+            return int(rekord['id'])
+        except KeyError as e:
+            print(f"KeyError wystąpił - {e}")
+            print(traceback.print_exc())
+            return None
+    else:
+        print("zapytanie jest puste !")
+        traceback.print_exc()
 
 
 def dane_od_arka(paczka_danych_json):

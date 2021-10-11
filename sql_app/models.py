@@ -70,7 +70,7 @@ class Urzadzenie(Base):
     # nie jestem pewien czy powinno być unique czy nie
     numer_seryjny = Column(String(50), unique=True)
     zbior_sensorow = relationship("Sensor", back_populates="urzadzenie", passive_deletes=True)
-    zbior_sesji = relationship("Sesja", back_populates="urzadzenie")
+    zbior_sesji = relationship("Sesja", back_populates="urzadzenie", passive_deletes=True)
 
 
 class Sensor(Base):
@@ -80,6 +80,7 @@ class Sensor(Base):
     litery_porzadkowe = Column(String(10))
     parametr = Column(String(50))
     wspolczynniki_kalibracyjne = Column(String(25))
+    data_kalibracji = Column(String(50))
     min = Column(String(25))
     max = Column(String(25))
     jednostka = Column(String(20))

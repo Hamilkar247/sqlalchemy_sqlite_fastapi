@@ -1,49 +1,55 @@
 from typing import List, Optional
-
 from pydantic import BaseModel
 
-from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
+from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchemat, \
+    WartoscPomiaruProstaSchemat
 
 
-#czas updatuj po prostu na aktualny czas
-class PaczkaDanychUpdateSchema_czas_i_kod(BaseModel):
-    kod_statusu: Optional[str] = None
-
+class PodstawowySchemat(BaseModel):
     class Config:
+        #alias_generator = to_camel
+        allow_population_by_field_name = True
         orm_mode = True
 
 
-class PaczkaDanychBaseSchema(BaseModel):
+class PaczkaDanychBaseSchemat(PodstawowySchemat):
     kod_statusu: Optional[str] = None
     numer_seryjny: Optional[str] = None
 
-    class Config:
-        orm_mode = True
 
-
-class PaczkaDanychCreateSchema(PaczkaDanychBaseSchema):
+class PaczkaDanychProstaSchemat(PodstawowySchemat):
     pass
 
 
-class PaczkaDanychUpdateSchema(PaczkaDanychBaseSchema):
+class PaczkaDanychCreateSchemat(PaczkaDanychBaseSchemat):
+    pass
+
+
+class PaczkaDanychUpdateSchemat(PaczkaDanychBaseSchemat):
     sesja_id: Optional[int] = None
 
 
-class PaczkaDanychUpdateSchemaNested(PaczkaDanychUpdateSchema):
-    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema] = None
+#czas updatuj po prostu na aktualny czas
+class PaczkaDanychUpdateSchemat_czas_i_kod(PodstawowySchemat):
+    kod_statusu: Optional[str] = None
 
 
-class PaczkaDanychSchema(PaczkaDanychBaseSchema):
+class PaczkaDanychUpdateSchematNested(PaczkaDanychUpdateSchemat):
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchemat] = None
+
+
+class PaczkaDanychSchemat(PaczkaDanychBaseSchemat):
     id: int
     sesja_id: Optional[int] = None
     czas_paczki: Optional[str] = None
 
 
-class PaczkaDanychSchemaNested(PaczkaDanychSchema):
-    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchema]
+class PaczkaDanychSchematNested(PaczkaDanychSchemat):
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruSensoraSchemat]
 
 
-class UrzadzeniePaczkiDanych(BaseModel):
-    id: int
-    numer_seryjny: str
-    nazwa_urzadzenia: str
+class PaczkaDanychProstaNested(PaczkaDanychProstaSchemat):
+    zbior_wartosci_pomiarow_sensorow: List[WartoscPomiaruProstaSchemat]
+
+    class Config(PaczkaDanychProstaSchemat.Config):
+        fields = {"zbior_wartosci_pomiarow_sensorow": "ZbWart"}

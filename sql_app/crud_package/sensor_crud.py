@@ -1,12 +1,15 @@
 from sqlalchemy.orm import Session
 from sql_app import models
+from sql_app.format_danych import FormatDaty
 from sql_app.schemas_package import sensor_schemas
 
 
 ##################### CREATE ##########################
-def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
+def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchemat):
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
+                              wspolczynniki_kalibracyjne=sensor.wspolczynniki_kalibracyjne,
+                              data_kalibracji=sensor.data_kalibracji,
                               min=sensor.min,
                               max=sensor.max,
                               jednostka=sensor.jednostka,
@@ -20,6 +23,8 @@ def create_sensor(db: Session, sensor: sensor_schemas.SensorCreateSchema):
 def create_sensor_id_urzadzenia(db: Session, sensor: sensor_schemas, id_urzadzenia: int):
     db_sensor = models.Sensor(litery_porzadkowe=sensor.litery_porzadkowe,
                               parametr=sensor.parametr,
+                              wspolczynniki_kalibracyjne=sensor.wspolczynniki_kalibracyjne,
+                              data_kalibracji=FormatDaty().obecny_czas(),
                               min=sensor.min,
                               max=sensor.max,
                               jednostka=sensor.jednostka,
@@ -41,7 +46,23 @@ def get_zbior_sensorow(db: Session, skip: int = 0, limit: int = 100):
 
 
 ######################## UPDATE ########################
-def update_sensor_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorUpdateSchema):
+def zmien_wspolczynnik_kalibracji_sensora_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorRekalibracjaSchemat):
+    rekalibracja_wspolczynnika = db.query(models.Sensor).filter(models.Sensor.id == sensor_id) \
+                  .update(
+                      {
+                          models.Sensor.wspolczynniki_kalibracyjne: sensor.wspolczynniki_kalibracyjne,
+                          models.Sensor.data_kalibracji: FormatDaty().obecny_czas()
+                      }
+                  )
+    if rekalibracja_wspolczynnika is not None:
+        print(rekalibracja_wspolczynnika)
+        db.commit()
+        return rekalibracja_wspolczynnika
+    else:
+        return None
+
+
+def update_sensor_o_id(db: Session, sensor_id: int, sensor: sensor_schemas.SensorUpdateSchemat):
     znajdz_i_zamien = db.query(models.Sensor).filter(models.Sensor.id == sensor_id) \
                   .update(
                       {

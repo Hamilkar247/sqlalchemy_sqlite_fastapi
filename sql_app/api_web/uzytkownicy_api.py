@@ -26,8 +26,8 @@ def get_db():
 
 
 ##################### POST ######################33
-@router.post("/", response_model=uzytkownik_schemas.UzytkownikSchema)
-async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchema, db: Session = Depends(get_db)):
+@router.post("/", response_model=uzytkownik_schemas.UzytkownikSchemat)
+async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchemat, db: Session = Depends(get_db)):
     db_uzytkownicy = uzytkownik_crud.get_uzytkownik_by_email(db, email=uzytkownik.email)
     if db_uzytkownicy:
         detail = "Na ten email jest już zarejestrowany uzytkownik!"
@@ -37,7 +37,7 @@ async def create_uzytkownik(uzytkownik: uzytkownik_schemas.UzytkownikCreateSchem
 
 
 ################### GET ###########################3
-@router.get("/", response_model=List[uzytkownik_schemas.UzytkownikSchema])
+@router.get("/", response_model=List[uzytkownik_schemas.UzytkownikSchemat])
 async def get_zbior_uzytkownikow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
     if uzytkownicy is None:
@@ -45,7 +45,7 @@ async def get_zbior_uzytkownikow(skip: int = 0, limit: int = 100, db: Session = 
     return uzytkownicy
 
 
-@router.get("/przynalezne_zbiory", response_model=List[uzytkownik_schemas.UzytkownikSchemaNested])
+@router.get("/przynalezne_zbiory", response_model=List[uzytkownik_schemas.UzytkownikSchematNested])
 async def get_zbior_uzytkownikow_z_zagniezdzeniami(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     uzytkownicy = uzytkownik_crud.get_zbior_uzytkownikow(db, skip=skip, limit=limit)
     if uzytkownicy is None:
@@ -53,7 +53,7 @@ async def get_zbior_uzytkownikow_z_zagniezdzeniami(skip: int = 0, limit: int = 1
     return uzytkownicy
 
 
-@router.get("/id={uzytkownik_id}", response_model=uzytkownik_schemas.UzytkownikSchema)
+@router.get("/id={uzytkownik_id}", response_model=uzytkownik_schemas.UzytkownikSchemat)
 async def get_uzytkownik(uzytkownik_id: int, db: Session = Depends(get_db)):
     db_uzytkownik = uzytkownik_crud.get_uzytkownik(db, uzytkownik_id=uzytkownik_id)
     if db_uzytkownik is None:

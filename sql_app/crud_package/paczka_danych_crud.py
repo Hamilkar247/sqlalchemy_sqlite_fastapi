@@ -5,14 +5,14 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from sql_app.format_danych import FormatDaty
-from sql_app.models import PaczkaDanych
+from sql_app.models import PaczkaDanych, Sesja
 from sql_app import models
 from sql_app.schemas_package import paczka_danych_schemas
-from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchema
+from sql_app.schemas_package.wartosc_pomiaru_sensora_schemas import WartoscPomiaruSensoraSchemat
 
 
 ##################### CREATE ###########################
-def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychSchema):
+def create_paczka_danych(db: Session, paczka_danych: paczka_danych_schemas.PaczkaDanychSchemat):
     db_paczka_danych = PaczkaDanych(
         kod_statusu=paczka_danych.kod_statusu,
         numer_seryjny=paczka_danych.numer_seryjny,
@@ -55,7 +55,7 @@ def get_zbior_paczek_danych_o_id_sesji(sesja_id: int, db: Session,
                     skip: Optional[int] = None, limit: Optional[int] = None):
     if sesja_id is not None:
         if limit != 1:
-             return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id)\
+            return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id)\
                       .offset(skip).limit(limit).all()
         else:
             return db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id) \
@@ -81,12 +81,24 @@ def get_zbior_paczek_danych_bez_przypisanej_sesji(db: Session,
 def get_zbior_paczek_danych_o_numerze_seryjnym(db: Session, numer_seryjny: str,
                                                skip: Optional[int] = None, limit: Optional[int] = None):
     return db.query(PaczkaDanych).filter(PaczkaDanych.numer_seryjny == numer_seryjny).offset(skip).limit(limit).all()
-            #order_by(models.PaczkaDanych.czas_paczki.desc())
+
+
+def get_zbior_paczek_danych_dla_sesji_jedna_per_n(db: Session, sesja_id: int, jedna_per_n: int):
+    liczba = 0
+    lista = []
+    while True:
+        element = db.query(PaczkaDanych).filter(PaczkaDanych.sesja_id == sesja_id).offset(liczba).first()
+        if element is not None:
+            lista.append(element)
+        else:
+            break
+        liczba = liczba + jedna_per_n
+    return lista
 
 
 ###################### UPDATE #####################################
 def zmien_paczke_danych_o_id(db: Session, paczka_danych_id: int,
-                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema):
+                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemat):
     znajdz_i_zmien_paczke = db.query(models.PaczkaDanych).filter(models.PaczkaDanych.id == paczka_danych_id).update(
         {
             models.PaczkaDanych.czas_paczki: FormatDaty().obecny_czas(),
@@ -103,7 +115,7 @@ def zmien_paczke_danych_o_id(db: Session, paczka_danych_id: int,
 
 
 def zmien_paczke_danych__bez_sesji_o_numerze_seryjnym(db: Session, numer_seryjny: str,
-                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchema_czas_i_kod):
+                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemat_czas_i_kod):
     znajdz_i_zmien_paczke = db.query(models.PaczkaDanych).filter(models.PaczkaDanych.numer_seryjny == numer_seryjny)\
         .filter(models.PaczkaDanych.sesja_id == None)\
         .update(
@@ -121,7 +133,7 @@ def zmien_paczke_danych__bez_sesji_o_numerze_seryjnym(db: Session, numer_seryjny
 
 
 def zmien_paczke_danych_o_id__usun_dotychaczsowe_wartosci_pomiarow(db: Session, paczka_danych_id: int,
-                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchemaNested):
+                               paczka_danych: paczka_danych_schemas.PaczkaDanychUpdateSchematNested):
     znajdz_i_zmien_paczke = db.query(models.PaczkaDanych).filter(models.PaczkaDanych.id == paczka_danych_id).update(
         {
             models.PaczkaDanych.czas_paczki: FormatDaty().obecny_czas(),

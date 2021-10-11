@@ -37,7 +37,7 @@ def post_curl_urzadzenia(nazwa_urzadzenia, numer_seryjny):
     return output
 
 
-def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jednostka, status_sensora):
+def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, wspolczynnik_kalibracyjny, min, max, jednostka, status_sensora):
     print(f"id_urzadzenia: {id_urzadzenia}")
     bashCommand = """
     curl -X 'POST'\\
@@ -47,6 +47,7 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
     -d '{{
     "litery_porzadkowe": "{var_litery_porzadkowe}",
     "parametr": "{var_parametr}",
+    "wspolczynniki_kalibracyjne": "{var_wsp_kalibr}",
     "min": "{var_min}",
     "max": "{var_max}",
     "jednostka": "{var_jednostka}",
@@ -55,8 +56,9 @@ def post_curl_sensor(id_urzadzenia, litery_porzadkowe, parametr, min, max, jedno
     """.format(basic_url=basic_url,
                var_id_urzadzenia=id_urzadzenia,
                var_litery_porzadkowe=litery_porzadkowe,
-               var_parametr=parametr, var_min=min,
-               var_max=max, var_jednostka=jednostka,
+               var_parametr=parametr, var_wsp_kalibr=wspolczynnik_kalibracyjny,
+               var_min=min, var_max=max,
+               var_jednostka=jednostka,
                var_status_sensora=status_sensora)
     output = execute_bash_command(bashCommand)
 
@@ -94,6 +96,7 @@ def tworzenie_pierwszego_urzadzenia_i_sensorow():
         id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
         litery_porzadkowe = ["a", "b", "c", "z"]
         parametr = ["temperatura", "pm2.5", "pm5", "napiecie"]
+        wspolczynnik_kalibracyjny = ["1;4", "0;1", "0:3", "1:2"]
         min = ["-15", "-15", "-20", "-5"]
         max = ["5", "30", "30", "5"]
         jednostka = ["stopnie Celsjusza", "smogowe", "smogowe", "volty"]
@@ -103,6 +106,7 @@ def tworzenie_pierwszego_urzadzenia_i_sensorow():
             post_curl_sensor(id_urzadzenia=id_urzadzenia,
                              litery_porzadkowe=litery_porzadkowe[numer],
                              parametr=parametr[numer],
+                             wspolczynnik_kalibracyjny=wspolczynnik_kalibracyjny[numer],
                              min=min[numer],
                              max=max[numer],
                              jednostka=jednostka[numer],
@@ -121,6 +125,7 @@ def tworzenie_drugiego_urzadzenia_i_sensorow():
         id_urzadzenia = get_urzadzenie_id_by_numer_seryjny(numer_seryjny)
         litery_porzadkowe = ["a", "b", "c", "z"]
         parametr = ["stezenie wodoru", "hydrowodór", "alkohol etylowy", "napiecie"]
+        wspolczynnik_kalibracyjny = ["1;4", "0;1", "0:3", "1:2"]
         min = ["-15", "-15", "-20", "-5"]
         max = ["5", "30", "30", "5"]
         jednostka = ["procent", "objętość", "procent", "volty"]
@@ -130,6 +135,7 @@ def tworzenie_drugiego_urzadzenia_i_sensorow():
             post_curl_sensor(id_urzadzenia=id_urzadzenia,
                              litery_porzadkowe=litery_porzadkowe[numer],
                              parametr=parametr[numer],
+                             wspolczynnik_kalibracyjny=wspolczynnik_kalibracyjny[numer],
                              min=min[numer],
                              max=max[numer],
                              jednostka=jednostka[numer],

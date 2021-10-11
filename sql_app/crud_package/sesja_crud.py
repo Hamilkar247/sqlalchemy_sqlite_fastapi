@@ -4,12 +4,13 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from sql_app import models
 from sql_app.format_danych import FormatDaty
+from sql_app.models import Sesja, PaczkaDanych
 from sql_app.schemas_package import sesja_schemas
 
 
 ################ CREATE ##################
 def create_sesja(db: Session,
-                                            sesja: sesja_schemas.SesjaCreateSchema,
+                                            sesja: sesja_schemas.SesjaCreateSchemat,
                                             urzadzenie_id: Optional[int] = None,
                                             uzytkownik_id: Optional[int] = None
                                             ):
@@ -69,6 +70,7 @@ def get_aktywna_sesja_urzadzenia_o_numerze_seryjnym(db: Session, numer_seryjny: 
     #    filter(models.Urzadzenie.numer_seryjny == numer_seryjny).all()
 
 
+################# UPDATE ##########################3
 def zakoncz_sesje(db: Session, sesja_id: int):
     find_sesje = db.query(models.Sesja).filter(models.Sesja.czy_aktywna == True, models.Sesja.id == sesja_id).first()
     # print(find_sesje.start_sesji)
@@ -107,12 +109,23 @@ def zakoncz_sesje(db: Session, sesja_id: int):
         return None
 
 
-# def update_status_sesji_czy_aktywna(db: Session, sesja_id: int, nowa_wartosc_boolean: bool):
-#    find_sesja = db.query(models.Sesja).filter(models.Sesja.id==sesja_id, models.Sesja.id==sesja_id).all()
-#    find_sesja.update()
+def get_zbior_paczek_danych_dla_sesji_jedna_per_n(db: Session, sesja_id: int, jedna_per_n: int):
+    print("ahoj")
+    liczba = 0
+    lista = []
+    while True:
+        print(f"liczba elementów {len(lista)}")
+        element = db.query(Sesja).filter(PaczkaDanych.sesja_id == sesja_id).offset(liczba).first()
+        print(element)
+        if element is not None:
+            lista.append(element)
+        else:
+            break
+        liczba = liczba + jedna_per_n
+    return lista
 
 
-
+##################### DELETE ###############################3
 def delete_sesja(db: Session, sesje_id: int):
     result_str = ""
     try:

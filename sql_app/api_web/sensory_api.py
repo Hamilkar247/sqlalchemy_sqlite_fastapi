@@ -26,18 +26,18 @@ def get_db():
 
 
 ###################### POST ############################
-@router.post("/", response_model=sensor_schemas.SensorSchema)
-async def create_sensor(sensor: sensor_schemas.SensorCreateSchema, db: Session = Depends(get_db)):
-    return sensor_crud.create_sensor(db=db, sensor=sensor)
+#@router.post("/", response_model=sensor_schemas.SensorCreateSchemat)
+#async def create_sensor(sensor: sensor_schemas.SensorCreateSchemat, db: Session = Depends(get_db)):
+#    return sensor_crud.create_sensor(db=db, sensor=sensor)
 
 
-@router.post("/id_urzadzenia={id_urzadzenia}", response_model=sensor_schemas.SensorSchema)
-async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchema, urzadzenie_id: int, db: Session = Depends(get_db)):
+@router.post("/id_urzadzenia={id_urzadzenia}", response_model=sensor_schemas.SensorCreateSchemat)
+async def create_sensor_id_urzadzenia(sensor: sensor_schemas.SensorCreateSchemat, urzadzenie_id: int, db: Session = Depends(get_db)):
     return sensor_crud.create_sensor_id_urzadzenia(db=db, sensor=sensor, id_urzadzenia=urzadzenie_id)
 
 
 ##################### GET ##############################
-@router.get("/", response_model=List[sensor_schemas.SensorSchema])
+@router.get("/", response_model=List[sensor_schemas.SensorSchemat])
 async def get_zbior_sensorow(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     sensory = sensor_crud.get_zbior_sensorow(db=db, skip=skip, limit=limit)
     if sensory is None:
@@ -45,7 +45,7 @@ async def get_zbior_sensorow(skip: int = 0, limit: int = 100, db: Session = Depe
     return sensory
 
 
-@router.get("/id={sensor_id}", response_model=sensor_schemas.SensorSchema)
+@router.get("/id={sensor_id}", response_model=sensor_schemas.SensorSchemat)
 async def get_sensor(sensor_id: int, db: Session = Depends(get_db)):
     db_sensor = sensor_crud.get_sensor(db=db, sensor_id=sensor_id)
     if db_sensor is None:
@@ -54,12 +54,21 @@ async def get_sensor(sensor_id: int, db: Session = Depends(get_db)):
 
 
 #################### UPDATE ___ PUT ########################
-@router.put("/id_sensor={sensor_id}", response_model=sensor_schemas.SensorUpdateSchema)
-async def update_sensor_o_id(sensor_id: int, sensor: sensor_schemas.SensorUpdateSchema, db: Session = Depends(get_db)):
+@router.put("/id_sensor={sensor_id}", response_model=sensor_schemas.SensorUpdateSchemat)
+async def update_sensor_o_id(sensor_id: int, sensor: sensor_schemas.SensorUpdateSchemat, db: Session = Depends(get_db)):
     update_sensor = sensor_crud.update_sensor_o_id(db=db, sensor_id=sensor_id, sensor=sensor)
     if update_sensor is None:
         raise HTTPException(status_code=404, detail=f"Nie udało się zupdateować sensora o id {sensor_id}")
     return update_sensor
+
+
+@router.put("/rekalibracja/id_sensor={sensor_id}", response_model=sensor_schemas.SensorRekalibracjaSchemat)
+async def rekalibracja_sensora_o_id(sensor_id: int, sensor: sensor_schemas.SensorRekalibracjaSchemat, \
+                                    db: Session = Depends(get_db)):
+    rekalibracja_sensora = sensor_crud.zmien_wspolczynnik_kalibracji(db=db, sensor_id=sensor_id, sensor=sensor)
+    if rekalibracja_sensora is None:
+        raise HTTPException(status_code=404, detail=f"Nie udało się zmienić wsp_kalibracji o id {sensor_id}")
+    return rekalibracja_sensora
 
 
 ######################### DELETE ###############################

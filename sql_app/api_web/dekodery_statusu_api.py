@@ -26,8 +26,8 @@ def get_db():
         db.close()
 
 
-@router.post("/", response_model=dekoder_statusu_schemas.DekoderStatusuSchema)
-async def create_dekoder_statusu(dekoder_statusu: dekoder_statusu_schemas.DekoderStatusuCreateSchema, db: Session = Depends(get_db)):
+@router.post("/", response_model=dekoder_statusu_schemas.DekoderStatusuSchemat)
+async def create_dekoder_statusu(dekoder_statusu: dekoder_statusu_schemas.DekoderStatusuCreateSchemat, db: Session = Depends(get_db)):
     db_dekoder_statusu = dekoder_statusu_crud.get_dekoder_statusu(db,
                          kod=dekoder_statusu.kod, liczba_dziesietna=dekoder_statusu.liczba_dziesietna)
     if db_dekoder_statusu:
@@ -35,7 +35,7 @@ async def create_dekoder_statusu(dekoder_statusu: dekoder_statusu_schemas.Dekode
     return dekoder_statusu_crud.create_dekodera_statusu(db=db, dekoder_statusu=dekoder_statusu)
 
 
-@router.get("/", response_model=List[dekoder_statusu_schemas.DekoderStatusuSchema])
+@router.get("/", response_model=List[dekoder_statusu_schemas.DekoderStatusuSchemat])
 async def get_zbior_paczek_danych(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return dekoder_statusu_crud.get_zbior_dekoderow_statusu(db, skip=skip, limit=limit)
 
